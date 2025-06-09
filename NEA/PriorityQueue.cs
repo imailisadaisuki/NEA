@@ -20,10 +20,11 @@ namespace NEA
         {
             if (items.Count == 0)
                 throw new InvalidOperationException("Queue is empty");
-            int highestPriority = priorities.Min();
-            items.RemoveAt(highestPriority);
-            priorities.RemoveAt(highestPriority);
-            return items[highestPriority];
+            int highestPriorityLocation = priorities.IndexOf(priorities.Min());
+            T temp = items[highestPriorityLocation];
+            items.RemoveAt(highestPriorityLocation);
+            priorities.RemoveAt(highestPriorityLocation);
+            return temp;
         }
         public bool IsEmpty() => items.Count == 0;
         public int Count() => items.Count;

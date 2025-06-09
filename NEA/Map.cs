@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace NEA
 {
-    public struct Connection
+    public class Connection
     {
         public Station station;
         public int time;
         public string line;
+        public Connection(Station station, int time, string line) => (this.station, this.time, this.line) = (station, time, line);
     }
     public class Station 
     {
@@ -22,5 +23,16 @@ namespace NEA
         public Station previousStation = null;
         public bool visited = false;
         public Station (string name) => this.name = name;
+        public string getPrevConnectionLine()
+        {
+            foreach (Connection connection in Connections)
+            {
+                if (connection.station == previousStation)
+                {
+                    return connection.line;
+                }
+            }
+            return null;
+        }
     }
 }
