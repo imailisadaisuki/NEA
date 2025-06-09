@@ -58,9 +58,9 @@ namespace NEA
         }
         static void Main(string[] args)
         {
-            Station waterloo = new Station("Waterloo");
-            Station embankment = new Station("Embankment");
-            Station charingCross = new Station("Charing Cross");
+            Station waterloo = new Station("Waterloo", 1);
+            Station embankment = new Station("Embankment", 1);
+            Station charingCross = new Station("Charing Cross", 1);
 
             waterloo.Connections.Add(new Connection(embankment, 2, "Northern"));
             embankment.Connections.Add(new Connection(waterloo, 2, "Northern"));

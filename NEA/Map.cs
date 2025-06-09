@@ -22,7 +22,7 @@ namespace NEA
         public int time2Travel = int.MaxValue;
         public Station previousStation = null;
         public bool visited = false;
-        public Station (string name) => this.name = name;
+        public Station (string name, int zone) => (this.name, this.zone) = (name, zone);
         public string getPrevConnectionLine()
         {
             foreach (Connection connection in Connections)
