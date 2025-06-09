@@ -10,12 +10,12 @@ namespace NEA
     {
         static void Dijkstra(Station start)
         {
-            PriorityQueue<Station> queue = new PriorityQueue<Station>();
+            PriorityQueue<Station> pq = new PriorityQueue<Station>();
             start.time2Travel = 0;
-            queue.Enqueue(start, 0);
-            while (!queue.IsEmpty())
+            pq.Enqueue(start, 0);
+            while (!pq.IsEmpty())
             {
-                Station current = queue.Dequeue();
+                Station current = pq.Dequeue();
                 if (current.visited) continue;
                 current.visited = true;
                 foreach (var connection in current.Connections)
@@ -25,7 +25,7 @@ namespace NEA
                     {
                         connection.station.time2Travel = newTime;
                         connection.station.previousStation = current;
-                        queue.Enqueue(connection.station, newTime);
+                        pq.Enqueue(connection.station, newTime);
                     }
                 }
             }
