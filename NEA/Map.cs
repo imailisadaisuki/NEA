@@ -16,6 +16,7 @@ namespace NEA
     public class Station 
     {
         public string name;
+        public int zone;
         public List<Connection> Connections = new List<Connection>();
         public int time2Travel = int.MaxValue;
         public Station previousStation = null;
