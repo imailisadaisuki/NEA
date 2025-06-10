@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Configuration;
@@ -23,16 +23,17 @@ namespace NEA
         public Station previousStation = null;
         public bool visited = false;
         public Station (string name, int zone) => (this.name, this.zone) = (name, zone);
-        public string getPrevConnectionLine()
+        public List<string> getPrevConnectionLine()
         {
+            List<string> lines = new List<string>();
             foreach (Connection connection in Connections)
             {
                 if (connection.station == previousStation)
                 {
-                    return connection.line;
+                    lines.Add(connection.line);
                 }
             }
-            return null;
+            return lines;
         }
     }
 }
