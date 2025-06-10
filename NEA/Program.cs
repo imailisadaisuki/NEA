@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,7 +23,7 @@ namespace NEA
                 foreach (Connection connection in current.Connections)
                 {
                     int newTime = current.time2Travel + connection.time;
-                    if (current.getPrevConnectionLine() != connection.line && current.previousStation != null)
+                    if (!current.getPrevConnectionLine().Contains(connection.line) && current.previousStation != null)
                     {
                         newTime += 2; // Add transfer time if changing lines
                     }
@@ -40,15 +40,22 @@ namespace NEA
         {
             List<string> path = new List<string>();
             Station current = end;
-            string connectionLine = current.getPrevConnectionLine();
+            List<string> connectionLine = current.getPrevConnectionLine();
             while (current.previousStation != null)
             {
-                if (current.getPrevConnectionLine() == connectionLine)
+                foreach (string line in connectionLine)
+                {
+                    if (!current.getPrevConnectionLine().Contains(line))
+                    {
+                        connectionLine.Remove(line); // remove the line if it is not the previous connection line
+                    }
+                }
+                if (connectionLine != null)
                     path.Add(current.name); // did not change lines
                 else
                 {
-                    path.Add($"Transfer from {connectionLine} to {current.getPrevConnectionLine()} in {current.name}");
-                    connectionLine = current.getPrevConnectionLine(); //  changes line
+                    path.Add($"Transfer from {connectionLine} to {current.getPrevConnectionLine()[0]} in {current.name}");
+                    connectionLine = current.getPrevConnectionLine(); // changes line
                 }
                 current = current.previousStation;
             }
