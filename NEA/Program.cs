@@ -41,25 +41,29 @@ namespace NEA
             List<string> path = new List<string>();
             Station current = end;
             List<string> connectionLine = current.getPrevConnectionLine();
+            string line = null;
             while (current.previousStation != null)
             {
-                foreach (string line in connectionLine)
+                for (int i = 0; i < connectionLine.Count; i++)
                 {
-                    if (!current.getPrevConnectionLine().Contains(line))
+                    if (!current.getPrevConnectionLine().Contains(connectionLine[i]))
                     {
-                        connectionLine.Remove(line); // remove the line if it is not the previous connection line
+                        if (connectionLine.Count == 1) line = connectionLine[0];
+                        connectionLine.Remove(connectionLine[i]); // remove the line if it is not the previous connection line
+                        i++;
                     }
                 }
-                if (connectionLine != null)
+                if (connectionLine.Count != 0)
                     path.Add(current.name); // did not change lines
                 else
                 {
-                    path.Add($"Transfer from {connectionLine} to {current.getPrevConnectionLine()[0]} in {current.name}");
+                    path.Add($"Transfer from {current.getPrevConnectionLine()[0]} to {line} in {current.name}");
                     connectionLine = current.getPrevConnectionLine(); // changes line
+                    line = connectionLine[0];
                 }
                 current = current.previousStation;
             }
-            path.Add($"Take the {connectionLine} Line from {current.name}"); // add the starting station
+            path.Add($"Take the {line} Line from {current.name}"); // add the starting station
             path.Reverse();
             return path;
         }
