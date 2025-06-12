@@ -57,7 +57,7 @@ namespace NEA
                     path.Add(current.name); // did not change lines
                 else
                 {
-                    path.Add($"Transfer from {current.getPrevConnectionLine()[0]} to {line} in {current.name}");
+                    path.Add($"Transfer to {line} in {current.name}");
                     connectionLine = current.getPrevConnectionLine(); // changes line
                     line = connectionLine[0];
                 }
