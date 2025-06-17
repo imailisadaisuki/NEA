@@ -180,7 +180,11 @@ namespace NEA
             AddConnection(NottingHillGate, HighStreetKensington, 2, line);
             AddConnection(HighStreetKensington, EarlsCourt, 3, line);
 
-            //
+            //add Jubilee
+            line = "Jubilee";
+            AddConnection(BakerStreet, BondStreet, 2, line);
+            AddConnection(BondStreet, GreenPark, 2, line);
+            AddConnection()
         }
 
         static void Dijkstra(Station start)
