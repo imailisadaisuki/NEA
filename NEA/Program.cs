@@ -270,18 +270,18 @@ namespace NEA
 
             //add other connections (walk)
             line = "Walk";
-            AddConnection(Euston, EustonSquare, 1, line);
-            AddConnection(EdgwareRoadB, EdgwareRoadCHC, 1, line);
-            AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 1, line);
-            AddConnection(EdgwareRoadB, EdgwareRoadCT, 1, line);
-            AddConnection(PaddingtonBCD, PaddingtonCHC, 1, line);
-            AddConnection(PaddingtonCHC, PaddingtonE, 1, line);
-            AddConnection(PaddingtonBCD, PaddingtonE, 1, line);
-            AddConnection(BondStreet, BondStreetE, 1, line);
-            AddConnection(TottenhamCourtRoad, TottenhamCourtRoadE, 1, line);
-            AddConnection(Farringdon, FarringdonE, 1, line);
-            AddConnection(LiverpoolStreet, LiverpoolStreetE, 1, line);
-            AddConnection(Moorgate, LiverpoolStreet, 1, line);
+            AddConnection(Euston, EustonSquare, 0, line);
+            AddConnection(EdgwareRoadB, EdgwareRoadCHC, 0, line);
+            AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 0, line);
+            AddConnection(EdgwareRoadB, EdgwareRoadCT, 0, line);
+            AddConnection(PaddingtonBCD, PaddingtonCHC, 0, line);
+            AddConnection(PaddingtonCHC, PaddingtonE, 0, line);
+            AddConnection(PaddingtonBCD, PaddingtonE, 0, line);
+            AddConnection(BondStreet, BondStreetE, 0, line);
+            AddConnection(TottenhamCourtRoad, TottenhamCourtRoadE, 0, line);
+            AddConnection(Farringdon, FarringdonE, 0, line);
+            AddConnection(LiverpoolStreet, LiverpoolStreetE, 0, line);
+            AddConnection(Moorgate, LiverpoolStreet, 0, line);
             
 
             Dijkstra(EarlsCourt);
@@ -323,7 +323,7 @@ namespace NEA
             List<string> connectionLine = current.getPrevConnectionLine();
             string line = string.Join("/", connectionLine);
             int stops = 0;
-            while (current.previousStation != null)
+            while (true)
             {
                 for (int i = 0; i < connectionLine.Count; i++)
                 {
@@ -333,6 +333,13 @@ namespace NEA
                         connectionLine.Remove(connectionLine[i]); // remove the line if it is not the previous connection line
                         i++;
                     }
+                }
+                if (current.previousStation == null)
+                {
+                    path.Add($"Ride {stops} stops");
+                    path.Add($"Take the {line} Line from {current.name}"); // add the starting station
+                    path.Reverse();
+                    break;
                 }
                 if (connectionLine.Count != 0)
                 {
@@ -354,9 +361,6 @@ namespace NEA
                 }
                 current = current.previousStation;
             }
-            path.Add($"Ride {stops} stops");
-            path.Add($"Take the {line} Line from {current.name}"); // add the starting station
-            path.Reverse();
             return path;
         }
         static void Main(string[] args)
