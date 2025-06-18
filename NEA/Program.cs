@@ -16,7 +16,7 @@ namespace NEA
             a.Connections.Add(new Connection(b, time, line));
             b.Connections.Add(new Connection(a, time, line));
         }
-        static void InsertZone1Station()
+        static void Zone1Prototype()
         {
             Station Aldgate = new Station("Aldgate", 1);
             Station AldgateEast = new Station("Aldgate East", 1);
@@ -36,6 +36,7 @@ namespace NEA
             Station EarlsCourt = new Station("Earl's Court", 1); //Also Zone 2
             Station EdgwareRoadB = new Station("Edgware Road (Bakerloo)", 1);
             Station EdgwareRoadCHC = new Station("Edgware Road (Circle and Hammersmith & City)", 1);
+            Station EdgwareRoadCT = new Station("Edgware Road (Circle Terminal)", 1);
             Station ElephantAndCastle = new Station("Elephant & Castle", 1); //Also Zone 2
             Station Embankment = new Station("Embankment", 1);
             Station Euston = new Station("Euston", 1);
@@ -117,7 +118,7 @@ namespace NEA
 
             //adding Circle
             line = "Circle";
-            AddConnection(EdgwareRoadCHC, PaddingtonBCD, 2, line);
+            AddConnection(EdgwareRoadCT, PaddingtonBCD, 2, line);
             AddConnection(PaddingtonBCD, Bayswater, 2, line);
             AddConnection(Bayswater, NottingHillGate, 2, line);
             AddConnection(NottingHillGate, HighStreetKensington, 2, line);
@@ -256,53 +257,23 @@ namespace NEA
             AddConnection(Waterloo, Bank, 4, line);
 
             //add Elizabeth
+            line = "Elizabeth";
             Station PaddingtonE = new Station("Paddington (Elizabeth)", 1); // Elizabeth Line station
             Station BondStreetE = new Station("Bond Street (Elizabeth)", 1);
             Station TottenhamCourtRoadE = new Station("Tottenham Court Road (Elizabeth)", 1);
             Station FarringdonE = new Station("Farringdon (Elizabeth)", 1);
             Station LiverpoolStreetE = new Station("Liverpool Street (Elizabeth)", 1);
-            //add Elizebeth (Paddigton / Heathrow Terminal 5 to Shenfield)
-            string line1 = "Elizabeth (towards Shenfield)";
-            string line2 = "Elizabeth (towards Paddington)";
-            string line3 = "Elizabeth (towards Heathrow Terminal 5)";
-            PaddingtonE.Connections.Add(new Connection(BondStreetE, 4, line1));
-            BondStreetE.Connections.Add(new Connection(PaddingtonE, 4, line2));
-            BondStreetE.Connections.Add(new Connection(PaddingtonE, 4, line3));
-            BondStreetE.Connections.Add(new Connection(TottenhamCourtRoadE, 2, line1));
-            TottenhamCourtRoadE.Connections.Add(new Connection(BondStreetE, 2, line2));
-            TottenhamCourtRoadE.Connections.Add(new Connection(BondStreetE, 2, line3));
-            TottenhamCourtRoadE.Connections.Add(new Connection(FarringdonE, 3, line1));
-            FarringdonE.Connections.Add(new Connection(TottenhamCourtRoadE, 3, line2));
-            FarringdonE.Connections.Add(new Connection(TottenhamCourtRoadE, 3, line3));
-            FarringdonE.Connections.Add(new Connection(LiverpoolStreetE, 2, line1));
-            LiverpoolStreetE.Connections.Add(new Connection(FarringdonE, 2, line2));
-            LiverpoolStreetE.Connections.Add(new Connection(FarringdonE, 2, line3));
-            //add Elizabeth (Reading / Maidenhead / Heathrow Terminal 4 to Abbey Wood)
-            line1 = "Elizabeth (towards Abbey Wood)";
-            line2 = "Elizabeth (towards Reading)";
-            line3 = "Elizabeth (towards Maidenhead)";
-            string line4 = "Elizabeth (towards Heathrow Terminal 4)";
-            PaddingtonE.Connections.Add(new Connection(BondStreetE, 4, line1));
-            BondStreetE.Connections.Add(new Connection(PaddingtonE, 4, line2));
-            BondStreetE.Connections.Add(new Connection(PaddingtonE, 4, line3));
-            BondStreetE.Connections.Add(new Connection(PaddingtonE, 4, line4));
-            BondStreetE.Connections.Add(new Connection(TottenhamCourtRoadE, 2, line1));
-            TottenhamCourtRoadE.Connections.Add(new Connection(BondStreetE, 2, line2));
-            TottenhamCourtRoadE.Connections.Add(new Connection(BondStreetE, 2, line3));
-            TottenhamCourtRoadE.Connections.Add(new Connection(BondStreetE, 2, line4));
-            TottenhamCourtRoadE.Connections.Add(new Connection(FarringdonE, 3, line1));
-            FarringdonE.Connections.Add(new Connection(TottenhamCourtRoadE, 3, line2));
-            FarringdonE.Connections.Add(new Connection(TottenhamCourtRoadE, 3, line3));
-            FarringdonE.Connections.Add(new Connection(TottenhamCourtRoadE, 3, line4));
-            FarringdonE.Connections.Add(new Connection(LiverpoolStreetE, 2, line1));
-            LiverpoolStreetE.Connections.Add(new Connection(FarringdonE, 2, line2));
-            LiverpoolStreetE.Connections.Add(new Connection(FarringdonE, 2, line3));
-            LiverpoolStreetE.Connections.Add(new Connection(FarringdonE, 2, line4));
+            AddConnection(PaddingtonE, BondStreetE, 4, line);
+            AddConnection(BondStreetE, TottenhamCourtRoadE, 2, line);
+            AddConnection(TottenhamCourtRoadE, FarringdonE, 3, line);
+            AddConnection(FarringdonE, LiverpoolStreetE, 2, line);
 
             //add other connections (walk)
             line = "Walk";
             AddConnection(Euston, EustonSquare, 1, line);
             AddConnection(EdgwareRoadB, EdgwareRoadCHC, 1, line);
+            AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 1, line);
+            AddConnection(EdgwareRoadB, EdgwareRoadCT, 1, line);
             AddConnection(PaddingtonBCD, PaddingtonCHC, 1, line);
             AddConnection(PaddingtonCHC, PaddingtonE, 1, line);
             AddConnection(PaddingtonBCD, PaddingtonE, 1, line);
@@ -310,10 +281,12 @@ namespace NEA
             AddConnection(TottenhamCourtRoad, TottenhamCourtRoadE, 1, line);
             AddConnection(Farringdon, FarringdonE, 1, line);
             AddConnection(LiverpoolStreet, LiverpoolStreetE, 1, line);
+            AddConnection(Moorgate, LiverpoolStreet, 1, line);
+            
 
-            Dijkstra(PaddingtonE);
-            GetShortestPath(LiverpoolStreetE).ForEach(Console.WriteLine);
-            Console.WriteLine($"Estimated time = {LiverpoolStreetE.time2Travel} minutes");
+            Dijkstra(EarlsCourt);
+            GetShortestPath(EustonSquare).ForEach(Console.WriteLine);
+            Console.WriteLine($"Estimated time = {EustonSquare.time2Travel} minutes");
             Console.ReadLine();
         }
 
@@ -349,6 +322,7 @@ namespace NEA
             Station current = end;
             List<string> connectionLine = current.getPrevConnectionLine();
             string line = string.Join("/", connectionLine);
+            int stops = 0;
             while (current.previousStation != null)
             {
                 for (int i = 0; i < connectionLine.Count; i++)
@@ -361,25 +335,33 @@ namespace NEA
                     }
                 }
                 if (connectionLine.Count != 0)
+                {
                     path.Add(current.name); // did not change lines
+                    stops++;
+                }
                 else
                 {
                     if (line == "Walk") // if walking, do not add the line
                         path.Add($"Walk to {current.name}");
                     else
+                    {
+                        path.Add($"Ride {stops} stops");
                         path.Add($"Transfer to {line} in {current.name}");
-                    connectionLine = current.getPrevConnectionLine(); // changes line
-                    line = string.Join("/", connectionLine);
+                        connectionLine = current.getPrevConnectionLine(); // changes line
+                        line = string.Join("/", connectionLine);
+                    }
+                    stops = 1;
                 }
                 current = current.previousStation;
             }
+            path.Add($"Ride {stops} stops");
             path.Add($"Take the {line} Line from {current.name}"); // add the starting station
             path.Reverse();
             return path;
         }
         static void Main(string[] args)
         {
-            InsertZone1Station();
+            Zone1Prototype();
             
         }
     }
