@@ -270,7 +270,7 @@ namespace NEA
 
             //add other connections (walk)
             line = "Walk";
-            AddConnection(Euston, EustonSquare, 10, line);
+            AddConnection(Euston, EustonSquare, 0, line);
             AddConnection(EdgwareRoadB, EdgwareRoadCHC, 0, line);
             AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 0, line);
             AddConnection(EdgwareRoadB, EdgwareRoadCT, 0, line);
@@ -285,8 +285,8 @@ namespace NEA
             
 
             Dijkstra(PaddingtonBCD);
-            GetShortestPath(LiverpoolStreet).ForEach(Console.Write);
-            Console.WriteLine($"\nEstimated time = {LiverpoolStreet.time2Travel} minutes");
+            GetShortestPath(RussellSquare).ForEach(Console.Write);
+            Console.WriteLine($"\nEstimated time = {RussellSquare.time2Travel} minutes");
             Console.ReadLine();
         }
         static bool IsLineChange(Station current, Connection connection) =>
@@ -305,12 +305,9 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 foreach (Connection connection in current.Connections)
                 {
                     int newTime = current.time2Travel + connection.time;
-                    if (IsLineChange(current, connection))
+                    if (IsLineChange(current, connection) && connection.line != "Walk")
                     {
-                        if (connection.line != "Walk")
-                        {
-                            newTime += 6; // Add transfer time if changing lines
-                        }
+                        newTime += 7; // Add transfer time if changing lines
                     }
                     if (newTime < connection.station.time2Travel)
                     {
@@ -350,30 +347,26 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                         path.Add($"Walk from {current.name} to: ");
                     else
                     {
-                        path.Add($"Ride {stops} stops via: \n");
+                        path.Add($"Ride {stops} stop(s) via: \n");
                         path.Add($"Take the {line} Line from {current.name} \n"); // add the starting station
                     }
                     path.Reverse();
                     break;
                 }
-                if (connectionLine.Count != 0)
-                {
-                    
-                }
-                else
+                if (connectionLine.Count == 0)
                 {
                     if (line == "Walk") // if walking, do not add the line
                         path.Add($"Walk from {current.name} to: ");
                     else
                     {
-                        path.Add($"Ride {stops} stops via: \n");
+                        path.Add($"Ride {stops} stop(s) via: \n");
                         path.Add($"\nTransfer to {line} line in {current.name} \n");
                     }
                     connectionLine = current.getPrevConnectionLine(); // changes line
                     line = string.Join("/", connectionLine);
                     stops = 0;
                 }
-                path.Add(current.name + "\n"); // did not change lines
+                path.Add(current.name + "\n");
                 stops++;
                 current = current.previousStation;
             }
