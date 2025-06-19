@@ -92,7 +92,7 @@ namespace NEA
             string line = "Bakerloo";
             AddConnection(PaddingtonBCD, EdgwareRoadB, 2, line);
             AddConnection(EdgwareRoadB, Marylebone, 1, line);
-            AddConnection(Marylebone, BakerStreet, 1, line);
+            AddConnection(Marylebone, BakerStreet, 2, line);
             AddConnection(BakerStreet, RegentsPark, 2, line);
             AddConnection(RegentsPark, OxfordCircus, 2, line);
             AddConnection(OxfordCircus, PiccadillyCircus, 2, line);
@@ -271,22 +271,22 @@ namespace NEA
             //add other connections (walk)
             line = "Walk";
             AddConnection(Euston, EustonSquare, 10, line);
-            AddConnection(EdgwareRoadB, EdgwareRoadCHC, 7, line);
-            AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 7, line);
-            AddConnection(EdgwareRoadB, EdgwareRoadCT, 7, line);
-            AddConnection(PaddingtonBCD, PaddingtonCHC, 7, line);
-            AddConnection(PaddingtonCHC, PaddingtonE, 7, line);
-            AddConnection(PaddingtonBCD, PaddingtonE, 7, line);
-            AddConnection(BondStreet, BondStreetE, 7, line);
-            AddConnection(TottenhamCourtRoad, TottenhamCourtRoadE, 7, line);
-            AddConnection(Farringdon, FarringdonE, 7, line);
-            AddConnection(LiverpoolStreet, LiverpoolStreetE, 7, line);
-            AddConnection(Moorgate, LiverpoolStreet, 8, line);
+            AddConnection(EdgwareRoadB, EdgwareRoadCHC, 0, line);
+            AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 0, line);
+            AddConnection(EdgwareRoadB, EdgwareRoadCT, 0, line);
+            AddConnection(PaddingtonBCD, PaddingtonCHC, 0, line);
+            AddConnection(PaddingtonCHC, PaddingtonE, 0, line);
+            AddConnection(PaddingtonBCD, PaddingtonE, 0, line);
+            AddConnection(BondStreet, BondStreetE, 0, line);
+            AddConnection(TottenhamCourtRoad, TottenhamCourtRoadE, 0, line);
+            AddConnection(Farringdon, FarringdonE, 0, line);
+            AddConnection(LiverpoolStreet, LiverpoolStreetE, 0, line);
+            AddConnection(Moorgate, LiverpoolStreet, 0, line);
             
 
             Dijkstra(PaddingtonBCD);
             GetShortestPath(LiverpoolStreet).ForEach(Console.Write);
-            Console.WriteLine($"Estimated time = {EustonSquare.time2Travel} minutes");
+            Console.WriteLine($"\nEstimated time = {LiverpoolStreet.time2Travel} minutes");
             Console.ReadLine();
         }
         static bool IsLineChange(Station current, Connection connection) =>
@@ -326,17 +326,21 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             List<string> path = new List<string>();
             Station current = end;
             List<string> connectionLine = current.getPrevConnectionLine();
-            string line = string.Join("/", connectionLine);
+            string line;
             int stops = 0;
             while (true)
             {
+                line = string.Join("/", connectionLine);
                 for (int i = 0; i < connectionLine.Count; i++)
                 {
+                    if (connectionLine.Count == 0)
+                    {
+                        break;
+                    }
                     if (!current.getPrevConnectionLine().Contains(connectionLine[i]))
                     {
-                        if (connectionLine.Count == 1) line = connectionLine[0];
                         connectionLine.Remove(connectionLine[i]); // remove the line if it is not the previous connection line
-                        i++;
+                        i--;
                     }
                 }
                 
@@ -363,11 +367,11 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                     else
                     {
                         path.Add($"Ride {stops} stops via: \n");
-                        path.Add($"Transfer to {line} line in {current.name} \n");
+                        path.Add($"\nTransfer to {line} line in {current.name} \n");
                     }
                     connectionLine = current.getPrevConnectionLine(); // changes line
                     line = string.Join("/", connectionLine);
-                    stops = 1;
+                    stops = 0;
                 }
                 path.Add(current.name + "\n"); // did not change lines
                 stops++;
