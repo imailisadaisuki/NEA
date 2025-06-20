@@ -101,7 +101,7 @@ namespace NEA
 
             //add connections, source: https://tfl.gov.uk/corporate/publications-and-reports/working-timetables
             //adding Bakerloo
-            String line = "Bakerloo";
+            string line = "Bakerloo";
             AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Edgware Road (Bakerloo)"], 2, line);
             AddConnection(stations["Edgware Road (Bakerloo)"], stations["Marylebone"], 1, line);
             AddConnection(stations["Marylebone"], stations["Baker Street"], 2, line);
