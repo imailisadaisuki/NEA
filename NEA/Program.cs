@@ -16,278 +16,287 @@ namespace NEA
             a.Connections.Add(new Connection(b, time, line));
             b.Connections.Add(new Connection(a, time, line));
         }
-        static void Zone1Prototype()
+        static void AddStation(Dictionary<string, Station> stations, string name, int zone) => stations.Add(name, new Station(name, zone));
+        static Dictionary<string, Station> Zone1Prototype()
         {
-            Station Aldgate = new Station("Aldgate", 1);
-            Station AldgateEast = new Station("Aldgate East", 1);
-            Station Angel = new Station("Angel", 1);
-            Station BakerStreet = new Station("Baker Street", 1);
-            Station Bank = new Station("Bank", 1);
-            Station Barbican = new Station("Barbican", 1);
-            Station BatterseaPowerStation = new Station("Battersea Power Station", 1);
-            Station Bayswater = new Station("Bayswater", 1);
-            Station Blackfriars = new Station("Blackfriars", 1);
-            Station BondStreet = new Station("Bond Street", 1);
-            Station Borough = new Station("Borough", 1);
-            Station CannonStreet = new Station("Cannon Street", 1);
-            Station ChanceryLane = new Station("Chancery Lane", 1);
-            Station CharingCross = new Station("Charing Cross", 1);
-            Station CoventGarden = new Station("Covent Garden", 1);
-            Station EarlsCourt = new Station("Earl's Court", 1); //Also Zone 2
-            Station EdgwareRoadB = new Station("Edgware Road (Bakerloo)", 1);
-            Station EdgwareRoadCHC = new Station("Edgware Road (Circle and Hammersmith & City)", 1);
-            Station EdgwareRoadCT = new Station("Edgware Road (Circle Terminal)", 1);
-            Station ElephantAndCastle = new Station("Elephant & Castle", 1); //Also Zone 2
-            Station Embankment = new Station("Embankment", 1);
-            Station Euston = new Station("Euston", 1);
-            Station EustonSquare = new Station("Euston Square", 1);
-            Station Farringdon = new Station("Farringdon", 1);
-            Station GloucesterRoad = new Station("Gloucester Road", 1);
-            Station GoodgeStreet = new Station("Goodge Street", 1);
-            Station GreatPortlandStreet = new Station("Great Portland Street", 1);
-            Station GreenPark = new Station("Green Park", 1);
-            Station HighStreetKensington = new Station("High Street Kensington", 1);
-            Station Holborn = new Station("Holborn", 1);
-            Station HydeParkCorner = new Station("Hyde Park Corner", 1);
-            Station Kennington = new Station("Kennington", 1); //Also Zone 2
-            Station KingsCross = new Station("King's Cross & St Pancras International", 1);
-            Station Knightsbridge = new Station("Knightsbridge", 1);
-            Station LambethNorth = new Station("Lambeth North", 1);
-            Station LancasterGate = new Station("Lancaster Gate", 1);
-            Station LeicesterSquare = new Station("Leicester Square", 1);
-            Station LiverpoolStreet = new Station("Liverpool Street", 1);
-            Station LondonBridge = new Station("London Bridge", 1);
-            Station MansionHouse = new Station("Mansion House", 1);
-            Station MarbleArch = new Station("Marble Arch", 1);
-            Station Marylebone = new Station("Marylebone", 1);
-            Station Monument = new Station("Monument", 1);
-            Station Moorgate = new Station("Moorgate", 1);
-            Station NineElms = new Station("Nine Elms", 1);
-            Station NottingHillGate = new Station("Notting Hill Gate", 1); //Also Zone 2
-            Station OldStreet = new Station("Old Street", 1);
-            Station OxfordCircus = new Station("Oxford Circus", 1);
-            Station PaddingtonBCD = new Station("Paddington (Bakerloo, Circle and District)", 1);
-            Station PaddingtonCHC = new Station("Paddington (Circle and Hammersmith & City)", 1);
-            Station PiccadillyCircus = new Station("Piccadilly Circus", 1);
-            Station Pimlico = new Station("Pimlico", 1);
-            Station Queensway = new Station("Queensway", 1);
-            Station RegentsPark = new Station("Regent's Park", 1);
-            Station RussellSquare = new Station("Russell Square", 1);
-            Station StPauls = new Station("St. Paul's", 1);
-            Station SouthKensington = new Station("South Kensington", 1);
-            Station Southwark = new Station("Southwark", 1);
-            Station StJamesPark = new Station("St. James's Park", 1);
-            Station SloaneSquare = new Station("Sloane Square", 1);
-            Station Temple = new Station("Temple", 1);
-            Station TottenhamCourtRoad = new Station("Tottenham Court Road", 1);
-            Station TowerHill = new Station("Tower Hill", 1);
-            Station TowerGateway = new Station("Tower Gateway", 1); //DLR
-            Station Vauxhall = new Station("Vauxhall", 1); //Also Zone 2
-            Station Victoria = new Station("Victoria", 1);
-            Station WarrenStreet = new Station("Warren Street", 1);
-            Station Waterloo = new Station("Waterloo", 1);
-            Station Westminster = new Station("Westminster", 1);
+            Dictionary<string, Station> stations = new Dictionary<string, Station>();
+            AddStation(stations, "Aldgate", 1);
+            AddStation(stations, "Aldgate East", 1);
+            AddStation(stations, "Angel", 1);
+            AddStation(stations, "Baker Street", 1);
+            AddStation(stations, "Bank", 1);
+            AddStation(stations, "Barbican", 1);
+            AddStation(stations, "Battersea Power Station", 1);
+            AddStation(stations, "Bayswater", 1);
+            AddStation(stations, "Blackfriars", 1);
+            AddStation(stations, "Bond Street", 1);
+            AddStation(stations, "Borough", 1);
+            AddStation(stations, "Cannon Street", 1);
+            AddStation(stations, "Chancery Lane", 1);
+            AddStation(stations, "Charing Cross", 1);
+            AddStation(stations, "Covent Garden", 1);
+            AddStation(stations, "Earl's Court", 1); //Also Zone 2
+            AddStation(stations, "Edgware Road", 1);
+            AddStation(stations, "Edgware Road (Bakerloo)", 1);
+            AddStation(stations, "Edgware Road (Circle and Hammersmith & City)", 1);
+            AddStation(stations, "Edgware Road (Circle Terminal)", 1);
+            AddStation(stations, "Elephant & Castle", 1); //Also Zone 2
+            AddStation(stations, "Embankment", 1);
+            AddStation(stations, "Euston", 1);
+            AddStation(stations, "Euston Square", 1);
+            AddStation(stations, "Farringdon", 1);
+            AddStation(stations, "Gloucester Road", 1);
+            AddStation(stations, "Goodge Street", 1);
+            AddStation(stations, "Great Portland Street", 1);
+            AddStation(stations, "Green Park", 1);
+            AddStation(stations, "High Street Kensington", 1);
+            AddStation(stations, "Holborn", 1);
+            AddStation(stations, "Hyde Park Corner", 1);
+            AddStation(stations, "Kennington", 1); //Also Zone 2
+            AddStation(stations, "King's Cross & St Pancras International", 1);
+            AddStation(stations, "Knightsbridge", 1);
+            AddStation(stations, "Lambeth North", 1);
+            AddStation(stations, "Lancaster Gate", 1);
+            AddStation(stations, "Leicester Square", 1);
+            AddStation(stations, "Liverpool Street", 1);
+            AddStation(stations, "London Bridge", 1);
+            AddStation(stations, "Mansion House", 1);
+            AddStation(stations, "Marble Arch", 1);
+            AddStation(stations, "Marylebone", 1);
+            AddStation(stations, "Monument", 1);
+            AddStation(stations, "Moorgate", 1);
+            AddStation(stations, "Nine Elms", 1);
+            AddStation(stations, "Notting Hill Gate", 1); //Also Zone 2
+            AddStation(stations, "Old Street", 1);
+            AddStation(stations, "Oxford Circus", 1);
+            AddStation(stations, "Paddington", 1);
+            AddStation(stations, "Paddington (Bakerloo, Circle and District)", 1);
+            AddStation(stations, "Paddington (Circle and Hammersmith & City)", 1);
+            AddStation(stations, "Piccadilly Circus", 1);
+            AddStation(stations, "Pimlico", 1);
+            AddStation(stations, "Queensway", 1);
+            AddStation(stations, "Regent's Park", 1);
+            AddStation(stations, "Russell Square", 1);
+            AddStation(stations, "St. Paul's", 1);
+            AddStation(stations, "South Kensington", 1);
+            AddStation(stations, "Southwark", 1);
+            AddStation(stations, "St. James's Park", 1);
+            AddStation(stations, "Sloane Square", 1);
+            AddStation(stations, "Temple", 1);
+            AddStation(stations, "Tottenham Court Road", 1);
+            AddStation(stations, "Tower Hill", 1);
+            AddStation(stations, "Tower Gateway", 1); //DLR
+            AddStation(stations, "Vauxhall", 1); //Also Zone 2
+            AddStation(stations, "Victoria", 1);
+            AddStation(stations, "Warren Street", 1);
+            AddStation(stations, "Waterloo", 1);
+            AddStation(stations, "Westminster", 1);
+
+            //Elizebeth Line Station
+            AddStation(stations, "Paddington (Elizabeth)", 1); // Elizabeth Line station
+            AddStation(stations, "Bond Street (Elizabeth)", 1);
+            AddStation(stations, "Tottenham Court Road (Elizabeth)", 1);
+            AddStation(stations, "Farringdon (Elizabeth)", 1);
+            AddStation(stations, "Liverpool Street (Elizabeth)", 1);
             //add connections, source: https://tfl.gov.uk/corporate/publications-and-reports/working-timetables
             //adding Bakerloo
-            string line = "Bakerloo";
-            AddConnection(PaddingtonBCD, EdgwareRoadB, 2, line);
-            AddConnection(EdgwareRoadB, Marylebone, 1, line);
-            AddConnection(Marylebone, BakerStreet, 2, line);
-            AddConnection(BakerStreet, RegentsPark, 2, line);
-            AddConnection(RegentsPark, OxfordCircus, 2, line);
-            AddConnection(OxfordCircus, PiccadillyCircus, 2, line);
-            AddConnection(PiccadillyCircus, CharingCross, 2, line);
-            AddConnection(CharingCross, Embankment, 1, line);
-            AddConnection(Embankment, Waterloo, 2, line);
-            AddConnection(Waterloo, LambethNorth, 2, line);
-            AddConnection(LambethNorth, ElephantAndCastle, 2, line);
+            String line = "Bakerloo";
+            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Edgware Road (Bakerloo)"], 2, line);
+            AddConnection(stations["Edgware Road (Bakerloo)"], stations["Marylebone"], 1, line);
+            AddConnection(stations["Marylebone"], stations["Baker Street"], 2, line);
+            AddConnection(stations["Baker Street"], stations["Regent's Park"], 2, line);
+            AddConnection(stations["Regent's Park"], stations["Oxford Circus"], 2, line);
+            AddConnection(stations["Oxford Circus"], stations["Piccadilly Circus"], 2, line);
+            AddConnection(stations["Piccadilly Circus"], stations["Charing Cross"], 2, line);
+            AddConnection(stations["Charing Cross"], stations["Embankment"], 1, line);
+            AddConnection(stations["Embankment"], stations["Waterloo"], 2, line);
+            AddConnection(stations["Waterloo"], stations["Lambeth North"], 2, line);
+            AddConnection(stations["Lambeth North"], stations["Elephant & Castle"], 2, line);
 
             //adding Central
             line = "Central";
-            AddConnection(LiverpoolStreet, Bank, 2, line);
-            AddConnection(Bank, StPauls, 2, line);
-            AddConnection(StPauls, ChanceryLane, 2, line);
-            AddConnection(ChanceryLane, Holborn, 1, line);
-            AddConnection(Holborn, TottenhamCourtRoad, 2, line);
-            AddConnection(TottenhamCourtRoad, OxfordCircus, 1, line);
-            AddConnection(OxfordCircus, BondStreet, 2, line);
-            AddConnection(BondStreet, MarbleArch, 1, line);
-            AddConnection(MarbleArch, LancasterGate, 2, line);
-            AddConnection(LancasterGate, Queensway, 2, line);
-            AddConnection(Queensway, NottingHillGate, 2, line);
+            AddConnection(stations["Liverpool Street"], stations["Bank"], 2, line);
+            AddConnection(stations["Bank"], stations["St. Paul's"], 2, line);
+            AddConnection(stations["St. Paul's"], stations["Chancery Lane"], 2, line);
+            AddConnection(stations["Chancery Lane"], stations["Holborn"], 1, line);
+            AddConnection(stations["Holborn"], stations["Tottenham Court Road"], 2, line);
+            AddConnection(stations["Tottenham Court Road"], stations["Oxford Circus"], 1, line);
+            AddConnection(stations["Oxford Circus"], stations["Bond Street"], 2, line);
+            AddConnection(stations["Bond Street"], stations["Marble Arch"], 1, line);
+            AddConnection(stations["Marble Arch"], stations["Lancaster Gate"], 2, line);
+            AddConnection(stations["Lancaster Gate"], stations["Queensway"], 2, line);
+            AddConnection(stations["Queensway"], stations["Notting Hill Gate"], 2, line);
 
             //adding Circle
             line = "Circle";
-            AddConnection(EdgwareRoadCT, PaddingtonBCD, 2, line);
-            AddConnection(PaddingtonBCD, Bayswater, 2, line);
-            AddConnection(Bayswater, NottingHillGate, 2, line);
-            AddConnection(NottingHillGate, HighStreetKensington, 2, line);
-            AddConnection(HighStreetKensington, GloucesterRoad, 2, line);
-            AddConnection(GloucesterRoad, SouthKensington, 2, line);
-            AddConnection(SouthKensington, SloaneSquare, 2, line);
-            AddConnection(SloaneSquare, Victoria, 2, line);
-            AddConnection(Victoria, StJamesPark, 2, line);
-            AddConnection(StJamesPark, Westminster, 2, line);
-            AddConnection(Westminster, Embankment, 2, line);
-            AddConnection(Embankment, Temple, 2, line);
-            AddConnection(Temple, Blackfriars, 1, line);
-            AddConnection(Blackfriars, MansionHouse, 2, line);
-            AddConnection(MansionHouse, CannonStreet, 1, line);
-            AddConnection(CannonStreet, Monument, 1, line);
-            AddConnection(Monument, TowerHill, 2, line);
-            AddConnection(TowerHill, Aldgate, 2, line);
-            AddConnection(Aldgate, LiverpoolStreet, 2, line);
-            AddConnection(LiverpoolStreet, Moorgate, 2, line);
-            AddConnection(Moorgate, Barbican, 2, line);
-            AddConnection(Barbican, Farringdon, 1, line);
-            AddConnection(Farringdon, KingsCross, 3, line);
-            AddConnection(KingsCross, EustonSquare, 2, line);
-            AddConnection(EustonSquare, GreatPortlandStreet, 1, line);
-            AddConnection(GreatPortlandStreet, BakerStreet, 2, line);
-            AddConnection(BakerStreet, EdgwareRoadCHC, 2, line);
-            AddConnection(EdgwareRoadCHC, PaddingtonCHC, 2, line);
+            AddConnection(stations["Edgware Road (Circle Terminal)"], stations["Paddington (Bakerloo, Circle and District)"], 2, line);
+            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Bayswater"], 2, line);
+            AddConnection(stations["Bayswater"], stations["Notting Hill Gate"], 2, line);
+            AddConnection(stations["Notting Hill Gate"], stations["High Street Kensington"], 2, line);
+            AddConnection(stations["High Street Kensington"], stations["Gloucester Road"], 2, line);
+            AddConnection(stations["Gloucester Road"], stations["South Kensington"], 2, line);
+            AddConnection(stations["South Kensington"], stations["Sloane Square"], 2, line);
+            AddConnection(stations["Sloane Square"], stations["Victoria"], 2, line);
+            AddConnection(stations["Victoria"], stations["St. James's Park"], 2, line);
+            AddConnection(stations["St. James's Park"], stations["Westminster"], 2, line);
+            AddConnection(stations["Westminster"], stations["Embankment"], 2, line);
+            AddConnection(stations["Embankment"], stations["Temple"], 2, line);
+            AddConnection(stations["Temple"], stations["Blackfriars"], 1, line);
+            AddConnection(stations["Blackfriars"], stations["Mansion House"], 2, line);
+            AddConnection(stations["Mansion House"], stations["Cannon Street"], 1, line);
+            AddConnection(stations["Cannon Street"], stations["Monument"], 1, line);
+            AddConnection(stations["Monument"], stations["Tower Hill"], 2, line);
+            AddConnection(stations["Tower Hill"], stations["Aldgate"], 2, line);
+            AddConnection(stations["Aldgate"], stations["Liverpool Street"], 2, line);
+            AddConnection(stations["Liverpool Street"], stations["Moorgate"], 2, line);
+            AddConnection(stations["Moorgate"], stations["Barbican"], 2, line);
+            AddConnection(stations["Barbican"], stations["Farringdon"], 1, line);
+            AddConnection(stations["Farringdon"], stations["King's Cross & St Pancras International"], 3, line);
+            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston Square"], 2, line);
+            AddConnection(stations["Euston Square"], stations["Great Portland Street"], 1, line);
+            AddConnection(stations["Great Portland Street"], stations["Baker Street"], 2, line);
+            AddConnection(stations["Baker Street"], stations["Edgware Road (Circle and Hammersmith & City)"], 2, line);
+            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Paddington (Circle and Hammersmith & City)"], 2, line);
 
             //add Hammersmith & City
-            line = "Hammersmith & City Line";
-            AddConnection(AldgateEast, LiverpoolStreet, 2, line);
-            AddConnection(LiverpoolStreet, Moorgate, 2, line);
-            AddConnection(Moorgate, Barbican, 2, line);
-            AddConnection(Barbican, Farringdon, 1, line);
-            AddConnection(Farringdon, KingsCross, 3, line);
-            AddConnection(KingsCross, EustonSquare, 2, line);
-            AddConnection(EustonSquare, GreatPortlandStreet, 1, line);
-            AddConnection(GreatPortlandStreet, BakerStreet, 2, line);
-            AddConnection(BakerStreet, EdgwareRoadCHC, 2, line);
-            AddConnection(EdgwareRoadCHC, PaddingtonCHC, 2, line);
+            line = "Hammersmith & City";
+            AddConnection(stations["Aldgate East"], stations["Liverpool Street"], 2, line);
+            AddConnection(stations["Liverpool Street"], stations["Moorgate"], 2, line);
+            AddConnection(stations["Moorgate"], stations["Barbican"], 2, line);
+            AddConnection(stations["Barbican"], stations["Farringdon"], 1, line);
+            AddConnection(stations["Farringdon"], stations["King's Cross & St Pancras International"], 3, line);
+            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston Square"], 2, line);
+            AddConnection(stations["Euston Square"], stations["Great Portland Street"], 1, line);
+            AddConnection(stations["Great Portland Street"], stations["Baker Street"], 2, line);
+            AddConnection(stations["Baker Street"], stations["Edgware Road (Circle and Hammersmith & City)"], 2, line);
+            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Paddington (Circle and Hammersmith & City)"], 2, line);
 
             //add District
             line = "District";
-            AddConnection(AldgateEast, TowerHill, 2, line);
-            AddConnection(TowerHill, Monument, 2, line);
-            AddConnection(Monument, CannonStreet, 1, line);
-            AddConnection(CannonStreet, MansionHouse, 1, line);
-            AddConnection(MansionHouse, Blackfriars, 2, line);
-            AddConnection(Blackfriars, Temple, 2, line);
-            AddConnection(Temple, Embankment, 2, line); 
-            AddConnection(Embankment, Westminster, 2, line);
-            AddConnection(Westminster, StJamesPark, 2, line);
-            AddConnection(StJamesPark, Victoria, 2, line);
-            AddConnection(Victoria, SloaneSquare, 2, line);
-            AddConnection(SloaneSquare, SouthKensington, 2, line);
-            AddConnection(SouthKensington, GloucesterRoad, 2, line);
-            AddConnection(GloucesterRoad, EarlsCourt, 2, line);
+            AddConnection(stations["Aldgate East"], stations["Tower Hill"], 2, line);
+            AddConnection(stations["Tower Hill"], stations["Monument"], 2, line);
+            AddConnection(stations["Monument"], stations["Cannon Street"], 1, line);
+            AddConnection(stations["Cannon Street"], stations["Mansion House"], 1, line);
+            AddConnection(stations["Mansion House"], stations["Blackfriars"], 2, line);
+            AddConnection(stations["Blackfriars"], stations["Temple"], 2, line);
+            AddConnection(stations["Temple"], stations["Embankment"], 2, line);
+            AddConnection(stations["Embankment"], stations["Westminster"], 2, line);
+            AddConnection(stations["Westminster"], stations["St. James's Park"], 2, line);
+            AddConnection(stations["St. James's Park"], stations["Victoria"], 2, line);
+            AddConnection(stations["Victoria"], stations["Sloane Square"], 2, line);
+            AddConnection(stations["Sloane Square"], stations["South Kensington"], 2, line);
+            AddConnection(stations["South Kensington"], stations["Gloucester Road"], 2, line);
+            AddConnection(stations["Gloucester Road"], stations["Earl's Court"], 2, line);
             //branch
-            AddConnection(EdgwareRoadCHC, PaddingtonBCD, 2, line);
-            AddConnection(PaddingtonBCD, Bayswater, 2, line);
-            AddConnection(Bayswater, NottingHillGate, 2, line);
-            AddConnection(NottingHillGate, HighStreetKensington, 2, line);
-            AddConnection(HighStreetKensington, EarlsCourt, 3, line);
+            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Paddington (Bakerloo, Circle and District)"], 2, line);
+            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Bayswater"], 2, line);
+            AddConnection(stations["Bayswater"], stations["Notting Hill Gate"], 2, line);
+            AddConnection(stations["Notting Hill Gate"], stations["High Street Kensington"], 2, line);
+            AddConnection(stations["High Street Kensington"], stations["Earl's Court"], 3, line);
 
             //add Jubilee
             line = "Jubilee";
-            AddConnection(BakerStreet, BondStreet, 2, line);
-            AddConnection(BondStreet, GreenPark, 2, line);
-            AddConnection(GreenPark, Westminster, 2, line);
-            AddConnection(Westminster, Waterloo, 2, line);
-            AddConnection(Waterloo, Southwark, 1, line);
-            AddConnection(Southwark, LondonBridge, 2, line);
+            AddConnection(stations["Baker Street"], stations["Bond Street"], 2, line);
+            AddConnection(stations["Bond Street"], stations["Green Park"], 2, line);
+            AddConnection(stations["Green Park"], stations["Westminster"], 2, line);
+            AddConnection(stations["Westminster"], stations["Waterloo"], 2, line);
+            AddConnection(stations["Waterloo"], stations["Southwark"], 1, line);
+            AddConnection(stations["Southwark"], stations["London Bridge"], 2, line);
 
             //add Metropolitan
             line = "Metropolitan";
-            AddConnection(Aldgate, LiverpoolStreet, 2, line);
-            AddConnection(LiverpoolStreet, Moorgate, 2, line);
-            AddConnection(Moorgate, Barbican, 2, line);
-            AddConnection(Barbican, Farringdon, 1, line);
-            AddConnection(Farringdon, KingsCross, 3, line);
-            AddConnection(KingsCross, EustonSquare, 2, line);
-            AddConnection(EustonSquare, GreatPortlandStreet, 1, line);
-            AddConnection(GreatPortlandStreet, BakerStreet, 2, line);
+            AddConnection(stations["Aldgate"], stations["Liverpool Street"], 2, line);
+            AddConnection(stations["Liverpool Street"], stations["Moorgate"], 2, line);
+            AddConnection(stations["Moorgate"], stations["Barbican"], 2, line);
+            AddConnection(stations["Barbican"], stations["Farringdon"], 1, line);
+            AddConnection(stations["Farringdon"], stations["King's Cross & St Pancras International"], 3, line);
+            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston Square"], 2, line);
+            AddConnection(stations["Euston Square"], stations["Great Portland Street"], 1, line);
+            AddConnection(stations["Great Portland Street"], stations["Baker Street"], 2, line);
 
             //add Northern
             //add Northern (Charing Cross branch)
             line = "Northern (Charing Cross branch)";
-            AddConnection(Euston, WarrenStreet, 1, line);
-            AddConnection(WarrenStreet, GoodgeStreet, 1, line);
-            AddConnection(GoodgeStreet, TottenhamCourtRoad, 1, line);
-            AddConnection(TottenhamCourtRoad, LeicesterSquare, 1, line);
-            AddConnection(LeicesterSquare, CharingCross, 2, line);
-            AddConnection(CharingCross, Embankment, 1, line);
-            AddConnection(Embankment, Waterloo, 2, line);
-            AddConnection(Waterloo, Kennington, 3, line);
-            AddConnection(Kennington, NineElms, 2, line);
-            AddConnection(NineElms, BatterseaPowerStation, 2, line);
+            AddConnection(stations["Euston"], stations["Warren Street"], 1, line);
+            AddConnection(stations["Warren Street"], stations["Goodge Street"], 1, line);
+            AddConnection(stations["Goodge Street"], stations["Tottenham Court Road"], 1, line);
+            AddConnection(stations["Tottenham Court Road"], stations["Leicester Square"], 1, line);
+            AddConnection(stations["Leicester Square"], stations["Charing Cross"], 2, line);
+            AddConnection(stations["Charing Cross"], stations["Embankment"], 1, line);
+            AddConnection(stations["Embankment"], stations["Waterloo"], 2, line);
+            AddConnection(stations["Waterloo"], stations["Kennington"], 3, line);
+            AddConnection(stations["Kennington"], stations["Nine Elms"], 2, line);
+            AddConnection(stations["Nine Elms"], stations["Battersea Power Station"], 2, line);
             //add Northern (Bank branch)
             line = "Northern (Bank branch)";
-            AddConnection(Euston, KingsCross, 2, line);
-            AddConnection(KingsCross, Angel, 2, line);
-            AddConnection(Angel, OldStreet, 2, line);
-            AddConnection(OldStreet, Moorgate, 2, line);
-            AddConnection(Moorgate, Bank, 2, line);
-            AddConnection(Bank, LondonBridge, 2, line);
-            AddConnection(LondonBridge, Borough, 2, line);
-            AddConnection(Borough, ElephantAndCastle, 2, line);
-            AddConnection(ElephantAndCastle, Kennington, 2, line);
+            AddConnection(stations["Euston"], stations["King's Cross & St Pancras International"], 2, line);
+            AddConnection(stations["King's Cross & St Pancras International"], stations["Angel"], 2, line);
+            AddConnection(stations["Angel"], stations["Old Street"], 2, line);
+            AddConnection(stations["Old Street"], stations["Moorgate"], 2, line);
+            AddConnection(stations["Moorgate"], stations["Bank"], 2, line);
+            AddConnection(stations["Bank"], stations["London Bridge"], 2, line);
+            AddConnection(stations["London Bridge"], stations["Borough"], 2, line);
+            AddConnection(stations["Borough"], stations["Elephant & Castle"], 2, line);
+            AddConnection(stations["Elephant & Castle"], stations["Kennington"], 2, line);
 
             //add Piccadilly
             line = "Piccadilly";
-            AddConnection(KingsCross, RussellSquare, 2, line);
-            AddConnection(RussellSquare, Holborn, 2, line);
-            AddConnection(Holborn, CoventGarden, 2, line);
-            AddConnection(CoventGarden, LeicesterSquare, 1, line);
-            AddConnection(LeicesterSquare, PiccadillyCircus, 2, line);
-            AddConnection(PiccadillyCircus, GreenPark, 2, line);
-            AddConnection(GreenPark, HydeParkCorner, 2, line);
-            AddConnection(HydeParkCorner, Knightsbridge, 2, line);
-            AddConnection(Knightsbridge, SouthKensington, 3, line);
-            AddConnection(SouthKensington, GloucesterRoad, 2, line);
-            AddConnection(GloucesterRoad, EarlsCourt, 2, line);
+            AddConnection(stations["King's Cross & St Pancras International"], stations["Russell Square"], 2, line);
+            AddConnection(stations["Russell Square"], stations["Holborn"], 2, line);
+            AddConnection(stations["Holborn"], stations["Covent Garden"], 2, line);
+            AddConnection(stations["Covent Garden"], stations["Leicester Square"], 1, line);
+            AddConnection(stations["Leicester Square"], stations["Piccadilly Circus"], 2, line);
+            AddConnection(stations["Piccadilly Circus"], stations["Green Park"], 2, line);
+            AddConnection(stations["Green Park"], stations["Hyde Park Corner"], 2, line);
+            AddConnection(stations["Hyde Park Corner"], stations["Knightsbridge"], 2, line);
+            AddConnection(stations["Knightsbridge"], stations["South Kensington"], 3, line);
+            AddConnection(stations["South Kensington"], stations["Gloucester Road"], 2, line);
+            AddConnection(stations["Gloucester Road"], stations["Earl's Court"], 2, line);
 
             //add Victoria
             line = "Victoria";
-            AddConnection(KingsCross, Euston, 2, line);
-            AddConnection(Euston, WarrenStreet, 1, line);
-            AddConnection(WarrenStreet, OxfordCircus, 2, line);
-            AddConnection(OxfordCircus, GreenPark, 2, line);
-            AddConnection(GreenPark, Victoria, 2, line);
-            AddConnection(Victoria, Pimlico, 2, line);
-            AddConnection(Pimlico, Vauxhall, 1, line);
+            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston"], 2, line);
+            AddConnection(stations["Euston"], stations["Warren Street"], 1, line);
+            AddConnection(stations["Warren Street"], stations["Oxford Circus"], 2, line);
+            AddConnection(stations["Oxford Circus"], stations["Green Park"], 2, line);
+            AddConnection(stations["Green Park"], stations["Victoria"], 2, line);
+            AddConnection(stations["Victoria"], stations["Pimlico"], 2, line);
+            AddConnection(stations["Pimlico"], stations["Vauxhall"], 1, line);
 
             //add Waterloo & City
             line = "Waterloo & City (Saturday service not operating)";
-            AddConnection(Waterloo, Bank, 4, line);
+            AddConnection(stations["Waterloo"], stations["Bank"], 4, line);
 
             //add Elizabeth
             line = "Elizabeth";
-            Station PaddingtonE = new Station("Paddington (Elizabeth)", 1); // Elizabeth Line station
-            Station BondStreetE = new Station("Bond Street (Elizabeth)", 1);
-            Station TottenhamCourtRoadE = new Station("Tottenham Court Road (Elizabeth)", 1);
-            Station FarringdonE = new Station("Farringdon (Elizabeth)", 1);
-            Station LiverpoolStreetE = new Station("Liverpool Street (Elizabeth)", 1);
-            AddConnection(PaddingtonE, BondStreetE, 4, line);
-            AddConnection(BondStreetE, TottenhamCourtRoadE, 2, line);
-            AddConnection(TottenhamCourtRoadE, FarringdonE, 3, line);
-            AddConnection(FarringdonE, LiverpoolStreetE, 2, line);
+
+            AddConnection(stations["Paddington (Elizabeth)"], stations["Bond Street (Elizabeth)"], 4, line);
+            AddConnection(stations["Bond Street (Elizabeth)"], stations["Tottenham Court Road (Elizabeth)"], 2, line);
+            AddConnection(stations["Tottenham Court Road (Elizabeth)"], stations["Farringdon (Elizabeth)"], 3, line);
+            AddConnection(stations["Farringdon (Elizabeth)"], stations["Liverpool Street (Elizabeth)"], 2, line);
 
             //add other connections (walk)
             line = "Walk";
-            AddConnection(Euston, EustonSquare, 0, line);
-            AddConnection(EdgwareRoadB, EdgwareRoadCHC, 0, line);
-            AddConnection(EdgwareRoadCHC, EdgwareRoadCT, 0, line);
-            AddConnection(EdgwareRoadB, EdgwareRoadCT, 0, line);
-            AddConnection(PaddingtonBCD, PaddingtonCHC, 0, line);
-            AddConnection(PaddingtonCHC, PaddingtonE, 0, line);
-            AddConnection(PaddingtonBCD, PaddingtonE, 0, line);
-            AddConnection(BondStreet, BondStreetE, 0, line);
-            AddConnection(TottenhamCourtRoad, TottenhamCourtRoadE, 0, line);
-            AddConnection(Farringdon, FarringdonE, 0, line);
-            AddConnection(LiverpoolStreet, LiverpoolStreetE, 0, line);
-            AddConnection(Moorgate, LiverpoolStreet, 0, line);
-            
+            AddConnection(stations["Euston"], stations["Euston Square"], 1, line);
+            AddConnection(stations["Edgware Road"], stations["Edgware Road (Bakerloo)"], 0, line);
+            AddConnection(stations["Edgware Road"], stations["Edgware Road (Circle and Hammersmith & City)"], 0, line);
+            AddConnection(stations["Edgware Road"], stations["Edgware Road (Circle Terminal)"], 0, line);
+            AddConnection(stations["Edgware Road (Bakerloo)"], stations["Edgware Road (Circle and Hammersmith & City)"], 0, line);
+            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Edgware Road (Circle Terminal)"], 0, line);
+            AddConnection(stations["Edgware Road (Bakerloo)"], stations["Edgware Road (Circle Terminal)"], 0, line);
+            AddConnection(stations["Paddington"], stations["Paddington (Bakerloo, Circle and District)"], 0, line);
+            AddConnection(stations["Paddington"], stations["Paddington (Circle and Hammersmith & City)"], 0, line);
+            AddConnection(stations["Paddington"], stations["Paddington (Elizabeth)"], 0, line);
+            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Paddington (Circle and Hammersmith & City)"], 0, line);
+            AddConnection(stations["Paddington (Circle and Hammersmith & City)"], stations["Paddington (Elizabeth)"], 0, line);
+            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Paddington (Elizabeth)"], 0, line);
+            AddConnection(stations["Bond Street"], stations["Bond Street (Elizabeth)"], 0, line);
+            AddConnection(stations["Tottenham Court Road"], stations["Tottenham Court Road (Elizabeth)"], 0, line);
+            AddConnection(stations["Farringdon"], stations["Farringdon (Elizabeth)"], 0, line);
+            AddConnection(stations["Liverpool Street"], stations["Liverpool Street (Elizabeth)"], 0, line);
+            AddConnection(stations["Moorgate"], stations["Liverpool Street"], 0, line);
 
-            Dijkstra(PaddingtonBCD);
-            GetShortestPath(RussellSquare).ForEach(Console.Write);
-            Console.WriteLine($"\nEstimated time = {RussellSquare.time2Travel} minutes");
-            Console.ReadLine();
+            return stations;
         }
         static bool IsLineChange(Station current, Connection connection) =>
 current.previousStation != null && !current.getPrevConnectionLine().Contains(connection.line);
@@ -305,7 +314,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 foreach (Connection connection in current.Connections)
                 {
                     int newTime = current.time2Travel + connection.time;
-                    if (IsLineChange(current, connection) && connection.line != "Walk")
+                    if (IsLineChange(current, connection) && !current.getPrevConnectionLine().Contains("Walk"))
                     {
                         newTime += 7; // Add transfer time if changing lines
                     }
@@ -327,7 +336,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             int stops = 0;
             while (true)
             {
-                line = string.Join("/", connectionLine);
+                line = string.Join("/ ", connectionLine);
                 for (int i = 0; i < connectionLine.Count; i++)
                 {
                     if (connectionLine.Count == 0)
@@ -344,11 +353,11 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 if (current.previousStation == null)
                 {
                     if (line == "Walk") // if walking, do not add the line
-                        path.Add($"Walk from {current.name} to: ");
+                        path.Add($"\nWalk from {current.name} to ");
                     else
                     {
                         path.Add($"Ride {stops} stop(s) via: \n");
-                        path.Add($"Take the {line} Line from {current.name} \n"); // add the starting station
+                        path.Add($"\nTake the {line} Line from {current.name} \n"); // add the starting station
                     }
                     path.Reverse();
                     break;
@@ -356,14 +365,14 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 if (connectionLine.Count == 0)
                 {
                     if (line == "Walk") // if walking, do not add the line
-                        path.Add($"Walk from {current.name} to: ");
+                        path.Add($"\nWalk from {current.name} to ");
                     else
                     {
                         path.Add($"Ride {stops} stop(s) via: \n");
                         path.Add($"\nTransfer to {line} line in {current.name} \n");
                     }
                     connectionLine = current.getPrevConnectionLine(); // changes line
-                    line = string.Join("/", connectionLine);
+                    line = string.Join("/ ", connectionLine);
                     stops = 0;
                 }
                 path.Add(current.name + "\n");
@@ -374,8 +383,15 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         }
         static void Main(string[] args)
         {
-            Zone1Prototype();
-            
+            Dictionary<string, Station> stations = Zone1Prototype();
+            Console.WriteLine("Enter starting station:");
+            string start = Console.ReadLine();
+            Console.WriteLine("Enter destination:");
+            string end = Console.ReadLine();
+            Dijkstra(stations[start]);
+            GetShortestPath(stations[end]).ForEach(Console.Write);
+            Console.WriteLine($"\nEstimated time = {stations[end].time2Travel} minutes");
+            Console.ReadLine();
         }
     }
 }
