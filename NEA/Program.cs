@@ -92,12 +92,13 @@ namespace NEA
             AddStation(stations, "Waterloo", 1);
             AddStation(stations, "Westminster", 1);
 
-            //Elizebeth Line Station
-            AddStation(stations, "Paddington (Elizabeth)", 1); // Elizabeth Line station
+            //Elizebeth Line stations
+            AddStation(stations, "Paddington (Elizabeth)", 1);
             AddStation(stations, "Bond Street (Elizabeth)", 1);
             AddStation(stations, "Tottenham Court Road (Elizabeth)", 1);
             AddStation(stations, "Farringdon (Elizabeth)", 1);
             AddStation(stations, "Liverpool Street (Elizabeth)", 1);
+
             //add connections, source: https://tfl.gov.uk/corporate/publications-and-reports/working-timetables
             //adding Bakerloo
             String line = "Bakerloo";
@@ -269,7 +270,6 @@ namespace NEA
 
             //add Elizabeth
             line = "Elizabeth";
-
             AddConnection(stations["Paddington (Elizabeth)"], stations["Bond Street (Elizabeth)"], 4, line);
             AddConnection(stations["Bond Street (Elizabeth)"], stations["Tottenham Court Road (Elizabeth)"], 2, line);
             AddConnection(stations["Tottenham Court Road (Elizabeth)"], stations["Farringdon (Elizabeth)"], 3, line);
@@ -327,7 +327,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 }
             }
         }
-        static List<string> GetShortestPath(Station end)
+        static List<string> GetShortestPath(Station end) //backtrack the station from the destination
         {
             List<string> path = new List<string>();
             Station current = end;
@@ -339,25 +339,21 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 line = string.Join("/ ", connectionLine);
                 for (int i = 0; i < connectionLine.Count; i++)
                 {
-                    if (connectionLine.Count == 0)
-                    {
-                        break;
-                    }
+                    if (connectionLine.Count == 0) break;
                     if (!current.getPrevConnectionLine().Contains(connectionLine[i]))
                     {
                         connectionLine.Remove(connectionLine[i]); // remove the line if it is not the previous connection line
                         i--;
                     }
                 }
-                
                 if (current.previousStation == null)
                 {
                     if (line == "Walk") // if walking, do not add the line
                         path.Add($"\nWalk from {current.name} to ");
                     else
                     {
-                        path.Add($"Ride {stops} stop(s) via: \n");
-                        path.Add($"\nTake the {line} Line from {current.name} \n"); // add the starting station
+                        path.Add($"Ride {stops} stop(s) via:\n");
+                        path.Add($"\nTake the {line} Line from {current.name}\n"); // add the starting station
                     }
                     path.Reverse();
                     break;
@@ -368,8 +364,8 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                         path.Add($"\nWalk from {current.name} to ");
                     else
                     {
-                        path.Add($"Ride {stops} stop(s) via: \n");
-                        path.Add($"\nTransfer to {line} line in {current.name} \n");
+                        path.Add($"Ride {stops} stop(s) via:\n");
+                        path.Add($"\nTransfer to {line} line in {current.name}\n");
                     }
                     connectionLine = current.getPrevConnectionLine(); // changes line
                     line = string.Join("/ ", connectionLine);
