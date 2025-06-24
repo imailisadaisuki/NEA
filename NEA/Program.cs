@@ -247,7 +247,7 @@ namespace NEA
             AddConnection(stations["Holborn"], stations["Covent Garden"], 2, line);
             AddConnection(stations["Covent Garden"], stations["Leicester Square"], 1, line);
             AddConnection(stations["Leicester Square"], stations["Piccadilly Circus"], 2, line);
-            AddConnection(stations["Piccadilly Circus"], stations["Green Park"], 2, line);
+            AddConnection(stations["Piccadilly Circus"], stations["Green Park"], 1, line);
             AddConnection(stations["Green Park"], stations["Hyde Park Corner"], 2, line);
             AddConnection(stations["Hyde Park Corner"], stations["Knightsbridge"], 2, line);
             AddConnection(stations["Knightsbridge"], stations["South Kensington"], 3, line);
@@ -257,7 +257,7 @@ namespace NEA
             //add Victoria
             line = "Victoria";
             AddConnection(stations["King's Cross & St Pancras International"], stations["Euston"], 2, line);
-            AddConnection(stations["Euston"], stations["Warren Street"], 1, line);
+            AddConnection(stations["Euston"], stations["Warren Street"], 2, line);
             AddConnection(stations["Warren Street"], stations["Oxford Circus"], 2, line);
             AddConnection(stations["Oxford Circus"], stations["Green Park"], 2, line);
             AddConnection(stations["Green Park"], stations["Victoria"], 2, line);
@@ -294,7 +294,9 @@ namespace NEA
             AddConnection(stations["Tottenham Court Road"], stations["Tottenham Court Road (Elizabeth)"], 0, line);
             AddConnection(stations["Farringdon"], stations["Farringdon (Elizabeth)"], 0, line);
             AddConnection(stations["Liverpool Street"], stations["Liverpool Street (Elizabeth)"], 0, line);
+            AddConnection(stations["Moorgate"], stations["Liverpool Street (Elizabeth)"], 1, line);
             AddConnection(stations["Moorgate"], stations["Liverpool Street"], 0, line);
+            AddConnection(stations["Tower Hill"], stations["Tower Gateway"], 0, line);
 
             return stations;
         }
@@ -316,7 +318,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                     int newTime = current.time2Travel + connection.time;
                     if (IsLineChange(current, connection) && !current.getPrevConnectionLine().Contains("Walk"))
                     {
-                        newTime += 7; // Add transfer time if changing lines
+                        newTime += 11; // Add transfer time if changing lines
                     }
                     if (newTime < connection.station.time2Travel)
                     {
@@ -349,11 +351,11 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 if (current.previousStation == null)
                 {
                     if (line == "Walk") // if walking, do not add the line
-                        path.Add($"\nWalk from {current.name} to ");
+                        path.Add($"Walk from {current.name} to ");
                     else
                     {
                         path.Add($"Ride {stops} stop(s) via:\n");
-                        path.Add($"\nTake the {line} Line from {current.name}\n"); // add the starting station
+                        path.Add($"Take the {line} Line from {current.name}\n"); // add the starting station
                     }
                     path.Reverse();
                     break;
@@ -380,13 +382,40 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         static void Main(string[] args)
         {
             Dictionary<string, Station> stations = Zone1Prototype();
-            Console.WriteLine("Enter starting station:");
-            string start = Console.ReadLine();
-            Console.WriteLine("Enter destination:");
-            string end = Console.ReadLine();
-            Dijkstra(stations[start]);
-            GetShortestPath(stations[end]).ForEach(Console.Write);
-            Console.WriteLine($"\nEstimated time = {stations[end].time2Travel} minutes");
+            Station start, end;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter starting station:");
+                    start = stations[Console.ReadLine()];
+                    break;
+                }
+                catch
+                {
+                    Console.Clear();
+                    Console.WriteLine("Invalid station.");
+                }
+            }
+            Console.Clear();
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter destination:");
+                    end = stations[Console.ReadLine()];
+                    break;
+                }
+                catch
+                {
+                    Console.Clear();
+                    Console.WriteLine("Invalid station.");
+                }
+            }
+            Console.Clear();
+            Dijkstra(start);
+            GetShortestPath(end).ForEach(Console.Write);
+            Console.WriteLine($"\nEstimated time = {end.time2Travel} minutes");
             Console.ReadLine();
         }
     }
