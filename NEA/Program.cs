@@ -295,7 +295,6 @@ namespace NEA
             AddConnection(stations["Farringdon"], stations["Farringdon (Elizabeth)"], 0, line);
             AddConnection(stations["Liverpool Street"], stations["Liverpool Street (Elizabeth)"], 0, line);
             AddConnection(stations["Moorgate"], stations["Liverpool Street (Elizabeth)"], 1, line);
-            AddConnection(stations["Moorgate"], stations["Liverpool Street"], 0, line);
             AddConnection(stations["Tower Hill"], stations["Tower Gateway"], 0, line);
 
             return stations;
