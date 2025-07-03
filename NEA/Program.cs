@@ -299,9 +299,17 @@ namespace NEA
 
             return stations;
         }
+        static void ResetStations(Dictionary<string, Station> stations)
+        {
+            foreach (Station station in stations.Values)
+            {
+                station.time2Travel = int.MaxValue;
+                station.previousStation = null;
+                station.visited = false;
+            }
+        }
         static bool IsLineChange(Station current, Connection connection) =>
 current.previousStation != null && !current.getPrevConnectionLine().Contains(connection.line);
-
         static void Dijkstra(Station start)
         {
             PriorityQueue<Station> pq = new PriorityQueue<Station>();
@@ -375,6 +383,56 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 path.Add(current.name + "\n");
                 stops++;
                 current = current.previousStation;
+            }
+            return path;
+        }
+        static void DisplayFullPath(List<Station> path, Dictionary<string, Station> stations)
+        {
+            int totalTime = 0;
+            for (int i = 0; i < path.Count-1; i++)
+            {
+                Station current = path[i];
+                Station next = path[i + 1];
+                ResetStations(stations);
+                Dijkstra(current);
+                totalTime += next.time2Travel;
+                Console.WriteLine($"Route from {current.name} to {next.name}:");
+                GetShortestPath(next).ForEach(Console.Write);
+                Console.WriteLine($"\nSubpath estimated time = {next.time2Travel} minutes");
+            }
+            Console.WriteLine($"Total estimated time: {totalTime}");
+        }
+        static List<Station> NearestNeighbourTSP(List<Station> targetStations, Station startStation)
+        {
+            int totalTime = 0;
+            List<Station> visitedStation = new List<Station>();
+            List<Station> path = new List<Station>();
+            Station currentStation = startStation;
+            path.Add(currentStation);
+            visitedStation.Add(currentStation);
+            while (visitedStation.Count != targetStations.Count)
+            {
+                Station nearestStation = null;
+                int minTime = int.MaxValue;
+                foreach (Station station in targetStations)
+                {
+                    if (visitedStation.Contains(station)) continue; // skip visited stations
+                    foreach (Connection connection in currentStation.Connections)
+                    {
+                        if (connection.station == station && connection.time < minTime)
+                        {
+                            minTime = connection.time;
+                            nearestStation = station;
+                        }
+                    }
+                }
+                if (nearestStation != null)
+                {
+                    totalTime += minTime;
+                    path.Add(nearestStation);
+                    visitedStation.Add(nearestStation);
+                    currentStation = nearestStation;
+                }
             }
             return path;
         }
