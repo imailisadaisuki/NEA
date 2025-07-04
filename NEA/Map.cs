@@ -36,4 +36,9 @@ namespace NEA
             return lines;
         }
     }
+    public class DecomposedConnection
+    {
+    public Station startStation, endStation;
+    public int estimatedTime;
+    public List<string> path = new List<string> ();    }
 }
