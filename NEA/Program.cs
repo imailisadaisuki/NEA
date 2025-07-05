@@ -299,9 +299,17 @@ namespace NEA
 
             return stations;
         }
+        static void ResetStations(Dictionary<string, Station> stations)
+        {
+            foreach (Station station in stations.Values)
+            {
+                station.time2Travel = int.MaxValue;
+                station.previousStation = null;
+                station.visited = false;
+            }
+        }
         static bool IsLineChange(Station current, Connection connection) =>
 current.previousStation != null && !current.getPrevConnectionLine().Contains(connection.line);
-
         static void Dijkstra(Station start)
         {
             PriorityQueue<Station> pq = new PriorityQueue<Station>();
@@ -375,6 +383,174 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 path.Add(current.name + "\n");
                 stops++;
                 current = current.previousStation;
+            }
+            return path;
+        }
+        static double GetCost(Station End) //calculate cost based on Zone number. Source: https://londondrum.com/transport/adult-train-fares.php
+        {
+            int minZone = int.MaxValue;
+            int maxZone = 0;
+            for (Station current = End; current == null; current = current.previousStation)
+            {
+                if (current.zone < minZone) minZone = current.zone;
+                if (current.zone > maxZone) maxZone = current.zone;
+            }
+            switch (minZone)
+            {
+                case 1:
+                    switch (maxZone)
+                    {
+                        case 1: return 2.9;
+                        case 2: return 3.5;
+                        case 3: return 3.8;
+                        case 4: return 4.6;
+                        case 5: return 5.2;
+                        case 6: return 5.8;
+                        case 7: return 6.7;
+                        case 8: return 8.2;
+                        case 9: return 8.3;
+                    }
+                    break;
+                case 2:
+                    switch (maxZone)
+                    {
+                        case 2: return 2.1;
+                        case 3: return 2.3;
+                        case 4: return 3;
+                        case 5: return 3.2;
+                        case 6: return 3.6;
+                        case 7: return 4.9;
+                        case 8: return 5.6;
+                        case 9: return 8.3;
+                    }
+                    break;
+                case 3:
+                    switch (maxZone)
+                    {
+                        case 3: return 2.1;
+                        case 4: return 2.3;
+                        case 5: return 3;
+                        case 6: return 3.2;
+                        case 7: return 4;
+                        case 8: return 4.8;
+                        case 9: return 8.3;
+                    }
+                    break;
+                case 4:
+                    switch (maxZone)
+                    {
+                        case 4: return 2.1;
+                        case 5: return 2.3;
+                        case 6: return 3;
+                        case 7: return 3.2;
+                        case 8: return 4;
+                        case 9: return 4.1;
+                    }
+                    break;
+                case 5:
+                    switch (maxZone)
+                    {
+                        case 5: return 2.1;
+                        case 6: return 2.3;
+                        case 7: return 2.9;
+                        case 8: return 3.2;
+                        case 9: return 3.5;
+                    }
+                    break;
+                case 6:
+                    switch (maxZone)
+                    {
+                        case 6: return 2.1;
+                        case 7: return 2.2;
+                        case 8: return 2.9;
+                        case 9: return 3;
+                    }
+                    break;
+                case 7:
+                    switch (maxZone)
+                    {
+                        case 7: return 2;
+                        case 8: return 2.2;
+                        case 9: return 2.3;
+                    }
+                    break;
+                case 8:
+                    switch (maxZone)
+                    {
+                        case 8: return 2;
+                        case 9: return 2.2;
+                    }
+                    break;
+            }
+            return 0;
+        }
+        static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations)
+        {
+            List<DecomposedConnection> decomposedConnections = new List<DecomposedConnection>();
+            foreach (Station station in targetStations)
+            {
+                ResetStations(stations);
+                Dijkstra(station);
+                foreach (Station target in targetStations)
+                {
+                    if (target == station) continue; // skip the same station
+                    decomposedConnections.Add(new DecomposedConnection(
+                        station,
+                        target,
+                        target.time2Travel,
+                        GetCost(target),
+                        GetShortestPath(target)));
+                }
+            }
+            return decomposedConnections;
+        }
+        static void DisplayFullPath(List<Station> path, Dictionary<string, Station> stations)
+        {
+            int totalTime = 0;
+            for (int i = 0; i < path.Count-1; i++)
+            {
+                Station current = path[i];
+                Station next = path[i + 1];
+                ResetStations(stations);
+                Dijkstra(current);
+                totalTime += next.time2Travel;
+                Console.WriteLine($"Route from {current.name} to {next.name}:");
+                GetShortestPath(next).ForEach(Console.Write);
+                Console.WriteLine($"\nSubpath estimated time = {next.time2Travel} minutes");
+            }
+            Console.WriteLine($"Total estimated time: {totalTime}");
+        }
+        static List<Station> NearestNeighbourTSP(List<Station> targetStations, Station startStation)
+        {
+            int totalTime = 0;
+            List<Station> visitedStation = new List<Station>();
+            List<Station> path = new List<Station>();
+            Station currentStation = startStation;
+            path.Add(currentStation);
+            visitedStation.Add(currentStation);
+            while (visitedStation.Count != targetStations.Count)
+            {
+                Station nearestStation = null;
+                int minTime = int.MaxValue;
+                foreach (Station station in targetStations)
+                {
+                    if (visitedStation.Contains(station)) continue; // skip visited stations
+                    foreach (Connection connection in currentStation.Connections)
+                    {
+                        if (connection.station == station && connection.time < minTime)
+                        {
+                            minTime = connection.time;
+                            nearestStation = station;
+                        }
+                    }
+                }
+                if (nearestStation != null)
+                {
+                    totalTime += minTime;
+                    path.Add(nearestStation);
+                    visitedStation.Add(nearestStation);
+                    currentStation = nearestStation;
+                }
             }
             return path;
         }
