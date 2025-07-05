@@ -482,7 +482,27 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                     }
                     break;
             }
-            return -1;
+            return 0;
+        }
+        static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations)
+        {
+            List<DecomposedConnection> decomposedConnections = new List<DecomposedConnection>();
+            foreach (Station station in targetStations)
+            {
+                ResetStations(stations);
+                Dijkstra(station);
+                foreach (Station target in targetStations)
+                {
+                    if (target == station) continue; // skip the same station
+                    decomposedConnections.Add(new DecomposedConnection(
+                        station,
+                        target,
+                        target.time2Travel,
+                        GetCost(target),
+                        GetShortestPath(target)));
+                }
+            }
+            return decomposedConnections;
         }
         static void DisplayFullPath(List<Station> path, Dictionary<string, Station> stations)
         {
