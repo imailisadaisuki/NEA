@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NEA
 {
@@ -504,23 +505,27 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             }
             return decomposedConnections;
         }
-        static void DisplayFullPath(List<Station> path, Dictionary<string, Station> stations)
+        static void DisplayFullPath(List<Station> path, List<DecomposedConnection> connections)
         {
             int totalTime = 0;
             for (int i = 0; i < path.Count-1; i++)
             {
-                Station current = path[i];
-                Station next = path[i + 1];
-                ResetStations(stations);
-                Dijkstra(current);
-                totalTime += next.time2Travel;
-                Console.WriteLine($"Route from {current.name} to {next.name}:");
-                GetShortestPath(next).ForEach(Console.Write);
-                Console.WriteLine($"\nSubpath estimated time = {next.time2Travel} minutes");
+                foreach(DecomposedConnection connection in connections)
+                {
+                    if (connection.startStation == path[i] && connection.endStation == path[i + 1])
+                    {
+                        totalTime += connection.estimatedTime;
+                        Console.WriteLine($"Route from {path[i].name} to {path[i+1].name}:");
+                        connection.path.ForEach(Console.Write);
+                        Console.WriteLine($"\nSubpath estimated time = {connection.estimatedTime} minutes");
+                        Console.WriteLine(new string('-', Console.WindowWidth));
+                        break;
+                    }
+                }
             }
             Console.WriteLine($"Total estimated time: {totalTime}");
         }
-        static List<Station> NearestNeighbourTSP(List<Station> targetStations, Station startStation)
+        static List<Station> NearestNeighbourTSP(List<Station> targetStations, List<DecomposedConnection> decomposedConnections, Station startStation)
         {
             int totalTime = 0;
             List<Station> visitedStation = new List<Station>();
@@ -535,13 +540,13 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                 foreach (Station station in targetStations)
                 {
                     if (visitedStation.Contains(station)) continue; // skip visited stations
-                    foreach (Connection connection in currentStation.Connections)
+                    foreach (DecomposedConnection connection in decomposedConnections)
                     {
-                        if (connection.station == station && connection.time < minTime)
+                        if (connection.startStation == currentStation && connection.estimatedTime < minTime)
                         {
-                            minTime = connection.time;
-                            nearestStation = station;
-                        }
+                            nearestStation = connection.endStation;
+                            minTime = connection.estimatedTime;
+                        } 
                     }
                 }
                 if (nearestStation != null)
@@ -557,40 +562,14 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         static void Main(string[] args)
         {
             Dictionary<string, Station> stations = Zone1Prototype();
-            Station start, end;
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Enter starting station:");
-                    start = stations[Console.ReadLine()];
-                    break;
-                }
-                catch
-                {
-                    Console.Clear();
-                    Console.WriteLine("Invalid station.");
-                }
-            }
-            Console.Clear();
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("Enter destination:");
-                    end = stations[Console.ReadLine()];
-                    break;
-                }
-                catch
-                {
-                    Console.Clear();
-                    Console.WriteLine("Invalid station.");
-                }
-            }
-            Console.Clear();
-            Dijkstra(start);
-            GetShortestPath(end).ForEach(Console.Write);
-            Console.WriteLine($"\nEstimated time = {end.time2Travel} minutes");
+            List<Station> targetStations = new List<Station>();
+            targetStations.Add(stations["Westminster"]);
+            targetStations.Add(stations["Baker Street"]);
+            targetStations.Add(stations["Aldgate"]);
+            targetStations.Add(stations["Earl's Court"]);
+            List<DecomposedConnection> connections = DecomposedPath(targetStations, stations);
+            List<Station> TSPstation = NearestNeighbourTSP(targetStations, connections, stations["Westminster"]);
+            DisplayFullPath(TSPstation, connections);
             Console.ReadLine();
         }
     }
