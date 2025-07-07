@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
@@ -523,7 +524,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                     }
                 }
             }
-            Console.WriteLine($"Total estimated time: {totalTime}");
+            Console.WriteLine($"Total estimated time: {totalTime} minutes");
         }
         static List<Station> NearestNeighbourTSP(List<Station> targetStations, List<DecomposedConnection> decomposedConnections, Station startStation)
         {
@@ -542,25 +543,24 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                     if (visitedStation.Contains(station)) continue; // skip visited stations
                     foreach (DecomposedConnection connection in decomposedConnections)
                     {
-                        if (connection.startStation == currentStation && connection.estimatedTime < minTime)
+                        if (connection.startStation == currentStation && connection.estimatedTime < minTime && !visitedStation.Contains(connection.endStation))
                         {
                             nearestStation = connection.endStation;
                             minTime = connection.estimatedTime;
                         } 
                     }
                 }
-                if (nearestStation != null)
-                {
-                    totalTime += minTime;
-                    path.Add(nearestStation);
-                    visitedStation.Add(nearestStation);
-                    currentStation = nearestStation;
-                }
+                totalTime += minTime;
+                path.Add(nearestStation);
+                visitedStation.Add(nearestStation);
+                currentStation = nearestStation;
             }
             return path;
         }
         static void Main(string[] args)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             Dictionary<string, Station> stations = Zone1Prototype();
             List<Station> targetStations = new List<Station>();
             targetStations.Add(stations["Westminster"]);
@@ -570,6 +570,8 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             List<DecomposedConnection> connections = DecomposedPath(targetStations, stations);
             List<Station> TSPstation = NearestNeighbourTSP(targetStations, connections, stations["Westminster"]);
             DisplayFullPath(TSPstation, connections);
+            stopwatch.Stop();
+            Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
             Console.ReadLine();
         }
     }
