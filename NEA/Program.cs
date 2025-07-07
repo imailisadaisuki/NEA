@@ -13,6 +13,16 @@ namespace NEA
 {
     internal class Program
     {
+        public static readonly double[,] zoneCost = { //row refers to end zone, column represents start zone. Source: https://londondrum.com/transport/adult-train-fares.php
+            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3 }, 
+            { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3 },
+            { 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.8, 8.3 },
+            { 0, 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.1 },
+            { 0, 0, 0, 0, 2.1, 2.3, 2.9, 3.2, 3.5 },
+            { 0, 0, 0, 0, 0, 2.1, 2.2, 2.9, 3 },
+            { 0, 0, 0, 0, 0, 0, 2, 2.2, 2.3 },
+            { 0, 0, 0, 0, 0, 0, 0, 2, 2.2 }
+        };
         static void AddConnection(Station a, Station b, int time, string line)
         {
             a.Connections.Add(new Connection(b, time, line));
@@ -388,105 +398,18 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             }
             return path;
         }
-        static double GetCost(Station End) //calculate cost based on Zone number. Source: https://londondrum.com/transport/adult-train-fares.php
+        static double GetCost(Station End) //calculate cost based on Zone number
         {
             int minZone = int.MaxValue;
-            int maxZone = 0;
-            for (Station current = End; current == null; current = current.previousStation)
+            int maxZone = -1;
+            for (Station current = End; current != null; current = current.previousStation)
             {
                 if (current.zone < minZone) minZone = current.zone;
                 if (current.zone > maxZone) maxZone = current.zone;
             }
-            switch (minZone)
-            {
-                case 1:
-                    switch (maxZone)
-                    {
-                        case 1: return 2.9;
-                        case 2: return 3.5;
-                        case 3: return 3.8;
-                        case 4: return 4.6;
-                        case 5: return 5.2;
-                        case 6: return 5.8;
-                        case 7: return 6.7;
-                        case 8: return 8.2;
-                        case 9: return 8.3;
-                    }
-                    break;
-                case 2:
-                    switch (maxZone)
-                    {
-                        case 2: return 2.1;
-                        case 3: return 2.3;
-                        case 4: return 3;
-                        case 5: return 3.2;
-                        case 6: return 3.6;
-                        case 7: return 4.9;
-                        case 8: return 5.6;
-                        case 9: return 8.3;
-                    }
-                    break;
-                case 3:
-                    switch (maxZone)
-                    {
-                        case 3: return 2.1;
-                        case 4: return 2.3;
-                        case 5: return 3;
-                        case 6: return 3.2;
-                        case 7: return 4;
-                        case 8: return 4.8;
-                        case 9: return 8.3;
-                    }
-                    break;
-                case 4:
-                    switch (maxZone)
-                    {
-                        case 4: return 2.1;
-                        case 5: return 2.3;
-                        case 6: return 3;
-                        case 7: return 3.2;
-                        case 8: return 4;
-                        case 9: return 4.1;
-                    }
-                    break;
-                case 5:
-                    switch (maxZone)
-                    {
-                        case 5: return 2.1;
-                        case 6: return 2.3;
-                        case 7: return 2.9;
-                        case 8: return 3.2;
-                        case 9: return 3.5;
-                    }
-                    break;
-                case 6:
-                    switch (maxZone)
-                    {
-                        case 6: return 2.1;
-                        case 7: return 2.2;
-                        case 8: return 2.9;
-                        case 9: return 3;
-                    }
-                    break;
-                case 7:
-                    switch (maxZone)
-                    {
-                        case 7: return 2;
-                        case 8: return 2.2;
-                        case 9: return 2.3;
-                    }
-                    break;
-                case 8:
-                    switch (maxZone)
-                    {
-                        case 8: return 2;
-                        case 9: return 2.2;
-                    }
-                    break;
-            }
-            return 0;
+            return zoneCost[minZone-1, maxZone-1];
         }
-        static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations)
+        static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations) //Decompose the full graph into K(n)
         {
             List<DecomposedConnection> decomposedConnections = new List<DecomposedConnection>();
             foreach (Station station in targetStations)
@@ -509,6 +432,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         static void DisplayFullPath(List<Station> path, List<DecomposedConnection> connections)
         {
             int totalTime = 0;
+            double totalCost = 0;
             for (int i = 0; i < path.Count-1; i++)
             {
                 foreach(DecomposedConnection connection in connections)
@@ -516,22 +440,25 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                     if (connection.startStation == path[i] && connection.endStation == path[i + 1])
                     {
                         totalTime += connection.estimatedTime;
+                        totalCost += connection.cost;
                         Console.WriteLine($"Route from {path[i].name} to {path[i+1].name}:");
                         connection.path.ForEach(Console.Write);
-                        Console.WriteLine($"\nSubpath estimated time = {connection.estimatedTime} minutes");
+                        Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
+                        Console.WriteLine($"Cost of subpath: £{connection.cost}");
                         Console.WriteLine(new string('-', Console.WindowWidth));
                         break;
                     }
                 }
             }
             Console.WriteLine($"Total estimated time: {totalTime} minutes");
+            Console.WriteLine($"Total cost: £{totalCost}");
         }
-        static List<Station> NearestNeighbourTSP(List<Station> targetStations, List<DecomposedConnection> decomposedConnections, Station startStation)
+        static List<Station> NearestNeighbourTSP(List<Station> targetStations, List<DecomposedConnection> decomposedConnections)
         {
             int totalTime = 0;
             List<Station> visitedStation = new List<Station>();
             List<Station> path = new List<Station>();
-            Station currentStation = startStation;
+            Station currentStation = targetStations[0];
             path.Add(currentStation);
             visitedStation.Add(currentStation);
             while (visitedStation.Count != targetStations.Count)
@@ -557,6 +484,16 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             }
             return path;
         }
+        static void TwoOptSwap(List<Station> path, List<DecomposedConnection> connections) 
+        {
+            for (int i = 0; i < path.Count; i++)
+            {
+                for (int j = i; j < path.Count; j++)
+                {
+
+                }
+            }
+        }
         static void Main(string[] args)
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -568,7 +505,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             targetStations.Add(stations["Aldgate"]);
             targetStations.Add(stations["Earl's Court"]);
             List<DecomposedConnection> connections = DecomposedPath(targetStations, stations);
-            List<Station> TSPstation = NearestNeighbourTSP(targetStations, connections, stations["Westminster"]);
+            List<Station> TSPstation = NearestNeighbourTSP(targetStations, connections);
             DisplayFullPath(TSPstation, connections);
             stopwatch.Stop();
             Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
