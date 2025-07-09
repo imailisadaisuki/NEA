@@ -11,7 +11,7 @@ namespace NEA
     {
         public const string filePath = "underground.json"; // Path to the JSON file containing station data
         public static readonly double[,] zoneCost = { //row refers to end zone, column represents start zone. Source: https://londondrum.com/transport/adult-train-fares.php
-            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3 }, 
+            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3 },
             { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3 },
             { 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.8, 8.3 },
             { 0, 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.1 },
@@ -109,14 +109,15 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         }
         static double GetCost(Station End) //calculate cost based on Zone number
         {
-            int minZone = int.MaxValue;
-            int maxZone = -1;
+            double minZone = double.MaxValue;
+            double maxZone = -1;
             for (Station current = End; current != null; current = current.previousStation)
             {
-                if (current.zone < minZone) minZone = current.zone;
-                if (current.zone > maxZone) maxZone = current.zone;
+                if (Math.Ceiling(current.zone) < minZone) minZone = current.zone; //there are some station which is between 2 zones, represented by a decimal number.
+                                                                                  //e.g. 1.5 represents between station between zone 1 and 2
+                if (Math.Floor(current.zone) > maxZone) maxZone = current.zone;
             }
-            return zoneCost[minZone-1, maxZone-1];
+            return zoneCost[(int)minZone - 1, (int)maxZone - 1];
         }
         static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations) //Decompose the full graph into K(n)
         {
@@ -142,15 +143,15 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         {
             int totalTime = 0;
             double totalCost = 0;
-            for (int i = 0; i < path.Count-1; i++)
+            for (int i = 0; i < path.Count - 1; i++)
             {
-                foreach(DecomposedConnection connection in connections)
+                foreach (DecomposedConnection connection in connections)
                 {
                     if (connection.startStation == path[i] && connection.endStation == path[i + 1])
                     {
                         totalTime += connection.estimatedTime;
                         totalCost += connection.cost;
-                        Console.WriteLine($"Route from {path[i].name} to {path[i+1].name}:");
+                        Console.WriteLine($"Route from {path[i].name} to {path[i + 1].name}:");
                         connection.path.ForEach(Console.Write);
                         Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
                         Console.WriteLine($"Cost of subpath: £{connection.cost}");
@@ -183,7 +184,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
                         {
                             nearestStation = connection.endStation;
                             minTime = connection.estimatedTime;
-                        } 
+                        }
                     }
                 }
                 totalTime += minTime;
@@ -204,12 +205,16 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             targetStations.Add(stations["Aldgate"]);
             targetStations.Add(stations["Earl's Court"]);
             List<DecomposedConnection> connections = DecomposedPath(targetStations, stations);
-            List<Station> TSPstation = NearestNeighbourTSP(targetStations, connections);
-            DisplayFullPath(TSPstation, connections);
+            Console.WriteLine("Manually ordered:");
+            DisplayFullPath(targetStations, connections);
+            Console.WriteLine(new string('-', Console.WindowWidth));
+            targetStations = NearestNeighbourTSP(targetStations, connections);
+            Console.WriteLine("Nearest Neighbour TSP:");
+            DisplayFullPath(targetStations, connections);
             stopwatch.Stop();
             Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
             Console.ReadLine();
-            
         }
     }
 }
+
