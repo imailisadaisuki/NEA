@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace NEA
 {
@@ -215,6 +217,49 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
             Console.ReadLine();
         }
+
+        //temp
+        static void AddConnection(Station a, Station b, int time, string line)
+        {
+            a.Connections.Add(new Connection(b, time, line));
+            b.Connections.Add(new Connection(a, time, line));
+        }
+        static void AddStation(Dictionary<string, Station> stations, string name, int zone) => stations.Add(name, new Station(name, zone));
+        static Dictionary<string, Station> Zone1Prototype()
+        {
+            Dictionary<string, Station> stations = new Dictionary<string, Station>();
+            AddStation(stations, "Aldgate", 1);
+            AddStation(stations, "Aldgate East", 1);
+            AddStation(stations, "Angel", 1);
+            AddStation(stations, "Baker Street", 1);
+            AddStation(stations, "Bank", 1);
+            AddStation(stations, "Barbican", 1);
+            AddStation(stations, "Battersea Power Station", 1);
+            
+            return stations;
+        }
+        static void convertToJSON(Dictionary<string, Station> stations, string filePath)
+        {
+            List<StationJson> stationJsonList = new List<StationJson>();
+            foreach (var station in stations.Values)
+            {
+                StationJson stationJson = new StationJson
+                {
+                    name = station.name,
+                    zone = (float)station.zone,
+                    connections = station.Connections.Select(c => new ConnectionJson
+                    {
+                        station = c.station.name,
+                        time = c.time,
+                        line = c.line
+                    }).ToList()
+                };
+                stationJsonList.Add(stationJson);
+            }
+            string json = JsonSerializer.Serialize(stationJsonList, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(json);
+        }
     }
+
 }
 

@@ -14,7 +14,7 @@ namespace NEA
         [JsonPropertyName("Station")]
         public string name { get; set; }
         [JsonPropertyName("Zone")]
-        public float zone { get; set; }
+        public double zone { get; set; }
         [JsonPropertyName("Connections")]
         public List<ConnectionJson> connections { get; set; }
     }
