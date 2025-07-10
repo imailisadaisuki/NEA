@@ -17,12 +17,12 @@ namespace NEA
     public class Station 
     {
         public string name { get; set; }
-        public int zone { get; set; }
+        public double zone { get; set; }
         public List<Connection> Connections = new List<Connection>();
         public int time2Travel = int.MaxValue;
         public Station previousStation = null;
         public bool visited = false;
-        public Station (string name, int zone) => (this.name, this.zone) = (name, zone);
+        public Station (string name, double zone) => (this.name, this.zone) = (name, zone);
         public List<string> getPrevConnectionLine()
         {
             List<string> lines = new List<string>();
