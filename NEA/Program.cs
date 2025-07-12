@@ -238,6 +238,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Battersea Power Station", 1);
 
             return stations;
+            return stations;
         }
         static void convertToJSON(Dictionary<string, Station> stations, string filePath)
         {
@@ -263,3 +264,4 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
     }
 
 }
+
