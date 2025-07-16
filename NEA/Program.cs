@@ -13,14 +13,16 @@ namespace NEA
     {
         public const string filePath = "underground.json"; // Path to the JSON file containing station data
         public static readonly double[,] zoneCost = { //row refers to end zone, column represents start zone. Source: https://londondrum.com/transport/adult-train-fares.php
-            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3 },
-            { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3 },
-            { 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.8, 8.3 },
-            { 0, 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.1 },
-            { 0, 0, 0, 0, 2.1, 2.3, 2.9, 3.2, 3.5 },
-            { 0, 0, 0, 0, 0, 2.1, 2.2, 2.9, 3 },
-            { 0, 0, 0, 0, 0, 0, 2, 2.2, 2.3 },
-            { 0, 0, 0, 0, 0, 0, 0, 2, 2.2 }
+            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3, 12.8 },
+            { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3, 7.6 },
+            { 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.8, 8.3, 7.5 },
+            { 0, 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.1, 7.4 },
+            { 0, 0, 0, 0, 2.1, 2.3, 2.9, 3.2, 3.5, 7.3 },
+            { 0, 0, 0, 0, 0, 2.1, 2.2, 2.9, 3, 0 },
+            { 0, 0, 0, 0, 0, 0, 2, 2.2, 2.3, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 2, 2.2, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
         };
         static void ResetStations(Dictionary<string, Station> stations)
         {
