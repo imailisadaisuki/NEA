@@ -245,12 +245,11 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Chancery Lane", 1);
             AddStation(stations, "Charing Cross", 1);
             AddStation(stations, "Covent Garden", 1);
-            AddStation(stations, "Earl's Court", 1.5); //Also Zone 2
-            AddStation(stations, "Edgware Road", 1);
+            AddStation(stations, "Earl's Court", 1.5);
             AddStation(stations, "Edgware Road (Bakerloo)", 1);
             AddStation(stations, "Edgware Road (Circle and Hammersmith & City)", 1);
             AddStation(stations, "Edgware Road (Circle Terminal)", 1);
-            AddStation(stations, "Elephant & Castle", 1/5); //Also Zone 2
+            AddStation(stations, "Elephant & Castle", 1.5); 
             AddStation(stations, "Embankment", 1);
             AddStation(stations, "Euston", 1);
             AddStation(stations, "Euston Square", 1);
@@ -262,7 +261,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "High Street Kensington", 1);
             AddStation(stations, "Holborn", 1);
             AddStation(stations, "Hyde Park Corner", 1);
-            AddStation(stations, "Kennington", 1.5); //Also Zone 2
+            AddStation(stations, "Kennington", 1.5);
             AddStation(stations, "King's Cross & St Pancras International", 1);
             AddStation(stations, "Knightsbridge", 1);
             AddStation(stations, "Lambeth North", 1);
@@ -276,10 +275,9 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Monument", 1);
             AddStation(stations, "Moorgate", 1);
             AddStation(stations, "Nine Elms", 1);
-            AddStation(stations, "Notting Hill Gate", 1.5); //Also Zone 2
+            AddStation(stations, "Notting Hill Gate", 1.5);
             AddStation(stations, "Old Street", 1);
             AddStation(stations, "Oxford Circus", 1);
-            AddStation(stations, "Paddington", 1);
             AddStation(stations, "Paddington (Bakerloo, Circle and District)", 1);
             AddStation(stations, "Paddington (Circle and Hammersmith & City)", 1);
             AddStation(stations, "Piccadilly Circus", 1);
@@ -295,8 +293,8 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Temple", 1);
             AddStation(stations, "Tottenham Court Road", 1);
             AddStation(stations, "Tower Hill", 1);
-            AddStation(stations, "Tower Gateway", 1); //DLR
-            AddStation(stations, "Vauxhall", 1.5); //Also Zone 2
+            AddStation(stations, "Tower Gateway", 1);
+            AddStation(stations, "Vauxhall", 1.5);
             AddStation(stations, "Victoria", 1);
             AddStation(stations, "Warren Street", 1);
             AddStation(stations, "Waterloo", 1);
@@ -332,7 +330,6 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Camden Road", 2);
             AddStation(stations, "Camden Town", 2);
             AddStation(stations, "Canada Water", 2);
-            AddStation(stations, "Canary Wharf", 2);
             AddStation(stations, "Canary Wharf (Jubilee and DLR)", 2);
             AddStation(stations, "Canary Wharf (Elizabeth)", 2);
             AddStation(stations, "Canning Town", 2.5);
@@ -366,7 +363,6 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Hackney Downs", 2);
             AddStation(stations, "Hackney Wick", 2);
             AddStation(stations, "Haggerston", 2);
-            AddStation(stations, "Hammersmith", 2);
             AddStation(stations, "Hammersmith (Circle and Hammersmith & City)", 2);
             AddStation(stations, "Hammersmith (Piccadilly and District)", 2);
             AddStation(stations, "Hampstead", 2.5);
@@ -412,11 +408,9 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Rectory Road", 2);
             AddStation(stations, "Rotherhithe", 2.5);
             AddStation(stations, "Royal Oak", 2);
-            AddStation(stations, "Shadwell", 2.5);
-            AddStation(stations, "Shadwell (DLR)", 2);
+            AddStation(stations, "Shadwell (Underground)", 2);
             AddStation(stations, "Shadwell (Overground)", 2);
-            AddStation(stations, "Shepherd's Bush", 2);
-            AddStation(stations, "Shepherd's Bush (Central)", 2);
+            AddStation(stations, "Shepherd's Bush (Underground)", 2);
             AddStation(stations, "Shepherd's Bush (Overground)", 2);
             AddStation(stations, "Shepherd's Bush Market", 2);
             AddStation(stations, "South Hampstead", 2);
@@ -439,8 +433,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Warwick Avenue", 2);
             AddStation(stations, "West Brompton", 2);
             AddStation(stations, "West Ham", 2.5);
-            AddStation(stations, "West Hampstead", 2);
-            AddStation(stations, "West Hampstead (Jubilee)", 2);
+            AddStation(stations, "West Hampstead (Underground)", 2);
             AddStation(stations, "West Hampstead (Overground)", 2);
             AddStation(stations, "West India Quay", 2);
             AddStation(stations, "West Kensington", 2);
@@ -528,6 +521,141 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Woodgreen", 3);
             AddStation(stations, "Woodgrange Park", 3.5);
 
+            AddStation(stations, "Abbey Wood", 4);
+            AddStation(stations, "Alperton", 4);
+            AddStation(stations, "Arnos Grove", 4);
+            AddStation(stations, "Barking Riverside", 4);
+            AddStation(stations, "Barkingside", 4);
+            AddStation(stations, "Boston Manor", 4);
+            AddStation(stations, "Burnt Oak", 4);
+            AddStation(stations, "Chigwell", 4);
+            AddStation(stations, "Colindale", 4);
+            AddStation(stations, "East Ham", 4);
+            AddStation(stations, "Edmonton Green", 4);
+            AddStation(stations, "Fairlop", 4);
+            AddStation(stations, "Falconwood", 4);
+            AddStation(stations, "Finchley Central", 4);
+            AddStation(stations, "Gants Hill", 4);
+            AddStation(stations, "Goodmayes", 4);
+            AddStation(stations, "Grange Hill", 4);
+            AddStation(stations, "Greenford", 4);
+            AddStation(stations, "Hainault", 4);
+            AddStation(stations, "Highams Park", 4);
+            AddStation(stations, "Hounslow Central", 4);
+            AddStation(stations, "Hounslow East", 4);
+            AddStation(stations, "Ilford", 4);
+            AddStation(stations, "Kenton", 4);
+            AddStation(stations, "Kingsbury", 4);
+            AddStation(stations, "Mill Hill East", 4);
+            AddStation(stations, "Morden", 4);
+            AddStation(stations, "Newbury Park", 4);
+            AddStation(stations, "North Wembley", 4);
+            AddStation(stations, "Northwick Park", 4);
+            AddStation(stations, "Norwood Junction", 4);
+            AddStation(stations, "Osterley", 4);
+            AddStation(stations, "Penge West", 4);
+            AddStation(stations, "Perivale", 4);
+            AddStation(stations, "Preston Road", 4);
+            AddStation(stations, "Queensbury", 4);
+            AddStation(stations, "Ravensbourne", 4);
+            AddStation(stations, "Redbridge", 4);
+            AddStation(stations, "Richmond", 4);
+            AddStation(stations, "Roding Valley", 4);
+            AddStation(stations, "Seven Kings", 4);
+            AddStation(stations, "Silver Street", 4);
+            AddStation(stations, "Snaresbrook", 4);
+            AddStation(stations, "South Greenford", 4);
+            AddStation(stations, "South Kenton", 4);
+            AddStation(stations, "South Woodford", 4);
+            AddStation(stations, "Southall", 4);
+            AddStation(stations, "Southgate", 4);
+            AddStation(stations, "Sudbury Hill", 4);
+            AddStation(stations, "Sudbury Town", 4);
+            AddStation(stations, "Totteridge & Whetstone", 4);
+            AddStation(stations, "Upney", 4);
+            AddStation(stations, "Wanstead", 4);
+            AddStation(stations, "Wembley Central", 4);
+            AddStation(stations, "Wembley Park", 4);
+            AddStation(stations, "West Finchley", 4);
+            AddStation(stations, "Wood Street", 4);
+            AddStation(stations, "Woodford", 4);
+            AddStation(stations, "Woodside Park", 4);
+            AddStation(stations, "Woolwich", 4);
+            AddStation(stations, "Woolwich Arsenal", 4);
+
+            AddStation(stations, "Becontree", 5);
+            AddStation(stations, "Buckhurst Hill", 5);
+            AddStation(stations, "Busg Hill Park", 5);
+            AddStation(stations, "Chadwell Heath", 5);
+            AddStation(stations, "Chingford", 5);
+            AddStation(stations, "Cockfosters", 5);
+            AddStation(stations, "Dagenham East", 5);
+            AddStation(stations, "Dagenham Heathway", 5);
+            AddStation(stations, "Eastcote", 5);
+            AddStation(stations, "Edgware", 5);
+            AddStation(stations, "Enfield Town", 5);
+            AddStation(stations, "Harrow & Wealdstone", 5);
+            AddStation(stations, "Harrow-on-the-Hill", 5);
+            AddStation(stations, "Hatton Cross", 5.5);
+            AddStation(stations, "Hayes & Harlington", 5);
+            AddStation(stations, "Headstone Lane", 5);
+            AddStation(stations, "High Barnet", 5);
+            AddStation(stations, "Hounslow West", 5);
+            AddStation(stations, "North Harrow", 5);
+            AddStation(stations, "Northolt", 5);
+            AddStation(stations, "Oakwood", 5);
+            AddStation(stations, "Pinner", 5);
+            AddStation(stations, "Rayners Lane", 5);
+            AddStation(stations, "Ruislip Gardens", 5);
+            AddStation(stations, "South Harrow", 5);
+            AddStation(stations, "Southbury", 5);
+            AddStation(stations, "Stanmore", 5);
+            AddStation(stations, "West Croydon", 5);
+            AddStation(stations, "West Harrow", 5);
+
+            AddStation(stations, "Debden", 6);
+            AddStation(stations, "Elm Park", 6);
+            AddStation(stations, "Emerson Park", 6);
+            AddStation(stations, "Epping", 6);
+            AddStation(stations, "Gidea Park", 6);
+            AddStation(stations, "Harold Wood", 6);
+            AddStation(stations, "Hatch End", 6);
+            AddStation(stations, "Hatton Cross", 6);
+            AddStation(stations, "Heathrow Terminals 2 & 3 (Elizabeth)", 10); //Special fares applied
+            AddStation(stations, "Heathrow Terminals 2 & 3 (Piccadilly)", 6);
+            AddStation(stations, "Heathrow Terminal 4 (Elizabeth)", 10); //Special fares applied
+            AddStation(stations, "Heathrow Terminal 4 (Piccadilly)", 6);
+            AddStation(stations, "Heathrow Terminal 4 (Elizabeth)", 10); //Special fares applied
+            AddStation(stations, "Heathrow Terminal 5 (Piccadilly)", 6);
+            AddStation(stations, "Hillingdon", 6);
+            AddStation(stations, "Hornchurch", 6);
+            AddStation(stations, "Ickenham", 6);
+            AddStation(stations, "Loughton", 6);
+            AddStation(stations, "Moor Park", 6);
+            AddStation(stations, "Northwood", 6);
+            AddStation(stations, "Northwood Hills", 6);
+            AddStation(stations, "Ruislip", 6);
+            AddStation(stations, "Ruislip Manor", 6);
+            AddStation(stations, "Theydon Bois", 6);
+            AddStation(stations, "Turkey Street", 6);
+            AddStation(stations, "Upminster Bridge", 6);
+            AddStation(stations, "Uxbridge", 6);
+            AddStation(stations, "West Drayton", 6);
+            AddStation(stations, "West Ruislip", 6);
+
+            AddStation(stations, "Carpenders Park", 7);
+            AddStation(stations, "Chorleywood", 7);
+            AddStation(stations, "Croxley", 7);
+            AddStation(stations, "Rickmansworth", 7);
+            AddStation(stations, "Theobalds Grove", 7);
+            AddStation(stations, "Watford", 7);
+            AddStation(stations, "Bushey", 8);
+            AddStation(stations, "Chalfont & Latimer", 8);
+            AddStation(stations, "Cheshunt", 8);
+            AddStation(stations, "Watford High Street", 8);
+            AddStation(stations, "Amersham", 9);
+            AddStation(stations, "Brentwood", 9);
+            AddStation(stations, "Chesham", 9);
             return stations;
         }
         static void convertToJSON(Dictionary<string, Station> stations)
