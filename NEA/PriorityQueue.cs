@@ -10,8 +10,8 @@ namespace NEA
     internal class PriorityQueue<T>
     {
         private List<T> items = new List<T>();
-        private List<int> priorities = new List<int>();
-        public void Enqueue(T item, int priority)
+        private List<double> priorities = new List<double>();
+        public void Enqueue(T item, double priority)
         {
             items.Add(item);
             priorities.Add(priority);

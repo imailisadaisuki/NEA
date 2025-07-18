@@ -24,7 +24,7 @@ namespace NEA
         [JsonPropertyName("Station")]
         public string station { get; set; }
         [JsonPropertyName("Time")]
-        public int time { get; set; }
+        public double time { get; set; }
         [JsonPropertyName("Line")]
         public string line { get; set; }
     }
