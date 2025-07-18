@@ -223,11 +223,6 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
         }
 
         //temp
-        static void AddConnection(Station a, Station b, double timeleft, double timeright, string line)
-        {
-            a.Connections.Add(new Connection(b, timeleft, line));
-            b.Connections.Add(new Connection(a, timeright, line));
-        }
         static void AddStation(Dictionary<string, Station> stations, string name, double zone) => stations.Add(name, new Station(name, zone));
         static Dictionary<string, Station> Zone1Prototype()
         {
@@ -674,157 +669,243 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
 
             //add connections, source: https://tfl.gov.uk/corporate/publications-and-reports/working-timetables
             //adding Bakerloo
-            string line = "Bakerloo (";
-            
+            string line = "Bakerloo (Elephant & Castle direction)";
+            stations["Watford Junction"].Connections.Add(new Connection(stations["Watford High Street"], 3, line));
+            stations["Watford High Street"].Connections.Add(new Connection(stations["Bushey"], 2.5, line));
+            stations["Bushey"].Connections.Add(new Connection(stations["Carpenders Park"], 3, line));
+            stations["Carpenders Park"].Connections.Add(new Connection(stations["Hatch End"], 3, line));
+            stations["Hatch End"].Connections.Add(new Connection(stations["Headstone Lane"], 2, line));
+            stations["Headstone Lane"].Connections.Add(new Connection(stations["Harrow & Wealdstone"], 2.5, line));
+            stations["Harrow & Wealdstone"].Connections.Add(new Connection(stations["Kenton"], 2.5, line));
+            stations["Kenton"].Connections.Add(new Connection(stations["South Kenton"], 2, line));
+            stations["South Kenton"].Connections.Add(new Connection(stations["North Wembley"], 2, line));
+            stations["North Wembley"].Connections.Add(new Connection(stations["Wembley Central"], 2, line));
+            stations["Wembley Central"].Connections.Add(new Connection(stations["Stonebridge Park"], 2.5, line));
+            stations["Stonebridge Park"].Connections.Add(new Connection(stations["Harlesden"], 2.5, line));
+            stations["Harlesden"].Connections.Add(new Connection(stations["Willesden Junction"], 2, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Kensal Green"], 2.5, line));
+            stations["Kensal Green"].Connections.Add(new Connection(stations["Queen's Park"], 3.5, line));
+            stations["Queen's Park"].Connections.Add(new Connection(stations["Kilburn Park"], 1.5, line));
+            stations["Kilburn Park"].Connections.Add(new Connection(stations["Maida Vale"], 2, line));
+            stations["Maida Vale"].Connections.Add(new Connection(stations["Warwick Avenue"], 1.5, line));
+            stations["Warwick Avenue"].Connections.Add(new Connection(stations["Paddington"], 2, line));
+            stations["Paddington"].Connections.Add(new Connection(stations["Edgware Road"], 1.5, line));
+            stations["Edgware Road"].Connections.Add(new Connection(stations["Marylebone"], 1.5, line));
+            stations["Marylebone"].Connections.Add(new Connection(stations["Baker Street"], 1.5, line));
+            stations["Baker Street"].Connections.Add(new Connection(stations["Regent's Park"], 1.5, line));
+            stations["Regent's Park"].Connections.Add(new Connection(stations["Oxford Circus"], 2.5, line));
+            stations["Oxford Circus"].Connections.Add(new Connection(stations["Piccadilly Circus"], 2, line));
+            stations["Piccadilly Circus"].Connections.Add(new Connection(stations["Charing Cross"], 1.5, line));
+            stations["Charing Cross"].Connections.Add(new Connection(stations["Embankment"], 1, line));
+            stations["Embankment"].Connections.Add(new Connection(stations["Waterloo"], 2, line));
+            stations["Waterloo"].Connections.Add(new Connection(stations["Lambeth North"], 1.5, line));
+            stations["Lambeth North"].Connections.Add(new Connection(stations["Elephant & Castle"], 3, line));
+
+            line = "Bakerloo (Watford Junction direction)";
+            stations["Elephant & Castle"].Connections.Add(new Connection(stations["Lambeth North"], 2, line));
+            stations["Lambeth North"].Connections.Add(new Connection(stations["Waterloo"], 2, line));
+            stations["Waterloo"].Connections.Add(new Connection(stations["Embankment"], 1.5, line));
+            stations["Embankment"].Connections.Add(new Connection(stations["Charing Cross"], 1, line));
+            stations["Charing Cross"].Connections.Add(new Connection(stations["Piccadilly Circus"], 2, line));
+            stations["Piccadilly Circus"].Connections.Add(new Connection(stations["Oxford Circus"], 2, line));
+            stations["Oxford Circus"].Connections.Add(new Connection(stations["Regent's Park"], 2, line));
+            stations["Regent's Park"].Connections.Add(new Connection(stations["Baker Street"], 2, line));
+            stations["Baker Street"].Connections.Add(new Connection(stations["Marylebone"], 1, line));
+            stations["Marylebone"].Connections.Add(new Connection(stations["Edgware Road"], 1, line));
+            stations["Edgware Road"].Connections.Add(new Connection(stations["Paddington"], 2, line));
+            stations["Paddington"].Connections.Add(new Connection(stations["Warwick Avenue"], 2, line));
+            stations["Warwick Avenue"].Connections.Add(new Connection(stations["Maida Vale"], 1.5, line));
+            stations["Maida Vale"].Connections.Add(new Connection(stations["Kilburn Park"], 2, line));
+            stations["Kilburn Park"].Connections.Add(new Connection(stations["Queen's Park"], 2.5, line));
+            stations["Queen's Park"].Connections.Add(new Connection(stations["Kensal Green"], 3, line));
+            stations["Kensal Green"].Connections.Add(new Connection(stations["Willesden Junction"], 3, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Harlesden"], 2, line));
+            stations["Harlesden"].Connections.Add(new Connection(stations["Stonebridge Park"], 2.5, line));
+            stations["Stonebridge Park"].Connections.Add(new Connection(stations["Wembley Central"], 2.5, line));
+            stations["Wembley Central"].Connections.Add(new Connection(stations["North Wembley"], 2, line));
+            stations["North Wembley"].Connections.Add(new Connection(stations["South Kenton"], 2, line));
+            stations["South Kenton"].Connections.Add(new Connection(stations["Kenton"], 2, line));
+            stations["Kenton"].Connections.Add(new Connection(stations["Harrow & Wealdstone"], 2.5, line));
+            stations["Harrow & Wealdstone"].Connections.Add(new Connection(stations["Headstone Lane"], 3, line));
+            stations["Headstone Lane"].Connections.Add(new Connection(stations["Hatch End"], 2, line));
+            stations["Hatch End"].Connections.Add(new Connection(stations["Carpenders Park"], 3, line));
+            stations["Carpenders Park"].Connections.Add(new Connection(stations["Bushey"], 3, line));
+            stations["Bushey"].Connections.Add(new Connection(stations["Watford High Street"], 2.5, line));
+            stations["Watford High Street"].Connections.Add(new Connection(stations["Watford Junction"], 4, line));
+
 
             //adding Central
+            line = "Central (Epping direction)";
+            stations["West Ruislip"].Connections.Add(new Connection(stations["Ruislip Gardens"], 2.5, line));
+            stations["Ruislip Gardens"].Connections.Add(new Connection(stations["South Ruislip"], 1.5, line));
+            stations["South Ruislip"].Connections.Add(new Connection(stations["Northolt"], 2.75, line));
+            stations["Northolt"].Connections.Add(new Connection(stations["Greenford"], 2.25, line));
+            stations["Greenford"].Connections.Add(new Connection(stations["Perivale"], 2, line));
+            stations["Perivale"].Connections.Add(new Connection(stations["Hanger Lane"], 2.5, line));
+            stations["Hanger Lane"].Connections.Add(new Connection(stations["North Acton"], 3.5, line));
+            stations["North Acton"].Connections.Add(new Connection(stations["East Acton"], 1.75, line));
+            stations["East Acton"].Connections.Add(new Connection(stations["White City"], 3, line));
+            stations["White City"].Connections.Add(new Connection(stations["Shepherd's Bush"], 2.75, line));
+            stations["Shepherd's Bush"].Connections.Add(new Connection(stations["Holland Park"], 1.75, line));
+            stations["Holland Park"].Connections.Add(new Connection(stations["Notting Hill Gate"], 1.5, line));
+            stations["Notting Hill Gate"].Connections.Add(new Connection(stations["Queensway"], 1.5, line));
+            stations["Queensway"].Connections.Add(new Connection(stations["Lancaster Gate"], 1.5, line));
+            stations["Lancaster Gate"].Connections.Add(new Connection(stations["Marble Arch"], 2.5, line));
+            stations["Marble Arch"].Connections.Add(new Connection(stations["Bond Street"], 1.25, line));
+            stations["Bond Street"].Connections.Add(new Connection(stations["Oxford Circus"], 1.5, line));
+            stations["Oxford Circus"].Connections.Add(new Connection(stations["Tottenham Court Road"], 1.5, line));
+            stations["Tottenham Court Road"].Connections.Add(new Connection(stations["Holborn"], 2, line));
+            stations["Holborn"].Connections.Add(new Connection(stations["Chancery Lane"], 1.25, line));
+            stations["Chancery Lane"].Connections.Add(new Connection(stations["St. Paul's"], 1.75, line));
+            stations["St. Paul's"].Connections.Add(new Connection(stations["Bank"], 2, line));
+            stations["Bank"].Connections.Add(new Connection(stations["Liverpool Street"], 2.25, line));
+            stations["Liverpool Street"].Connections.Add(new Connection(stations["Bethnal Green"], 3, line));
+            stations["Bethnal Green"].Connections.Add(new Connection(stations["Mile End"], 2.25, line));
+            stations["Mile End"].Connections.Add(new Connection(stations["Stratford"], 3.5, line));
+            stations["Stratford"].Connections.Add(new Connection(stations["Leyton"], 2.75, line));
+            stations["Leyton"].Connections.Add(new Connection(stations["Leytonstone"], 2.5, line));
+            stations["Leytonstone"].Connections.Add(new Connection(stations["Snaresbrook"], 2.25, line));
+            stations["Snaresbrook"].Connections.Add(new Connection(stations["South Woodford"], 2, line));
+            stations["South Woodford"].Connections.Add(new Connection(stations["Woodford"], 2.25, line));
+            stations["Woodford"].Connections.Add(new Connection(stations["Buckhurst Hill"], 2.5, line));
+            stations["Buckhurst Hill"].Connections.Add(new Connection(stations["Loughton"], 2.5, line));
+            stations["Loughton"].Connections.Add(new Connection(stations["Debden"], 2.5, line));
+            stations["Debden"].Connections.Add(new Connection(stations["Theydon Bois"], 3.5, line));
+            stations["Theydon Bois"].Connections.Add(new Connection(stations["Epping"], 2.75, line));
+
+            line = "Central (Hainault via Newbury Park direction)";
+            stations["Ealing Broadway"].Connections.Add(new Connection(stations["West Acton"], 2.25, line));
+            stations["West Acton"].Connections.Add(new Connection(stations["North Acton"], 3, line));
+            stations["North Acton"].Connections.Add(new Connection(stations["East Acton"], 1.75, line));
+            stations["East Acton"].Connections.Add(new Connection(stations["White City"], 3, line));
+            stations["White City"].Connections.Add(new Connection(stations["Shepherd's Bush"], 2.75, line));
+            stations["Shepherd's Bush"].Connections.Add(new Connection(stations["Holland Park"], 1.75, line));
+            stations["Holland Park"].Connections.Add(new Connection(stations["Notting Hill Gate"], 1.5, line));
+            stations["Notting Hill Gate"].Connections.Add(new Connection(stations["Queensway"], 1.5, line));
+            stations["Queensway"].Connections.Add(new Connection(stations["Lancaster Gate"], 1.5, line));
+            stations["Lancaster Gate"].Connections.Add(new Connection(stations["Marble Arch"], 2.5, line));
+            stations["Marble Arch"].Connections.Add(new Connection(stations["Bond Street"], 1.25, line));
+            stations["Bond Street"].Connections.Add(new Connection(stations["Oxford Circus"], 1.5, line));
+            stations["Oxford Circus"].Connections.Add(new Connection(stations["Tottenham Court Road"], 1.5, line));
+            stations["Tottenham Court Road"].Connections.Add(new Connection(stations["Holborn"], 2, line));
+            stations["Holborn"].Connections.Add(new Connection(stations["Chancery Lane"], 1.25, line));
+            stations["Chancery Lane"].Connections.Add(new Connection(stations["St. Paul's"], 1.75, line));
+            stations["St. Paul's"].Connections.Add(new Connection(stations["Bank"], 2, line));
+            stations["Bank"].Connections.Add(new Connection(stations["Liverpool Street"], 2.25, line));
+            stations["Liverpool Street"].Connections.Add(new Connection(stations["Bethnal Green"], 3, line));
+            stations["Bethnal Green"].Connections.Add(new Connection(stations["Mile End"], 2.25, line));
+            stations["Mile End"].Connections.Add(new Connection(stations["Stratford"], 3.5, line));
+            stations["Stratford"].Connections.Add(new Connection(stations["Leyton"], 2.75, line));
+            stations["Leyton"].Connections.Add(new Connection(stations["Leytonstone"], 2.5, line));
+            stations["Leytonstone"].Connections.Add(new Connection(stations["Wanstead"], 2.25, line));
+            stations["Wanstead"].Connections.Add(new Connection(stations["Redbridge"], 2, line));
+            stations["Redbridge"].Connections.Add(new Connection(stations["Gants Hill"], 2, line));
+            stations["Gants Hill"].Connections.Add(new Connection(stations["Newbury Park"], 3, line));
+            stations["Newbury Park"].Connections.Add(new Connection(stations["Barkingside"], 1.75, line));
+            stations["Barkingside"].Connections.Add(new Connection(stations["Fairlop"], 1.75, line));
+            stations["Fairlop"].Connections.Add(new Connection(stations["Hainault"], 2, line));
+
+            line = "Central (Hainault direction)";
+            stations["Woodford"].Connections.Add(new Connection(stations["Roding Valley"], 2.25, line));
+            stations["Roding Valley"].Connections.Add(new Connection(stations["Chigwell"], 3, line));
+            stations["Chigwell"].Connections.Add(new Connection(stations["Grange Hill"], 2.25, line));
+            stations["Grange Hill"].Connections.Add(new Connection(stations["Hainault"], 2.25, line));
+
+            line = "Central (West Ruislip direction)";
+            stations["Epping"].Connections.Add(new Connection(stations["Theydon Bois"], 2.75, line));
+            stations["Theydon Bois"].Connections.Add(new Connection(stations["Debden"], 3.5, line));
+            stations["Debden"].Connections.Add(new Connection(stations["Loughton"], 3, line));
+            stations["Loughton"].Connections.Add(new Connection(stations["Buckhurst Hill"], 2.5, line));
+            stations["Buckhurst Hill"].Connections.Add(new Connection(stations["Woodford"], 2.75, line));
+            stations["Woodford"].Connections.Add(new Connection(stations["South Woodford"], 2.25, line));
+            stations["South Woodford"].Connections.Add(new Connection(stations["Snaresbrook"], 2, line));
+            stations["Snaresbrook"].Connections.Add(new Connection(stations["Leytonstone"], 2.75, line));
+            stations["Leytonstone"].Connections.Add(new Connection(stations["Leyton"], 2.25, line));
+            stations["Leyton"].Connections.Add(new Connection(stations["Stratford"], 2.75, line));
+            stations["Stratford"].Connections.Add(new Connection(stations["Mile End"], 3.5, line));
+            stations["Mile End"].Connections.Add(new Connection(stations["Bethnal Green"], 2.75, line));
+            stations["Bethnal Green"].Connections.Add(new Connection(stations["Liverpool Street"], 3.25, line));
+            stations["Liverpool Street"].Connections.Add(new Connection(stations["Bank"], 2, line));
+            stations["Bank"].Connections.Add(new Connection(stations["St. Paul's"], 1.75, line));
+            stations["St. Paul's"].Connections.Add(new Connection(stations["Chancery Lane"], 2, line));
+            stations["Chancery Lane"].Connections.Add(new Connection(stations["Holborn"], 1.25, line));
+            stations["Holborn"].Connections.Add(new Connection(stations["Tottenham Court Road"], 1.75, line));
+            stations["Tottenham Court Road"].Connections.Add(new Connection(stations["Oxford Circus"], 1.25, line));
+            stations["Oxford Circus"].Connections.Add(new Connection(stations["Bond Street"], 1.5, line));
+            stations["Bond Street"].Connections.Add(new Connection(stations["Marble Arch"], 1.5, line));
+            stations["Marble Arch"].Connections.Add(new Connection(stations["Lancaster Gate"], 1.75, line));
+            stations["Lancaster Gate"].Connections.Add(new Connection(stations["Queensway"], 2, line));
+            stations["Queensway"].Connections.Add(new Connection(stations["Notting Hill Gate"], 1.5, line));
+            stations["Notting Hill Gate"].Connections.Add(new Connection(stations["Holland Park"], 1.5, line));
+            stations["Holland Park"].Connections.Add(new Connection(stations["Shepherd's Bush"], 1.75, line));
+            stations["Shepherd's Bush"].Connections.Add(new Connection(stations["White City"], 3.25, line));
+            stations["White City"].Connections.Add(new Connection(stations["East Acton"], 2.75, line));
+            stations["East Acton"].Connections.Add(new Connection(stations["North Acton"], 2, line));
+            stations["North Acton"].Connections.Add(new Connection(stations["Hanger Lane"], 3.25, line));
+            stations["Hanger Lane"].Connections.Add(new Connection(stations["Perivale"], 2.5, line));
+            stations["Perivale"].Connections.Add(new Connection(stations["Greenford"], 2.25, line));
+            stations["Greenford"].Connections.Add(new Connection(stations["Northolt"], 2.25, line));
+            stations["Northolt"].Connections.Add(new Connection(stations["South Ruislip"], 2.5, line));
+            stations["South Ruislip"].Connections.Add(new Connection(stations["Ruislip Gardens"], 1.75, line));
+            stations["Ruislip Gardens"].Connections.Add(new Connection(stations["West Ruislip"], 2.5, line));
+
+            line = "Central (Ealing Broadway direction)";
+            stations["Hainault"].Connections.Add(new Connection(stations["Fairlop"], 2, line));
+            stations["Fairlop"].Connections.Add(new Connection(stations["Barkingside"], 1.75, line));
+            stations["Barkingside"].Connections.Add(new Connection(stations["Newbury Park"], 2, line));
+            stations["Newbury Park"].Connections.Add(new Connection(stations["Gants Hill"], 3, line));
+            stations["Gants Hill"].Connections.Add(new Connection(stations["Redbridge"], 1.75, line));
+            stations["Redbridge"].Connections.Add(new Connection(stations["Wanstead"], 2, line));
+            stations["Wanstead"].Connections.Add(new Connection(stations["Leytonstone"], 2.75, line));
+            stations["Leytonstone"].Connections.Add(new Connection(stations["Leyton"], 2.25, line));
+            stations["Leyton"].Connections.Add(new Connection(stations["Stratford"], 2.75, line));
+            stations["Stratford"].Connections.Add(new Connection(stations["Mile End"], 3.5, line));
+            stations["Mile End"].Connections.Add(new Connection(stations["Bethnal Green"], 2.75, line));
+            stations["Bethnal Green"].Connections.Add(new Connection(stations["Liverpool Street"], 3.25, line));
+            stations["Liverpool Street"].Connections.Add(new Connection(stations["Bank"], 2, line));
+            stations["Bank"].Connections.Add(new Connection(stations["St. Paul's"], 1.75, line));
+            stations["St. Paul's"].Connections.Add(new Connection(stations["Chancery Lane"], 2, line));
+            stations["Chancery Lane"].Connections.Add(new Connection(stations["Holborn"], 1.25, line));
+            stations["Holborn"].Connections.Add(new Connection(stations["Tottenham Court Road"], 1.75, line));
+            stations["Tottenham Court Road"].Connections.Add(new Connection(stations["Oxford Circus"], 1.25, line));
+            stations["Oxford Circus"].Connections.Add(new Connection(stations["Bond Street"], 1.5, line));
+            stations["Bond Street"].Connections.Add(new Connection(stations["Marble Arch"], 1.5, line));
+            stations["Marble Arch"].Connections.Add(new Connection(stations["Lancaster Gate"], 1.75, line));
+            stations["Lancaster Gate"].Connections.Add(new Connection(stations["Queensway"], 2, line));
+            stations["Queensway"].Connections.Add(new Connection(stations["Notting Hill Gate"], 1.5, line));
+            stations["Notting Hill Gate"].Connections.Add(new Connection(stations["Holland Park"], 1.5, line));
+            stations["Holland Park"].Connections.Add(new Connection(stations["Shepherd's Bush"], 1.75, line));
+            stations["Shepherd's Bush"].Connections.Add(new Connection(stations["White City"], 3.25, line));
+            stations["White City"].Connections.Add(new Connection(stations["East Acton"], 2.75, line));
+            stations["East Acton"].Connections.Add(new Connection(stations["North Acton"], 2, line));
+            stations["North Acton"].Connections.Add(new Connection(stations["West Acton"], 2.75, line));
+            stations["West Acton"].Connections.Add(new Connection(stations["Ealing Broadway"], 2.75, line));
+
+            line = "Central (Woodford direction)";
+            stations["Hainault"].Connections.Add(new Connection(stations["Grange Hill"], 2, line));
+            stations["Grange Hill"].Connections.Add(new Connection(stations["Chigwell"], 2, line));
+            stations["Chigwell"].Connections.Add(new Connection(stations["Roding Valley"], 3.5, line));
+            stations["Roding Valley"].Connections.Add(new Connection(stations["Woodford"], 2.5, line));
 
             //adding Circle
-            line = "Circle";
-            AddConnection(stations["Edgware Road (Circle Terminal)"], stations["Paddington (Bakerloo, Circle and District)"], 2, line);
-            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Bayswater"], 2, line);
-            AddConnection(stations["Bayswater"], stations["Notting Hill Gate"], 2, line);
-            AddConnection(stations["Notting Hill Gate"], stations["High Street Kensington"], 2, line);
-            AddConnection(stations["High Street Kensington"], stations["Gloucester Road"], 2, line);
-            AddConnection(stations["Gloucester Road"], stations["South Kensington"], 2, line);
-            AddConnection(stations["South Kensington"], stations["Sloane Square"], 2, line);
-            AddConnection(stations["Sloane Square"], stations["Victoria"], 2, line);
-            AddConnection(stations["Victoria"], stations["St. James's Park"], 2, line);
-            AddConnection(stations["St. James's Park"], stations["Westminster"], 2, line);
-            AddConnection(stations["Westminster"], stations["Embankment"], 2, line);
-            AddConnection(stations["Embankment"], stations["Temple"], 2, line);
-            AddConnection(stations["Temple"], stations["Blackfriars"], 1, line);
-            AddConnection(stations["Blackfriars"], stations["Mansion House"], 2, line);
-            AddConnection(stations["Mansion House"], stations["Cannon Street"], 1, line);
-            AddConnection(stations["Cannon Street"], stations["Monument"], 1, line);
-            AddConnection(stations["Monument"], stations["Tower Hill"], 2, line);
-            AddConnection(stations["Tower Hill"], stations["Aldgate"], 2, line);
-            AddConnection(stations["Aldgate"], stations["Liverpool Street"], 2, line);
-            AddConnection(stations["Liverpool Street"], stations["Moorgate"], 2, line);
-            AddConnection(stations["Moorgate"], stations["Barbican"], 2, line);
-            AddConnection(stations["Barbican"], stations["Farringdon"], 1, line);
-            AddConnection(stations["Farringdon"], stations["King's Cross & St Pancras International"], 3, line);
-            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston Square"], 2, line);
-            AddConnection(stations["Euston Square"], stations["Great Portland Street"], 1, line);
-            AddConnection(stations["Great Portland Street"], stations["Baker Street"], 2, line);
-            AddConnection(stations["Baker Street"], stations["Edgware Road (Circle and Hammersmith & City)"], 2, line);
-            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Paddington (Circle and Hammersmith & City)"], 2, line);
 
             //add Hammersmith & City
-            line = "Hammersmith & City";
-            AddConnection(stations["Aldgate East"], stations["Liverpool Street"], 2, line);
-            AddConnection(stations["Liverpool Street"], stations["Moorgate"], 2, line);
-            AddConnection(stations["Moorgate"], stations["Barbican"], 2, line);
-            AddConnection(stations["Barbican"], stations["Farringdon"], 1, line);
-            AddConnection(stations["Farringdon"], stations["King's Cross & St Pancras International"], 3, line);
-            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston Square"], 2, line);
-            AddConnection(stations["Euston Square"], stations["Great Portland Street"], 1, line);
-            AddConnection(stations["Great Portland Street"], stations["Baker Street"], 2, line);
-            AddConnection(stations["Baker Street"], stations["Edgware Road (Circle and Hammersmith & City)"], 2, line);
-            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Paddington (Circle and Hammersmith & City)"], 2, line);
 
             //add District
-            line = "District";
-            AddConnection(stations["Aldgate East"], stations["Tower Hill"], 2, line);
-            AddConnection(stations["Tower Hill"], stations["Monument"], 2, line);
-            AddConnection(stations["Monument"], stations["Cannon Street"], 1, line);
-            AddConnection(stations["Cannon Street"], stations["Mansion House"], 1, line);
-            AddConnection(stations["Mansion House"], stations["Blackfriars"], 2, line);
-            AddConnection(stations["Blackfriars"], stations["Temple"], 2, line);
-            AddConnection(stations["Temple"], stations["Embankment"], 2, line);
-            AddConnection(stations["Embankment"], stations["Westminster"], 2, line);
-            AddConnection(stations["Westminster"], stations["St. James's Park"], 2, line);
-            AddConnection(stations["St. James's Park"], stations["Victoria"], 2, line);
-            AddConnection(stations["Victoria"], stations["Sloane Square"], 2, line);
-            AddConnection(stations["Sloane Square"], stations["South Kensington"], 2, line);
-            AddConnection(stations["South Kensington"], stations["Gloucester Road"], 2, line);
-            AddConnection(stations["Gloucester Road"], stations["Earl's Court"], 2, line);
-            //branch
-            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Paddington (Bakerloo, Circle and District)"], 2, line);
-            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Bayswater"], 2, line);
-            AddConnection(stations["Bayswater"], stations["Notting Hill Gate"], 2, line);
-            AddConnection(stations["Notting Hill Gate"], stations["High Street Kensington"], 2, line);
-            AddConnection(stations["High Street Kensington"], stations["Earl's Court"], 3, line);
-
+            
             //add Jubilee
-            line = "Jubilee";
-            AddConnection(stations["Baker Street"], stations["Bond Street"], 2, line);
-            AddConnection(stations["Bond Street"], stations["Green Park"], 2, line);
-            AddConnection(stations["Green Park"], stations["Westminster"], 2, line);
-            AddConnection(stations["Westminster"], stations["Waterloo"], 2, line);
-            AddConnection(stations["Waterloo"], stations["Southwark"], 1, line);
-            AddConnection(stations["Southwark"], stations["London Bridge"], 2, line);
 
             //add Metropolitan
-            line = "Metropolitan";
-            AddConnection(stations["Aldgate"], stations["Liverpool Street"], 2, line);
-            AddConnection(stations["Liverpool Street"], stations["Moorgate"], 2, line);
-            AddConnection(stations["Moorgate"], stations["Barbican"], 2, line);
-            AddConnection(stations["Barbican"], stations["Farringdon"], 1, line);
-            AddConnection(stations["Farringdon"], stations["King's Cross & St Pancras International"], 3, line);
-            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston Square"], 2, line);
-            AddConnection(stations["Euston Square"], stations["Great Portland Street"], 1, line);
-            AddConnection(stations["Great Portland Street"], stations["Baker Street"], 2, line);
 
             //add Northern
-            //add Northern (Charing Cross branch)
-            line = "Northern (Charing Cross branch)";
-            AddConnection(stations["Euston"], stations["Warren Street"], 1, line);
-            AddConnection(stations["Warren Street"], stations["Goodge Street"], 1, line);
-            AddConnection(stations["Goodge Street"], stations["Tottenham Court Road"], 1, line);
-            AddConnection(stations["Tottenham Court Road"], stations["Leicester Square"], 1, line);
-            AddConnection(stations["Leicester Square"], stations["Charing Cross"], 2, line);
-            AddConnection(stations["Charing Cross"], stations["Embankment"], 1, line);
-            AddConnection(stations["Embankment"], stations["Waterloo"], 2, line);
-            AddConnection(stations["Waterloo"], stations["Kennington"], 3, line);
-            AddConnection(stations["Kennington"], stations["Nine Elms"], 2, line);
-            AddConnection(stations["Nine Elms"], stations["Battersea Power Station"], 2, line);
-            //add Northern (Bank branch)
-            line = "Northern (Bank branch)";
-            AddConnection(stations["Euston"], stations["King's Cross & St Pancras International"], 2, line);
-            AddConnection(stations["King's Cross & St Pancras International"], stations["Angel"], 2, line);
-            AddConnection(stations["Angel"], stations["Old Street"], 2, line);
-            AddConnection(stations["Old Street"], stations["Moorgate"], 2, line);
-            AddConnection(stations["Moorgate"], stations["Bank"], 2, line);
-            AddConnection(stations["Bank"], stations["London Bridge"], 2, line);
-            AddConnection(stations["London Bridge"], stations["Borough"], 2, line);
-            AddConnection(stations["Borough"], stations["Elephant & Castle"], 2, line);
-            AddConnection(stations["Elephant & Castle"], stations["Kennington"], 2, line);
 
             //add Piccadilly
-            line = "Piccadilly";
-            AddConnection(stations["King's Cross & St Pancras International"], stations["Russell Square"], 2, line);
-            AddConnection(stations["Russell Square"], stations["Holborn"], 2, line);
-            AddConnection(stations["Holborn"], stations["Covent Garden"], 2, line);
-            AddConnection(stations["Covent Garden"], stations["Leicester Square"], 1, line);
-            AddConnection(stations["Leicester Square"], stations["Piccadilly Circus"], 2, line);
-            AddConnection(stations["Piccadilly Circus"], stations["Green Park"], 1, line);
-            AddConnection(stations["Green Park"], stations["Hyde Park Corner"], 2, line);
-            AddConnection(stations["Hyde Park Corner"], stations["Knightsbridge"], 2, line);
-            AddConnection(stations["Knightsbridge"], stations["South Kensington"], 3, line);
-            AddConnection(stations["South Kensington"], stations["Gloucester Road"], 2, line);
-            AddConnection(stations["Gloucester Road"], stations["Earl's Court"], 2, line);
 
             //add Victoria
-            line = "Victoria";
-            AddConnection(stations["King's Cross & St Pancras International"], stations["Euston"], 2, line);
-            AddConnection(stations["Euston"], stations["Warren Street"], 2, line);
-            AddConnection(stations["Warren Street"], stations["Oxford Circus"], 2, line);
-            AddConnection(stations["Oxford Circus"], stations["Green Park"], 2, line);
-            AddConnection(stations["Green Park"], stations["Victoria"], 2, line);
-            AddConnection(stations["Victoria"], stations["Pimlico"], 2, line);
-            AddConnection(stations["Pimlico"], stations["Vauxhall"], 1, line);
 
             //add Waterloo & City
-            line = "Waterloo & City (Saturday service not operating)";
-            AddConnection(stations["Waterloo"], stations["Bank"], 4, line);
 
             //add Elizabeth
-            line = "Elizabeth";
-            AddConnection(stations["Paddington (Elizabeth)"], stations["Bond Street (Elizabeth)"], 4, line);
-            AddConnection(stations["Bond Street (Elizabeth)"], stations["Tottenham Court Road (Elizabeth)"], 2, line);
-            AddConnection(stations["Tottenham Court Road (Elizabeth)"], stations["Farringdon (Elizabeth)"], 3, line);
-            AddConnection(stations["Farringdon (Elizabeth)"], stations["Liverpool Street (Elizabeth)"], 2, line);
 
             //add other connections (walk)
             line = "Walk";
