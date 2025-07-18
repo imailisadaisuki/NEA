@@ -313,7 +313,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Battersea Park", 2);
             AddStation(stations, "Beksize Park", 2);
             AddStation(stations, "Bermondsey", 2);
-            AddStation(stations, "Bethnal Green (Underground)", 2);
+            AddStation(stations, "Bethnal Green", 2);
             AddStation(stations, "Bethnal Green (Overground)", 2);
             AddStation(stations, "Blackwall", 2);
             AddStation(stations, "Bow Church", 2);
@@ -329,7 +329,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Camden Road", 2);
             AddStation(stations, "Camden Town", 2);
             AddStation(stations, "Canada Water", 2);
-            AddStation(stations, "Canary Wharf (Jubilee and DLR)", 2);
+            AddStation(stations, "Canary Wharf", 2);
             AddStation(stations, "Canary Wharf (Elizabeth)", 2);
             AddStation(stations, "Canning Town", 2.5);
             AddStation(stations, "Canonbury", 2);
@@ -388,9 +388,9 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Lewisham", 2);
             AddStation(stations, "Limehouse", 2);
             AddStation(stations, "London Fields", 2);
-            AddStation(stations, "Malda Vale", 2);
+            AddStation(stations, "Maida Vale", 2);
             AddStation(stations, "Manor House", 2.5);
-            AddStation(stations, "Mile End ", 2);
+            AddStation(stations, "Mile End", 2);
             AddStation(stations, "Mornington Crescent", 2.5);
             AddStation(stations, "Mudchute", 2);
             AddStation(stations, "New Cross", 2);
@@ -402,14 +402,14 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Poplar", 2);
             AddStation(stations, "Pudding Mill Lane", 2.5);
             AddStation(stations, "Putney Bridge", 2);
-            AddStation(stations, "Queens Park", 2);
+            AddStation(stations, "Queen's Park", 2);
             AddStation(stations, "Ravenscourt Park", 2);
             AddStation(stations, "Rectory Road", 2);
             AddStation(stations, "Rotherhithe", 2.5);
             AddStation(stations, "Royal Oak", 2);
-            AddStation(stations, "Shadwell (Underground)", 2);
+            AddStation(stations, "Shadwell", 2);
             AddStation(stations, "Shadwell (Overground)", 2);
-            AddStation(stations, "Shepherd's Bush (Underground)", 2);
+            AddStation(stations, "Shepherd's Bush", 2);
             AddStation(stations, "Shepherd's Bush (Overground)", 2);
             AddStation(stations, "Shepherd's Bush Market", 2);
             AddStation(stations, "South Hampstead", 2);
@@ -432,7 +432,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Warwick Avenue", 2);
             AddStation(stations, "West Brompton", 2);
             AddStation(stations, "West Ham", 2.5);
-            AddStation(stations, "West Hampstead (Underground)", 2);
+            AddStation(stations, "West Hampstead", 2);
             AddStation(stations, "West Hampstead (Overground)", 2);
             AddStation(stations, "West India Quay", 2);
             AddStation(stations, "West Kensington", 2);
@@ -529,7 +529,6 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Burnt Oak", 4);
             AddStation(stations, "Chigwell", 4);
             AddStation(stations, "Colindale", 4);
-            AddStation(stations, "East Ham", 4);
             AddStation(stations, "Edmonton Green", 4);
             AddStation(stations, "Fairlop", 4);
             AddStation(stations, "Falconwood", 4);
@@ -607,6 +606,7 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Rayners Lane", 5);
             AddStation(stations, "Ruislip Gardens", 5);
             AddStation(stations, "South Harrow", 5);
+            AddStation(stations, "South Ruislip", 5);
             AddStation(stations, "Southbury", 5);
             AddStation(stations, "Stanmore", 5);
             AddStation(stations, "West Croydon", 5);
@@ -619,12 +619,11 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             AddStation(stations, "Gidea Park", 6);
             AddStation(stations, "Harold Wood", 6);
             AddStation(stations, "Hatch End", 6);
-            AddStation(stations, "Hatton Cross", 6);
             AddStation(stations, "Heathrow Terminals 2 & 3 (Elizabeth)", 10); //Special fares applied
             AddStation(stations, "Heathrow Terminals 2 & 3 (Piccadilly)", 6);
             AddStation(stations, "Heathrow Terminal 4 (Elizabeth)", 10); //Special fares applied
             AddStation(stations, "Heathrow Terminal 4 (Piccadilly)", 6);
-            AddStation(stations, "Heathrow Terminal 4 (Elizabeth)", 10); //Special fares applied
+            AddStation(stations, "Heathrow Terminal 5 (Elizabeth)", 10); //Special fares applied
             AddStation(stations, "Heathrow Terminal 5 (Piccadilly)", 6);
             AddStation(stations, "Hillingdon", 6);
             AddStation(stations, "Hornchurch", 6);
@@ -688,9 +687,9 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             stations["Queen's Park"].Connections.Add(new Connection(stations["Kilburn Park"], 1.5, line));
             stations["Kilburn Park"].Connections.Add(new Connection(stations["Maida Vale"], 2, line));
             stations["Maida Vale"].Connections.Add(new Connection(stations["Warwick Avenue"], 1.5, line));
-            stations["Warwick Avenue"].Connections.Add(new Connection(stations["Paddington"], 2, line));
-            stations["Paddington"].Connections.Add(new Connection(stations["Edgware Road"], 1.5, line));
-            stations["Edgware Road"].Connections.Add(new Connection(stations["Marylebone"], 1.5, line));
+            stations["Warwick Avenue"].Connections.Add(new Connection(stations["Paddington (Bakerloo, Circle and District)"], 2, line));
+            stations["Paddington (Bakerloo, Circle and District)"].Connections.Add(new Connection(stations["Edgware Road (Bakerloo)"], 1.5, line));
+            stations["Edgware Road (Bakerloo)"].Connections.Add(new Connection(stations["Marylebone"], 1.5, line));
             stations["Marylebone"].Connections.Add(new Connection(stations["Baker Street"], 1.5, line));
             stations["Baker Street"].Connections.Add(new Connection(stations["Regent's Park"], 1.5, line));
             stations["Regent's Park"].Connections.Add(new Connection(stations["Oxford Circus"], 2.5, line));
@@ -711,9 +710,9 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             stations["Oxford Circus"].Connections.Add(new Connection(stations["Regent's Park"], 2, line));
             stations["Regent's Park"].Connections.Add(new Connection(stations["Baker Street"], 2, line));
             stations["Baker Street"].Connections.Add(new Connection(stations["Marylebone"], 1, line));
-            stations["Marylebone"].Connections.Add(new Connection(stations["Edgware Road"], 1, line));
-            stations["Edgware Road"].Connections.Add(new Connection(stations["Paddington"], 2, line));
-            stations["Paddington"].Connections.Add(new Connection(stations["Warwick Avenue"], 2, line));
+            stations["Marylebone"].Connections.Add(new Connection(stations["Edgware Road (Bakerloo)"], 1, line));
+            stations["Edgware Road (Bakerloo)"].Connections.Add(new Connection(stations["Paddington (Bakerloo, Circle and District)"], 2, line));
+            stations["Paddington (Bakerloo, Circle and District)"].Connections.Add(new Connection(stations["Warwick Avenue"], 2, line));
             stations["Warwick Avenue"].Connections.Add(new Connection(stations["Maida Vale"], 1.5, line));
             stations["Maida Vale"].Connections.Add(new Connection(stations["Kilburn Park"], 2, line));
             stations["Kilburn Park"].Connections.Add(new Connection(stations["Queen's Park"], 2.5, line));
@@ -909,25 +908,25 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
 
             //add other connections (walk)
             line = "Walk";
-            AddConnection(stations["Euston"], stations["Euston Square"], 1, line);
-            AddConnection(stations["Edgware Road"], stations["Edgware Road (Bakerloo)"], 0, line);
-            AddConnection(stations["Edgware Road"], stations["Edgware Road (Circle and Hammersmith & City)"], 0, line);
-            AddConnection(stations["Edgware Road"], stations["Edgware Road (Circle Terminal)"], 0, line);
-            AddConnection(stations["Edgware Road (Bakerloo)"], stations["Edgware Road (Circle and Hammersmith & City)"], 0, line);
-            AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Edgware Road (Circle Terminal)"], 0, line);
-            AddConnection(stations["Edgware Road (Bakerloo)"], stations["Edgware Road (Circle Terminal)"], 0, line);
-            AddConnection(stations["Paddington"], stations["Paddington (Bakerloo, Circle and District)"], 0, line);
-            AddConnection(stations["Paddington"], stations["Paddington (Circle and Hammersmith & City)"], 0, line);
-            AddConnection(stations["Paddington"], stations["Paddington (Elizabeth)"], 0, line);
-            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Paddington (Circle and Hammersmith & City)"], 0, line);
-            AddConnection(stations["Paddington (Circle and Hammersmith & City)"], stations["Paddington (Elizabeth)"], 0, line);
-            AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Paddington (Elizabeth)"], 0, line);
-            AddConnection(stations["Bond Street"], stations["Bond Street (Elizabeth)"], 0, line);
-            AddConnection(stations["Tottenham Court Road"], stations["Tottenham Court Road (Elizabeth)"], 0, line);
-            AddConnection(stations["Farringdon"], stations["Farringdon (Elizabeth)"], 0, line);
-            AddConnection(stations["Liverpool Street"], stations["Liverpool Street (Elizabeth)"], 0, line);
-            AddConnection(stations["Moorgate"], stations["Liverpool Street (Elizabeth)"], 1, line);
-            AddConnection(stations["Tower Hill"], stations["Tower Gateway"], 0, line);
+            //AddConnection(stations["Euston"], stations["Euston Square"], 1, line);
+            //AddConnection(stations["Edgware Road"], stations["Edgware Road (Bakerloo)"], 0, line);
+            //AddConnection(stations["Edgware Road"], stations["Edgware Road (Circle and Hammersmith & City)"], 0, line);
+            //AddConnection(stations["Edgware Road"], stations["Edgware Road (Circle Terminal)"], 0, line);
+            //AddConnection(stations["Edgware Road (Bakerloo)"], stations["Edgware Road (Circle and Hammersmith & City)"], 0, line);
+            //AddConnection(stations["Edgware Road (Circle and Hammersmith & City)"], stations["Edgware Road (Circle Terminal)"], 0, line);
+            //AddConnection(stations["Edgware Road (Bakerloo)"], stations["Edgware Road (Circle Terminal)"], 0, line);
+            //AddConnection(stations["Paddington"], stations["Paddington (Bakerloo, Circle and District)"], 0, line);
+            //AddConnection(stations["Paddington"], stations["Paddington (Circle and Hammersmith & City)"], 0, line);
+            //AddConnection(stations["Paddington"], stations["Paddington (Elizabeth)"], 0, line);
+            //AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Paddington (Circle and Hammersmith & City)"], 0, line);
+            //AddConnection(stations["Paddington (Circle and Hammersmith & City)"], stations["Paddington (Elizabeth)"], 0, line);
+            //AddConnection(stations["Paddington (Bakerloo, Circle and District)"], stations["Paddington (Elizabeth)"], 0, line);
+            //AddConnection(stations["Bond Street"], stations["Bond Street (Elizabeth)"], 0, line);
+            //AddConnection(stations["Tottenham Court Road"], stations["Tottenham Court Road (Elizabeth)"], 0, line);
+            //AddConnection(stations["Farringdon"], stations["Farringdon (Elizabeth)"], 0, line);
+            //AddConnection(stations["Liverpool Street"], stations["Liverpool Street (Elizabeth)"], 0, line);
+            //AddConnection(stations["Moorgate"], stations["Liverpool Street (Elizabeth)"], 1, line);
+            //AddConnection(stations["Tower Hill"], stations["Tower Gateway"], 0, line);
             return stations;
         }
         static void convertToJSON(Dictionary<string, Station> stations)
