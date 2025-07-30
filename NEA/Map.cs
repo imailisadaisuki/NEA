@@ -14,7 +14,7 @@ namespace NEA
         public string line { get; set; }
         public Connection(Station station, double time, string line) => (this.station, this.time, this.line) = (station, time, line);
     }
-    public class Station 
+    public class Station
     {
         public string name { get; set; }
         public double zone { get; set; }
@@ -22,28 +22,22 @@ namespace NEA
         public double time2Travel = int.MaxValue;
         public Station previousStation = null;
         public bool visited = false;
-        public Station (string name, double zone) => (this.name, this.zone) = (name, zone);
-        public List<string> getPrevConnectionLine()
-        {
-            List<string> lines = new List<string>();
-            foreach (Connection connection in Connections)
-            {
-                if (connection.station == previousStation)
-                {
-                    lines.Add(connection.line);
-                }
-            }
-            return lines;
-        }
+        public Station(string name, double zone) => (this.name, this.zone) = (name, zone);
+        public List<string> getPrevConnectionLine() =>
+            previousStation.Connections
+           .Where(c => c.station == this)
+           .Select(c => c.line)
+           .ToList();
     }
+
     public class DecomposedConnection
     {
         public Station startStation { get; set; }
         public Station endStation { get; set; }
         public double estimatedTime { get; set; }
         public double cost { get; set; }
-        public List<string> path = new List<string>();
-        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, List<string> path) =>
+        public Stack<string> path = new Stack<string>();
+        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, Stack<string> path) =>
             (this.startStation, this.endStation, this.estimatedTime, this.cost, this.path) =
             (startStation, endStation, estimatedTime, cost, path);
     }
