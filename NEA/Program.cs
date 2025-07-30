@@ -2354,6 +2354,163 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             stations["Custom House"].Connections.Add(new Connection(stations["Woolwich"], 5, line));
             stations["Woolwich"].Connections.Add(new Connection(stations["Abbey Wood"], 5, line));
 
+            //add Liberty
+
+            line = "Liberty (Upminster)";
+            stations["Romford"].Connections.Add(new Connection(stations["Emerson Park"], 5, line));
+            stations["Emerson Park"].Connections.Add(new Connection(stations["Upminster"], 4, line));
+
+            line = "Liberty (Romford)";
+            stations["Upminster"].Connections.Add(new Connection(stations["Emerson Park"], 4, line));
+            stations["Emerson Park"].Connections.Add(new Connection(stations["Romford"], 5, line));
+
+            //add Lioness
+
+            line = "Lioness (Euston)";
+            stations["Watford Junction"].Connections.Add(new Connection(stations["Watford High Street"], 3, line));
+            stations["Watford High Street"].Connections.Add(new Connection(stations["Bushey"], 3, line));
+            stations["Bushey"].Connections.Add(new Connection(stations["Carpenders Park"], 3, line));
+            stations["Carpenders Park"].Connections.Add(new Connection(stations["Hatch End"], 3, line));
+            stations["Hatch End"].Connections.Add(new Connection(stations["Headstone Lane"], 2, line));
+            stations["Headstone Lane"].Connections.Add(new Connection(stations["Harrow & Wealdstone"], 4, line));
+            stations["Harrow & Wealdstone"].Connections.Add(new Connection(stations["Kenton"], 3, line));
+            stations["Kenton"].Connections.Add(new Connection(stations["South Kenton"], 2, line));
+            stations["South Kenton"].Connections.Add(new Connection(stations["North Wembley"], 2, line));
+            stations["North Wembley"].Connections.Add(new Connection(stations["Wembley Central"], 2, line));
+            stations["Wembley Central"].Connections.Add(new Connection(stations["Stonebridge Park"], 3, line));
+            stations["Stonebridge Park"].Connections.Add(new Connection(stations["Harlesden"], 2.5, line));
+            stations["Harlesden"].Connections.Add(new Connection(stations["Willesden Junction"], 2.5, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Kensal Green"], 3, line));
+            stations["Kensal Green"].Connections.Add(new Connection(stations["Queen's Park"], 2.5, line));
+            stations["Queen's Park"].Connections.Add(new Connection(stations["Kilburn High Road"], 2, line));
+            stations["Kilburn High Road"].Connections.Add(new Connection(stations["South Hampstead"], 2, line));
+            stations["South Hampstead"].Connections.Add(new Connection(stations["Euston (Overground)"], 9, line));
+
+            line = "Lioness (Watford Junction)";
+            stations["Euston (Overground)"].Connections.Add(new Connection(stations["South Hampstead"], 5, line));
+            stations["South Hampstead"].Connections.Add(new Connection(stations["Kilburn High Road"], 2, line));
+            stations["Kilburn High Road"].Connections.Add(new Connection(stations["Queen's Park"], 2, line));
+            stations["Queen's Park"].Connections.Add(new Connection(stations["Kensal Green"], 2, line));
+            stations["Kensal Green"].Connections.Add(new Connection(stations["Willesden Junction"], 3, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Harlesden"], 2, line));
+            stations["Harlesden"].Connections.Add(new Connection(stations["Stonebridge Park"], 2, line));
+            stations["Stonebridge Park"].Connections.Add(new Connection(stations["Wembley Central"], 2, line));
+            stations["Wembley Central"].Connections.Add(new Connection(stations["North Wembley"], 2, line));
+            stations["North Wembley"].Connections.Add(new Connection(stations["South Kenton"], 2, line));
+            stations["South Kenton"].Connections.Add(new Connection(stations["Kenton"], 2, line));
+            stations["Kenton"].Connections.Add(new Connection(stations["Harrow & Wealdstone"], 3, line));
+            stations["Harrow & Wealdstone"].Connections.Add(new Connection(stations["Headstone Lane"], 3, line));
+            stations["Headstone Lane"].Connections.Add(new Connection(stations["Hatch End"], 2, line));
+            stations["Hatch End"].Connections.Add(new Connection(stations["Carpenders Park"], 3, line));
+            stations["Carpenders Park"].Connections.Add(new Connection(stations["Bushey"], 3, line));
+            stations["Bushey"].Connections.Add(new Connection(stations["Watford High Street"], 2, line));
+            stations["Watford High Street"].Connections.Add(new Connection(stations["Watford Junction"], 5, line));
+
+            line = "Mildmay (Stratford)";
+            stations["Richmond"].Connections.Add(new Connection(stations["Kew Gardens"], 3, line));
+            stations["Kew Gardens"].Connections.Add(new Connection(stations["Gunnersbury"], 3, line));
+            stations["Gunnersbury"].Connections.Add(new Connection(stations["South Acton"], 3, line));
+            stations["South Acton"].Connections.Add(new Connection(stations["Acton Central"], 3, line));
+            stations["Acton Central"].Connections.Add(new Connection(stations["Willesden Junction"], 7, line));
+            stations["Clapham Junction"].Connections.Add(new Connection(stations["Imperial Wharf"], 4.5, line));
+            stations["Imperial Wharf"].Connections.Add(new Connection(stations["West Brompton"], 3, line));
+            stations["West Brompton"].Connections.Add(new Connection(stations["Kensington (Olympia)"], 3, line));
+            stations["Kensington (Olympia)"].Connections.Add(new Connection(stations["Shepherd's Bush"], 3, line));
+            stations["Shepherd's Bush"].Connections.Add(new Connection(stations["Willesden Junction"], 9.5, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Kensal Rise"], 2.5, line));
+            stations["Kensal Rise"].Connections.Add(new Connection(stations["Brondesbury Park"], 2, line));
+            stations["Brondesbury Park"].Connections.Add(new Connection(stations["Brondesbury"], 2, line));
+            stations["Brondesbury"].Connections.Add(new Connection(stations["West Hampsted"], 2, line));
+            stations["West Hampsted"].Connections.Add(new Connection(stations["Finchley Road & Frognal"], 2, line));
+            stations["Finchley Road & Frognal"].Connections.Add(new Connection(stations["Hampstead Heath"], 2.5, line));
+            stations["Hampstead Heath"].Connections.Add(new Connection(stations["Gospel Oak"], 3.5, line));
+            stations["Gospel Oak"].Connections.Add(new Connection(stations["Kentish Town West"], 2, line));
+            stations["Kentish Town West"].Connections.Add(new Connection(stations["Camden Road"], 3, line));
+            stations["Camden Road"].Connections.Add(new Connection(stations["Caledonian Road & Barnsbury"], 3, line));
+            stations["Caledonian Road & Barnsbury"].Connections.Add(new Connection(stations["Highbury & Islington"], 2, line));
+            stations["Highbury & Islington"].Connections.Add(new Connection(stations["Canonbury"], 2, line));
+            stations["Canonbury"].Connections.Add(new Connection(stations["Dalston Kingsland"], 2, line));
+            stations["Dalston Kingsland"].Connections.Add(new Connection(stations["Hackney Central"], 2.5, line));
+            stations["Hackney Central"].Connections.Add(new Connection(stations["Homerton"], 2, line));
+            stations["Homerton"].Connections.Add(new Connection(stations["Hackney Wick"], 3, line));
+            stations["Hackney Wick"].Connections.Add(new Connection(stations["Stratford"], 5.5, line));
+
+            line = "Mildmay (Richmond)";
+            stations["Stratford"].Connections.Add(new Connection(stations["Hackney Wick"], 4, line));
+            stations["Hackney Wick"].Connections.Add(new Connection(stations["Homerton"], 3, line));
+            stations["Homerton"].Connections.Add(new Connection(stations["Hackney Central"], 2.5, line));
+            stations["Hackney Central"].Connections.Add(new Connection(stations["Dalston Kingsland"], 2.5, line));
+            stations["Dalston Kingsland"].Connections.Add(new Connection(stations["Canonbury"], 2, line));
+            stations["Canonbury"].Connections.Add(new Connection(stations["Highbury & Islington"], 3, line));
+            stations["Highbury & Islington"].Connections.Add(new Connection(stations["Caledonian Road & Barnsbury"], 2, line));
+            stations["Caledonian Road & Barnsbury"].Connections.Add(new Connection(stations["Camden Road"], 4, line));
+            stations["Camden Road"].Connections.Add(new Connection(stations["Kentish Town West"], 2, line));
+            stations["Kentish Town West"].Connections.Add(new Connection(stations["Gospel Oak"], 3, line));
+            stations["Gospel Oak"].Connections.Add(new Connection(stations["Hampstead Heath"], 2, line));
+            stations["Hampstead Heath"].Connections.Add(new Connection(stations["Finchley Road & Frognal"], 2, line));
+            stations["Finchley Road & Frognal"].Connections.Add(new Connection(stations["West Hampsted"], 2.5, line));
+            stations["West Hampsted"].Connections.Add(new Connection(stations["Brondesbury"], 2, line));
+            stations["Brondesbury"].Connections.Add(new Connection(stations["Brondesbury Park"], 1.5, line));
+            stations["Brondesbury Park"].Connections.Add(new Connection(stations["Kensal Rise"], 2, line));
+            stations["Kensal Rise"].Connections.Add(new Connection(stations["Willesden Junction"], 4.5, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Acton Central"], 6, line));
+            stations["Acton Central"].Connections.Add(new Connection(stations["South Acton"],3 , line));
+            stations["South Acton"].Connections.Add(new Connection(stations["Gunnersbury"], 3, line));
+            stations["Gunnersbury"].Connections.Add(new Connection(stations["Kew Gardens"], 3, line));
+            stations["Kew Gardens"].Connections.Add(new Connection(stations["Richmond"], 4, line));
+
+            line = "Mildmay (Clapham Junction)";
+            stations["Stratford"].Connections.Add(new Connection(stations["Hackney Wick"], 4, line));
+            stations["Hackney Wick"].Connections.Add(new Connection(stations["Homerton"], 3, line));
+            stations["Homerton"].Connections.Add(new Connection(stations["Hackney Central"], 2.5, line));
+            stations["Hackney Central"].Connections.Add(new Connection(stations["Dalston Kingsland"], 2.5, line));
+            stations["Dalston Kingsland"].Connections.Add(new Connection(stations["Canonbury"], 2, line));
+            stations["Canonbury"].Connections.Add(new Connection(stations["Highbury & Islington"], 3, line));
+            stations["Highbury & Islington"].Connections.Add(new Connection(stations["Caledonian Road & Barnsbury"], 2, line));
+            stations["Caledonian Road & Barnsbury"].Connections.Add(new Connection(stations["Camden Road"], 4, line));
+            stations["Camden Road"].Connections.Add(new Connection(stations["Kentish Town West"], 2, line));
+            stations["Kentish Town West"].Connections.Add(new Connection(stations["Gospel Oak"], 3, line));
+            stations["Gospel Oak"].Connections.Add(new Connection(stations["Hampstead Heath"], 2, line));
+            stations["Hampstead Heath"].Connections.Add(new Connection(stations["Finchley Road & Frognal"], 2, line));
+            stations["Finchley Road & Frognal"].Connections.Add(new Connection(stations["West Hampsted"], 2.5, line));
+            stations["West Hampsted"].Connections.Add(new Connection(stations["Brondesbury"], 2, line));
+            stations["Brondesbury"].Connections.Add(new Connection(stations["Brondesbury Park"], 1.5, line));
+            stations["Brondesbury Park"].Connections.Add(new Connection(stations["Kensal Rise"], 2, line));
+            stations["Kensal Rise"].Connections.Add(new Connection(stations["Willesden Junction"], 4.5, line));
+            stations["Willesden Junction"].Connections.Add(new Connection(stations["Shepherd's Bush"], 8, line));
+            stations["Shepherd's Bush"].Connections.Add(new Connection(stations["Kensington (Olympia)"], 2, line));
+            stations["Kensington (Olympia)"].Connections.Add(new Connection(stations["West Brompton"], 3, line));
+            stations["West Brompton"].Connections.Add(new Connection(stations["Imperial Wharf"], 2, line));
+            stations["Imperial Wharf"].Connections.Add(new Connection(stations["Clapham Junction"], 5.5, line));
+
+            line = "Suffragette (Barking Riverside)";
+            stations["Gospel Oak"].Connections.Add(new Connection(stations["Upper Holloway"], 4, line));
+            stations["Upper Holloway"].Connections.Add(new Connection(stations["Crouch Hill"], 2, line));
+            stations["Crouch Hill"].Connections.Add(new Connection(stations["Harringay Green Lanes"], 3, line));
+            stations["Harringay Green Lanes"].Connections.Add(new Connection(stations["South Tottenham"], 4, line));
+            stations["South Tottenham"].Connections.Add(new Connection(stations["Blackhorse Road"], 3, line));
+            stations["Blackhorse Road"].Connections.Add(new Connection(stations["Walthamstow Queen's Road"], 2, line));
+            stations["Walthamstow Queen's Road"].Connections.Add(new Connection(stations["Leyton Midland Road"], 3, line));
+            stations["Leyton Midland Road"].Connections.Add(new Connection(stations["Leytonstone High Road"], 2, line));
+            stations["Leytonstone High Road"].Connections.Add(new Connection(stations["Wanstead Park"], 3, line));
+            stations["Wanstead Park"].Connections.Add(new Connection(stations["Woodgrange Park"], 3, line));
+            stations["Woodgrange Park"].Connections.Add(new Connection(stations["Barking"], 4, line));
+            stations["Barking"].Connections.Add(new Connection(stations["Barking Riverside"], 8, line));
+
+            line = "Suffragette (Gospel Oak)";
+            stations["Barking Riverside"].Connections.Add(new Connection(stations["Barking"], 6, line));
+            stations["Barking"].Connections.Add(new Connection(stations["Woodgrange Park"], 3, line));
+            stations["Woodgrange Park"].Connections.Add(new Connection(stations["Wanstead Park"], 3, line));
+            stations["Wanstead Park"].Connections.Add(new Connection(stations["Leytonstone High Road"], 3, line));
+            stations["Leytonstone High Road"].Connections.Add(new Connection(stations["Leyton Midland Road"], 2, line));
+            stations["Leyton Midland Road"].Connections.Add(new Connection(stations["Walthamstow Queen's Road"], 3, line));
+            stations["Walthamstow Queen's Road"].Connections.Add(new Connection(stations["Blackhorse Road"], 2, line));
+            stations["Blackhorse Road"].Connections.Add(new Connection(stations["South Tottenham"], 3, line));
+            stations["South Tottenham"].Connections.Add(new Connection(stations["Harringay Green Lanes"], 4, line));
+            stations["Harringay Green Lanes"].Connections.Add(new Connection(stations["Crouch Hill"], 3, line));
+            stations["Crouch Hill"].Connections.Add(new Connection(stations["Upper Holloway"], 3, line));
+            stations["Upper Holloway"].Connections.Add(new Connection(stations["Gospel Oak"], 6, line));
+
             //add other connections (walk)
             line = "Walk";
             //AddConnection(stations["Euston"], stations["Euston Square"], 1, line);
