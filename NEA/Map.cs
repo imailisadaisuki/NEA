@@ -22,9 +22,10 @@ namespace NEA
         public double time2Travel = int.MaxValue;
         public Station previousStation = null;
         public bool visited = false;
+        public string previousLine = null;
         public Station(string name, double zone) => (this.name, this.zone) = (name, zone);
         public List<string> getPrevConnectionLine() =>
-            previousStation.Connections
+            previousStation == null? new List<string>() : previousStation.Connections
            .Where(c => c.station == this)
            .Select(c => c.line)
            .ToList();

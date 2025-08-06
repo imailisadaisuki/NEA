@@ -35,30 +35,51 @@ namespace NEA
                 station.visited = false;
             }
         }
-        static bool IsLineChange(Station current, Connection connection) =>
-current.previousStation != null && !current.getPrevConnectionLine().Contains(connection.line);
-        static void Dijkstra(Station start)
+        static bool IsLineChange(Station current, Connection connection)
         {
-            PriorityQueue<Station> pq = new PriorityQueue<Station>();
+            if (current.previousStation == null)
+                return false;
+            return current.previousLine != connection.line;
+        }
+        static double EstimateToGoal(Station from, Station to)
+        {
+            // Heuristic: minimum number of zones to cross, times an average time per zone (e.g., 10 minutes)
+            double zoneDiff = Math.Abs(Math.Round(from.zone) - Math.Round(to.zone));
+            return zoneDiff * 5; // 10 minutes per zone as a rough estimate
+        }
+        static void AStar(Station start, Station goal)
+        {
+            var openSet = new PriorityQueue<Station>();
             start.time2Travel = 0;
-            pq.Enqueue(start, 0);
-            while (!pq.IsEmpty())
+            openSet.Enqueue(start, 0);
+
+            while (!openSet.IsEmpty())
             {
-                Station current = pq.Dequeue();
+                Station current = openSet.Dequeue();
+                if (current == goal)
+                    break;
+
                 if (current.visited) continue;
                 current.visited = true;
+
                 foreach (Connection connection in current.Connections)
                 {
                     double newTime = current.time2Travel + connection.time;
                     if (IsLineChange(current, connection) && !current.getPrevConnectionLine().Contains("Walk"))
                     {
-                        newTime += 11; //Add transfer time if changing lines
+                        newTime += 20;
                     }
+                // Heuristic: straight-line distance, or minimum stops, etc.
+                double heuristic = EstimateToGoal(connection.station, goal);
+
+                    double priority = newTime + heuristic;
+
                     if (newTime < connection.station.time2Travel)
                     {
                         connection.station.time2Travel = newTime;
                         connection.station.previousStation = current;
-                        pq.Enqueue(connection.station, newTime);
+                        connection.station.previousLine = connection.line;
+                        openSet.Enqueue(connection.station, priority);
                     }
                 }
             }
@@ -117,11 +138,11 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             List<DecomposedConnection> decomposedConnections = new List<DecomposedConnection>();
             foreach (Station station in targetStations)
             {
-                ResetStations(stations);
-                Dijkstra(station);
                 foreach (Station target in targetStations)
                 {
                     if (target == station) continue; // skip the same station
+                    ResetStations(stations);
+                    AStar(station, target); // Run A* algorithm to find the shortest path from station to target
                     decomposedConnections.Add(new DecomposedConnection(
                         station,
                         target,
@@ -190,16 +211,77 @@ current.previousStation != null && !current.getPrevConnectionLine().Contains(con
             }
             return path;
         }
+        static string AutoCompleteInput(Dictionary<string, Station> stations)
+        {
+            string input = "";
+            int cursorLeft = Console.CursorLeft;
+            int cursorTop = Console.CursorTop;
+            string match = "";
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Backspace && input.Length > 0)
+                {
+                    input = input.Substring(0, input.Length - 1);
+                }
+                else if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    return input;
+                }
+                else if (key.Key == ConsoleKey.Tab)
+                {
+                    input = match;
+                }
+                else if (key.KeyChar != '\0' && !char.IsControl(key.KeyChar))
+                {
+                    input += key.KeyChar;
+                }  
+                match = stations.Keys.FirstOrDefault(name => name.StartsWith(input, StringComparison.OrdinalIgnoreCase)); // Get first match
+                Console.SetCursorPosition(cursorLeft, cursorTop); // Clear line
+                Console.Write(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(cursorLeft, cursorTop);
+                // Reprint input + suggestion
+                if (match != null && match.Length > input.Length)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(input);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(match.Substring(input.Length));
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.Write(input);
+                }
+                Console.SetCursorPosition(cursorLeft + input.Length, cursorTop); // Reset cursor for next loop
+            }
+        }
+        static Station GetStationWithAutocomplete(Dictionary<string, Station> stations)
+        {
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter station: ");
+                    return stations[AutoCompleteInput(stations)];
+                }
+                catch (KeyNotFoundException)
+                {
+                    Console.WriteLine("Station not found. Please try again.");
+                }
+            }
+        }
         static void Main(string[] args)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             Dictionary<string, Station> stations = StationLoader.LoadFromJson(filePath); // Load stations from JSON file
             List<Station> targetStations = new List<Station>();
-            targetStations.Add(stations["Westminster"]);
-            targetStations.Add(stations["Baker Street"]);
-            targetStations.Add(stations["Aldgate"]);
-            targetStations.Add(stations["Heathrow Terminals 2 & 3 (Elizabeth)"]);
+            targetStations.Add(GetStationWithAutocomplete(stations));
+            targetStations.Add(GetStationWithAutocomplete(stations));
+            targetStations.Add(GetStationWithAutocomplete(stations));
+            targetStations.Add(GetStationWithAutocomplete(stations));
             List<DecomposedConnection> connections = DecomposedPath(targetStations, stations);
             Console.WriteLine("Manually ordered:");
             DisplayFullPath(targetStations, connections);
