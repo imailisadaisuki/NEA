@@ -39,7 +39,7 @@ namespace NEA
         {
             if (current.previousStation == null)
                 return false;
-            return current.previousLine != connection.line;
+            return !current.previousLines.Contains(connection.line);
         }
         static double Heuristic(Station from, Station to)
             => Math.Abs(from.zone - to.zone);
@@ -47,6 +47,7 @@ namespace NEA
         {
             PriorityQueue<Station> openSet = new PriorityQueue<Station>();
             start.time2Travel = 0;
+            start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line));
             openSet.Enqueue(start, 0);
             while (!openSet.IsEmpty())
             {
@@ -60,13 +61,14 @@ namespace NEA
                     double gScore = current.time2Travel + connection.time;
                     if (IsLineChange(current, connection) && !current.getPrevConnectionLine().Contains("Walk"))
                     {
-                        gScore += 13;
+                        gScore += 10;
                     }
-                    if (gScore < connection.station.time2Travel)
+                    if (gScore < neighbor.time2Travel)
                     {
                         neighbor.time2Travel = gScore;
                         neighbor.previousStation = current;
-                        connection.station.previousLine = connection.line;
+                        neighbor.previousLines = new HashSet<string>(current.previousLines); // Copy previous lines
+                        neighbor.previousLines.Add(connection.line); // Add the current line
                         openSet.Enqueue(neighbor, gScore + Heuristic(neighbor, goal));
                     }
                 }
@@ -121,7 +123,7 @@ namespace NEA
             }
             return zoneCost[(int)minZone - 1, (int)maxZone - 1];
         }
-        static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations) //Decompose the full graph into K(n)
+        static List<DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations) // Decompose the full graph into K(n)
         {
             List<DecomposedConnection> decomposedConnections = new List<DecomposedConnection>();
             foreach (Station station in targetStations)
