@@ -12,23 +12,26 @@ namespace NEA
         public Station station { get; set; }
         public double time { get; set; }
         public string line { get; set; }
-        public Connection(Station station, double time, string line) => (this.station, this.time, this.line) = (station, time, line);
+        public Connection(Station station, double time, string line) 
+            => (this.station, this.time, this.line) = (station, time, line);
     }
     public class Station
     {
         public string name { get; set; }
         public double zone { get; set; }
         public List<Connection> Connections = new List<Connection>();
-        public double time2Travel = int.MaxValue;
+        public double gScore = int.MaxValue; // for A* algorithm
         public Station previousStation = null;
         public bool visited = false;
         public HashSet<string> previousLines = new HashSet<string>();
-        public Station(string name, double zone) => (this.name, this.zone) = (name, zone);
+        public Station(string name, double zone) 
+            => (this.name, this.zone) = (name, zone);
         public List<string> getPrevConnectionLine() =>
-            previousStation == null? new List<string>() : previousStation.Connections
-           .Where(c => c.station == this)
-           .Select(c => c.line)
-           .ToList();
+            previousStation == null ? new List<string>() 
+            : previousStation.Connections
+            .Where(c => c.station == this)
+            .Select(c => c.line)
+            .ToList();
     }
 
     public class DecomposedConnection
@@ -38,8 +41,8 @@ namespace NEA
         public double estimatedTime { get; set; }
         public double cost { get; set; }
         public Stack<string> path = new Stack<string>();
-        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, Stack<string> path) =>
-            (this.startStation, this.endStation, this.estimatedTime, this.cost, this.path) =
-            (startStation, endStation, estimatedTime, cost, path);
+        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, Stack<string> path) 
+            => (this.startStation, this.endStation, this.estimatedTime, this.cost, this.path) 
+            = (startStation, endStation, estimatedTime, cost, path);
     }
 }

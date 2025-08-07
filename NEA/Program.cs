@@ -15,11 +15,11 @@ namespace NEA
     {
         public const string filePath = "underground.json"; // Path to the JSON file containing station data
         public static readonly double[,] zoneCost = { //row refers to end zone, column represents start zone. Source: https://londondrum.com/transport/adult-train-fares.php
-            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3, 12.8 },
-            { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3, 7.6 },
-            { 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.8, 8.3, 7.5 },
-            { 0, 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.1, 7.4 },
-            { 0, 0, 0, 0, 2.1, 2.3, 2.9, 3.2, 3.5, 7.3 },
+            { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3, 0 },
+            { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3, 0 },
+            { 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.8, 8.3, 0 },
+            { 0, 0, 0, 2.1, 2.3, 3, 3.2, 4, 4.1, 0 },
+            { 0, 0, 0, 0, 2.1, 2.3, 2.9, 3.2, 3.5, 0 },
             { 0, 0, 0, 0, 0, 2.1, 2.2, 2.9, 3, 0 },
             { 0, 0, 0, 0, 0, 0, 2, 2.2, 2.3, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 2, 2.2, 0 },
@@ -30,24 +30,20 @@ namespace NEA
         {
             foreach (Station station in stations.Values)
             {
-                station.time2Travel = int.MaxValue;
+                station.gScore = int.MaxValue;
                 station.previousStation = null;
                 station.visited = false;
             }
         }
         static bool IsLineChange(Station current, Connection connection)
-        {
-            if (current.previousStation == null)
-                return false;
-            return !current.previousLines.Contains(connection.line);
-        }
+            => !current.previousLines.Contains(connection.line);
         static double Heuristic(Station from, Station to)
             => Math.Abs(from.zone - to.zone);
         static void AStar(Station start, Station goal)
         {
             PriorityQueue<Station> openSet = new PriorityQueue<Station>();
-            start.time2Travel = 0;
-            start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line));
+            start.gScore = 0;
+            start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line)); // Initialize previous lines for the start station
             openSet.Enqueue(start, 0);
             while (!openSet.IsEmpty())
             {
@@ -58,18 +54,18 @@ namespace NEA
                 foreach (Connection connection in current.Connections)
                 {
                     Station neighbor = connection.station;
-                    double gScore = current.time2Travel + connection.time;
+                    double tentativeGScore = current.gScore + connection.time;
                     if (IsLineChange(current, connection) && !current.getPrevConnectionLine().Contains("Walk"))
                     {
-                        gScore += 10;
+                        tentativeGScore += 13;
                     }
-                    if (gScore < neighbor.time2Travel)
+                    if (tentativeGScore < neighbor.gScore)
                     {
-                        neighbor.time2Travel = gScore;
+                        neighbor.gScore = tentativeGScore;
                         neighbor.previousStation = current;
                         neighbor.previousLines = new HashSet<string>(current.previousLines); // Copy previous lines
                         neighbor.previousLines.Add(connection.line); // Add the current line
-                        openSet.Enqueue(neighbor, gScore + Heuristic(neighbor, goal));
+                        openSet.Enqueue(neighbor, tentativeGScore + Heuristic(neighbor, goal));
                     }
                 }
             }
@@ -106,10 +102,7 @@ namespace NEA
             foreach (string line in lines)
                 path.Push(line);
             path.Push("Possible line(s):");
-            if (startStation)
-                path.Push($"Start from {stationName}");
-            else
-                path.Push($"\nTransfer at {stationName}");
+            path.Push(startStation ? $"Start from {stationName}" : $"\nTransfer at {stationName}");
         }
         static double GetCost(Station End) //calculate cost based on Zone number
         {
@@ -117,9 +110,8 @@ namespace NEA
             double maxZone = -1;
             for (Station current = End; current != null; current = current.previousStation)
             {
-                if (Math.Ceiling(current.zone) < minZone) minZone = current.zone; //there are some station which is between 2 zones, represented by a decimal number.
-                                                                                  //e.g. 1.5 represents between station between zone 1 and 2
-                if (Math.Floor(current.zone) > maxZone) maxZone = current.zone;
+                if (Math.Ceiling(current.zone) < minZone) minZone = current.zone; // There are some stations which are located between 2 zones, represented by a decimal number.
+                if (Math.Floor(current.zone) > maxZone) maxZone = current.zone; // e.g. 1.5 represents between station between zone 1 and 2
             }
             return zoneCost[(int)minZone - 1, (int)maxZone - 1];
         }
@@ -136,7 +128,7 @@ namespace NEA
                     decomposedConnections.Add(new DecomposedConnection(
                         station,
                         target,
-                        target.time2Travel,
+                        target.gScore,
                         GetCost(target),
                         GetShortestPath(target)));
                 }
@@ -162,7 +154,7 @@ namespace NEA
                             Console.WriteLine(connection.path.Pop());
                         }
                         Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
-                        Console.WriteLine($"Cost of subpath: £{connection.cost}");
+                        Console.WriteLine(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}");
                         Console.WriteLine(new string('-', Console.WindowWidth));
                         break;
                     }
@@ -205,9 +197,9 @@ namespace NEA
         static string AutoCompleteInput(Dictionary<string, Station> stations)
         {
             string input = "";
+            string match = "";
             int cursorLeft = Console.CursorLeft;
             int cursorTop = Console.CursorTop;
-            string match = "";
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(intercept: true);
@@ -232,8 +224,7 @@ namespace NEA
                 Console.SetCursorPosition(cursorLeft, cursorTop); // Clear line
                 Console.Write(new string(' ', Console.WindowWidth));
                 Console.SetCursorPosition(cursorLeft, cursorTop);
-                // Reprint input + suggestion
-                if (match != null && match.Length > input.Length)
+                if (match != null && match.Length > input.Length) // Reprint input + suggestion
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(input);
@@ -280,4 +271,3 @@ namespace NEA
         }
     }
 }
-
