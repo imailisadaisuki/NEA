@@ -41,45 +41,33 @@ namespace NEA
                 return false;
             return current.previousLine != connection.line;
         }
-        static double EstimateToGoal(Station from, Station to)
-        {
-            // Heuristic: minimum number of zones to cross, times an average time per zone (e.g., 10 minutes)
-            double zoneDiff = Math.Abs(Math.Round(from.zone) - Math.Round(to.zone));
-            return zoneDiff * 5; // 10 minutes per zone as a rough estimate
-        }
+        static double Heuristic(Station from, Station to)
+            => Math.Abs(from.zone - to.zone);
         static void AStar(Station start, Station goal)
         {
-            var openSet = new PriorityQueue<Station>();
+            PriorityQueue<Station> openSet = new PriorityQueue<Station>();
             start.time2Travel = 0;
             openSet.Enqueue(start, 0);
-
             while (!openSet.IsEmpty())
             {
                 Station current = openSet.Dequeue();
-                if (current == goal)
-                    break;
-
+                if (current == goal) break;
                 if (current.visited) continue;
                 current.visited = true;
-
                 foreach (Connection connection in current.Connections)
                 {
-                    double newTime = current.time2Travel + connection.time;
+                    Station neighbor = connection.station;
+                    double gScore = current.time2Travel + connection.time;
                     if (IsLineChange(current, connection) && !current.getPrevConnectionLine().Contains("Walk"))
                     {
-                        newTime += 20;
+                        gScore += 13;
                     }
-                // Heuristic: straight-line distance, or minimum stops, etc.
-                double heuristic = EstimateToGoal(connection.station, goal);
-
-                    double priority = newTime + heuristic;
-
-                    if (newTime < connection.station.time2Travel)
+                    if (gScore < connection.station.time2Travel)
                     {
-                        connection.station.time2Travel = newTime;
-                        connection.station.previousStation = current;
+                        neighbor.time2Travel = gScore;
+                        neighbor.previousStation = current;
                         connection.station.previousLine = connection.line;
-                        openSet.Enqueue(connection.station, priority);
+                        openSet.Enqueue(neighbor, gScore + Heuristic(neighbor, goal));
                     }
                 }
             }
@@ -165,6 +153,7 @@ namespace NEA
                     {
                         totalTime += connection.estimatedTime;
                         totalCost += connection.cost;
+                        Console.WriteLine(new string('-', Console.WindowWidth));
                         Console.WriteLine($"Route from {path[i].name} to {path[i + 1].name}:");
                         while (connection.path.Count > 0)
                         {
@@ -257,7 +246,7 @@ namespace NEA
                 Console.SetCursorPosition(cursorLeft + input.Length, cursorTop); // Reset cursor for next loop
             }
         }
-        static Station GetStationWithAutocomplete(Dictionary<string, Station> stations)
+        static Station GetStation(Dictionary<string, Station> stations)
         {
             while (true)
             {
@@ -275,13 +264,11 @@ namespace NEA
         static void Main(string[] args)
         {
             Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             Dictionary<string, Station> stations = StationLoader.LoadFromJson(filePath); // Load stations from JSON file
             List<Station> targetStations = new List<Station>();
-            targetStations.Add(GetStationWithAutocomplete(stations));
-            targetStations.Add(GetStationWithAutocomplete(stations));
-            targetStations.Add(GetStationWithAutocomplete(stations));
-            targetStations.Add(GetStationWithAutocomplete(stations));
+            targetStations.Add(GetStation(stations));
+            targetStations.Add(GetStation(stations));
+            stopwatch.Start();
             List<DecomposedConnection> connections = DecomposedPath(targetStations, stations);
             Console.WriteLine("Manually ordered:");
             DisplayFullPath(targetStations, connections);
