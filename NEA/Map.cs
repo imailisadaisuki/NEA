@@ -40,8 +40,8 @@ namespace NEA
         public Station endStation { get; set; }
         public double estimatedTime { get; set; }
         public double cost { get; set; }
-        public Stack<string> path = new Stack<string>();
-        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, Stack<string> path) 
+        public List<string> path = new List<string>();
+        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, List<string> path) 
             => (this.startStation, this.endStation, this.estimatedTime, this.cost, this.path) 
             = (startStation, endStation, estimatedTime, cost, path);
     }

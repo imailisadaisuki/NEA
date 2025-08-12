@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
+using System.Buffers.Text;
 
 namespace NEA
 {
@@ -14,7 +15,7 @@ namespace NEA
         public static Random random = new Random();
         public const string filePath = "underground.json"; // Path to the JSON file containing station data
         public static readonly double[,] zoneCost = { 
-            //row refers to end zone, column represents start zone. Source: https://londondrum.com/transport/adult-train-fares.php
+            // Row refers to end zone, column represents start zone. Source: https://londondrum.com/transport/adult-train-fares.php
             // Zone 10 represents stations that special fees apply, such as Heathrow Airport T2&3, T4, T5 (Elizabeth Line) , Reading, Watford Junction, etc.
             { 2.9, 3.5, 3.8, 4.6, 5.2, 5.8, 6.7, 8.2, 8.3, 0 },
             { 0, 2.1, 2.3, 3, 3.2, 3.6, 4.9, 5.6, 8.3, 0 },
@@ -60,6 +61,13 @@ namespace NEA
             => !current.previousLines.Contains(connection.line) && connection.line != "Walk";
         static double Heuristic(Station from, Station to)
             => Math.Abs(from.zone - to.zone);
+        static string NormalizeStationName(string name)
+        {
+            // Strip platform/line suffixes to detect same physical station
+            int idx = name.IndexOf("(");
+            if (idx > 0) return name.Substring(0, idx).Trim();
+            return name.Trim();
+        }
         static void AStar(Station start, Station goal)
         {
             PriorityQueue<Station> openSet = new PriorityQueue<Station>();
@@ -77,9 +85,9 @@ namespace NEA
                     Station neighbor = connection.station;
                     double tentativeGScore = current.gScore + connection.time;
                     if (IsLineChange(current, connection))
-                    {
                         tentativeGScore += 13; // Transfer penalty
-                    }
+                    if (connection.line == "Walk" && NormalizeStationName(current.name) == NormalizeStationName(connection.station.name))
+                        tentativeGScore += 2; // discourage station re-entry unless needed
                     neighbor.previousLines = new HashSet<string>( // Save all lines for current leg
                         current.Connections
                         .Where(c => c.station == neighbor)
@@ -94,9 +102,9 @@ namespace NEA
                 }
             }
         }
-        static Stack<string> GetShortestPath(Station end)
+        static List<string> GetShortestPath(Station end) // I avoided using stacks as paths need to be read repeatively, stack cannot achieve this function (when poped, the last element is removed)
         {
-            Stack<string> path = new Stack<string>();
+            List<string> path = new List<string>();
             Station current = end;
             int stopCount = 0;
             Station prev = current.previousStation;
@@ -112,36 +120,37 @@ namespace NEA
                     connectionLines = new HashSet<string>(prevConnectionLines);
                     stopCount = 0;
                 }
-                path.Push(current.name);
+                path.Add(current.name);
                 stopCount++;
                 current = prev;
                 prev = current.previousStation;
             }
             AddTransfer(path, current.name, connectionLines, stopCount, true); // Add starting segment
+            path.Reverse(); // Reverse the path to start from the beginning
             return path;
         }
-        static void AddTransfer(Stack<string> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
+        static void AddTransfer(List<string> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
         {
-            path.Push($"\nRide {stopCount} stop(s) via:");
+            path.Add($"\nRide {stopCount} stop(s) via:");
             foreach (string line in lines)
-                path.Push(line);
-            path.Push("Possible line(s):");
-            path.Push(startStation ? $"Start from {stationName}" : $"\nTransfer at {stationName}");
+                path.Add(line);
+            path.Add("Possible line(s):");
+            path.Add(startStation ? $"Start from {stationName}" : $"\nTransfer at {stationName}");
         }
-        static double GetCost(Station End) //calculate cost based on Zone number
+        static double GetCost(Station End) // Calculate cost based on Zone number
         {
             double minZone = double.MaxValue;
             double maxZone = -1;
             for (Station current = End; current != null; current = current.previousStation)
             {
-                if (Math.Ceiling(current.zone) < minZone) minZone = current.zone; // There are some stations which are located between 2 zones, represented by a decimal number.
-                if (Math.Floor(current.zone) > maxZone) maxZone = current.zone; // e.g. 1.5 represents between station between zone 1 and 2
+                if (current.zone < minZone) minZone = current.zone; // There are some stations which are located between 2 zones, represented by a decimal number.
+                if (current.zone > maxZone) maxZone = current.zone; // e.g. 1.5 represents between station between zone 1 and 2
             }
-            return zoneCost[(int)minZone - 1, (int)maxZone - 1];
+            return zoneCost[(int) Math.Ceiling(minZone) - 1, (int) Math.Floor(maxZone) - 1];
         }
         static Dictionary<(Station, Station), DecomposedConnection> DecomposedPath(List<Station> targetStations, Dictionary<string, Station> stations) // Decompose the full graph into K(n)
         {
-            Dictionary<(Station, Station), DecomposedConnection> decomposedConnections = new Dictionary<(Station, Station), DecomposedConnection>();
+            Dictionary<(Station, Station), DecomposedConnection> decomposedConnections = new Dictionary<(Station, Station), DecomposedConnection>(); // Store the connection in a dictionary for quick access
             foreach (Station station in targetStations)
             {
                 foreach (Station target in targetStations)
@@ -155,7 +164,7 @@ namespace NEA
                         target,
                         target.gScore,
                         GetCost(target),
-                        GetShortestPath(target))); // Store the connection in a dictionary for quick access
+                        GetShortestPath(target))); 
                 }
             }
             return decomposedConnections;
@@ -171,10 +180,7 @@ namespace NEA
                 totalCost += connection.cost;
                 Console.WriteLine(new string('-', Console.WindowWidth));
                 Console.WriteLine($"Route from {path[i].name} to {path[i + 1].name}:");
-                while (connection.path.Count > 0)
-                {
-                    Console.WriteLine(connection.path.Pop());
-                }
+                connection.path.ForEach(Console.WriteLine); // Print the path segments
                 Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
                 Console.WriteLine(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}");
                 Console.WriteLine(new string('-', Console.WindowWidth));
@@ -182,24 +188,36 @@ namespace NEA
             Console.WriteLine($"Total estimated time: {totalTime} minutes");
             Console.WriteLine($"Total cost: £{totalCost}");
         }
-        static List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, int iterations)
+        static List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, int iterations, bool timeOrCost)
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
         https://www.youtube.com/watch?v=oXb2nC-e_EA ,
-        https://medium.com/data-science/ant-colony-optimization-in-action-6d9106de60af */
+        https://medium.com/data-science/ant-colony-optimization-in-action-6d9106de60af,
+        https://www.youtube.com/watch?v=u7bQomllcJw&t=988s */
         {
-            int ants = 50;
+            int ants = targetStations.Count;
             double alpha = 1;  // influence of pheromone
-            double beta = 5;   // influence of heuristic
+            double beta = 4;   // influence of heuristic
             double rho = 0.5;  // pheromone evaporation rate
             double Q = 100;    // pheromone deposit factor
             List<Station> bestPath = null;
             double bestLength = double.MaxValue;
             Dictionary<(Station, Station), double> pheromones = new Dictionary<(Station, Station), double>();
             Dictionary<(Station, Station), double> distance = new Dictionary<(Station, Station), double>();
-            foreach ((Station, Station) key in connections.Keys)
+            if (timeOrCost)
             {
-                pheromones[key] = 1; // Initialize pheromone levels
-                distance[key] = connections[key].estimatedTime; // Use estimated time as distance
+                foreach ((Station, Station) key in connections.Keys)
+                {
+                    pheromones[key] = 1; // Initialize pheromone levels
+                    distance[key] = connections[key].estimatedTime; // Use estimated time as distance
+                }
+            }
+            else
+            {
+                foreach ((Station, Station) key in connections.Keys)
+                {
+                    pheromones[key] = 1; // Initialize pheromone levels
+                    distance[key] = connections[key].cost; // Use cost as distance
+                }
             }
             for (int iteration = 0; iteration < iterations; iteration++)
             {
@@ -223,7 +241,7 @@ namespace NEA
                             probabilities[next] = tau * eta;
                             sum += probabilities[next];
                         }
-                        double rand = random.NextDouble() * sum; // Implicitly normalise probabilities
+                        double rand = random.NextDouble() * sum; // Implicitly normalise probabilities (dividing sum(tau(i,k)^alpha * eta(i,k)^beta))
                         double cumulativeProbability = 0;
                         Station chosen = null;
                         foreach (KeyValuePair<Station, double> kvp in probabilities)
@@ -280,7 +298,7 @@ namespace NEA
                     Console.WriteLine();
                     return input;
                 }
-                else if (key.Key == ConsoleKey.Tab)
+                else if (key.Key == ConsoleKey.Tab && match != null)
                 {
                     input = match;
                 }
@@ -322,10 +340,49 @@ namespace NEA
                 }
             }
         }
-        static void Main(string[] args)
+        static int getOption(List<string> options)
         {
-            Stopwatch stopwatch = new Stopwatch();
-            Dictionary<string, Station> stations = LoadFromJson(filePath); // Load stations from JSON file
+            Console.Clear();
+            Console.WriteLine("Press Up/Down arrow or W/S key to choose an option. Press Enter to confirm.\n");
+            options.ForEach(opt => Console.WriteLine($"   {opt}")); // Print options
+            Console.CursorLeft = 0;
+            Console.CursorTop = 2;
+            Console.Write("->");
+            int option = 1;
+            while (true)
+            {
+                ConsoleKeyInfo choice = Console.ReadKey(true);
+                if ((choice.Key == ConsoleKey.DownArrow || choice.Key == ConsoleKey.S) && option < options.Count)
+                {
+                    Console.CursorTop = option + 1;
+                    Console.CursorLeft = 0;
+                    Console.Write("  ");
+                    option++;
+                    Console.CursorTop = option + 1;
+                    Console.CursorLeft = 0;
+                    Console.Write("->");
+                }
+                else if ((choice.Key == ConsoleKey.UpArrow || choice.Key == ConsoleKey.W) && option > 1)
+                {
+                    Console.CursorTop = option + 1;
+                    Console.CursorLeft = 0;
+                    Console.Write("  ");
+                    option--;
+                    Console.CursorTop = option + 1;
+                    Console.CursorLeft = 0;
+                    Console.Write("->");
+
+                }
+                else if (choice.Key == ConsoleKey.Enter)
+                {
+                    Console.Clear();
+                    return option; // Return the selected option
+                }     
+            }
+        }
+        static void StationSearch(Dictionary<string, Station> stations)
+        {
+            int option;
             List<Station> targetStations = new List<Station>();
             Console.Write("Enter number of stations to find path (2-10): ");
             int numOfStations = int.Parse(Console.ReadLine());
@@ -333,12 +390,60 @@ namespace NEA
             {
                 targetStations.Add(GetStation(stations)); // Get target stations from user input
             }
-            stopwatch.Start();
-            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations, stations);
-            Console.WriteLine("Ant Colony Optimisation:");
-            List<Station> acPath = AntColonyOptimisation(targetStations, connections, 5000);
-            DisplayFullPath(acPath, connections);
-            stopwatch.Stop();
+            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations, stations);       
+            while (true)
+            {
+                option = getOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
+                switch (option)
+                {
+                    case 1:
+                        Console.WriteLine($"Manually ordered:");
+                        DisplayFullPath(targetStations, connections);
+                        Console.ReadLine();
+                        continue;
+                    case 2:
+                        Console.WriteLine("Ant Colony Optimisation based on time:");
+                        List<Station> acoTimePath = AntColonyOptimisation(targetStations, connections, 5000, true);
+                        DisplayFullPath(acoTimePath, connections);
+                        Console.ReadLine();
+                        continue;
+                    case 3:
+                        Console.WriteLine("Ant Colony Optimisation based on cost:");
+                        List<Station> acoCostPath = AntColonyOptimisation(targetStations, connections, 5000, false);
+                        DisplayFullPath(acoCostPath, connections);
+                        Console.ReadLine(); 
+                        continue;
+                    case 4:
+                        return;
+                }
+            }
+        }
+        static void Menu(Dictionary<string, Station> stations)
+        {
+            int option;
+            while (true)
+            {
+                option = getOption(new List<string> { "Find route", "Settings", "Exit" });
+                switch (option)
+                {
+                    case 1:
+                        Console.Clear();
+                        StationSearch(stations); // Start the station search process
+                        continue;
+                    case 2:
+                        continue;
+                    case 3:
+                        System.Environment.Exit(0); // Exit the program
+                        return;
+
+                }
+            }
+        }
+        static void Main(string[] args)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            Dictionary<string, Station> stations = LoadFromJson(filePath); // Load stations from JSON file
+            Menu(stations); // Start the station search process
             Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
             Console.ReadLine();
         }
