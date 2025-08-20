@@ -20,18 +20,18 @@ namespace NEA
         public string name { get; set; }
         public double zone { get; set; }
         public List<Connection> Connections = new List<Connection>();
-        public double gScore = int.MaxValue; // for A* algorithm
+        public double travelTime = int.MaxValue; // for A* algorithm
         public Station previousStation = null;
         public bool visited = false;
         public HashSet<string> previousLines = new HashSet<string>();
         public Station(string name, double zone) 
             => (this.name, this.zone) = (name, zone);
-        public List<string> getPrevConnectionLine() =>
-            previousStation == null ? new List<string>() 
+        public HashSet<string> getPrevConnectionLine() =>
+            previousStation == null ? new HashSet<string>()
             : previousStation.Connections
             .Where(c => c.station == this)
             .Select(c => c.line)
-            .ToList();
+            .ToHashSet();
     }
 
     public class DecomposedConnection

@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.IO;
-using System.Buffers.Text;
 
 namespace NEA
 {
@@ -51,53 +50,53 @@ namespace NEA
         {
             foreach (Station station in stations.Values)
             {
-                station.gScore = int.MaxValue;
+                station.travelTime = int.MaxValue;
                 station.previousStation = null;
                 station.visited = false;
                 station.previousLines.Clear(); // Reset previous lines for each station
             }
         }
         static bool IsLineChange(Station current, Connection connection)
-            => !current.previousLines.Contains(connection.line) && connection.line != "Walk";
-        static double Heuristic(Station from, Station to)
-            => Math.Abs(from.zone - to.zone);
-        static string NormalizeStationName(string name)
-        {
-            // Strip platform/line suffixes to detect same physical station
-            int idx = name.IndexOf("(");
-            if (idx > 0) return name.Substring(0, idx).Trim();
-            return name.Trim();
-        }
-        static void AStar(Station start, Station goal)
+            => !current.previousLines.Contains(connection.line);
+        static void Dijkstra(Station start)
         {
             PriorityQueue<Station> openSet = new PriorityQueue<Station>();
-            start.gScore = 0;
+            start.travelTime = 0;
             start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line)); // Initialize previous lines for the start station
             openSet.Enqueue(start, 0);
+            bool transferred; // Flag to check if a transfer has occurred
             while (!openSet.IsEmpty())
             {
                 Station current = openSet.Dequeue();
-                if (current == goal) break;
                 if (current.visited) continue;
                 current.visited = true;
                 foreach (Connection connection in current.Connections)
                 {
-                    Station neighbor = connection.station;
-                    double tentativeGScore = current.gScore + connection.time;
+                    Station neighbour = connection.station;
+                    double newTime = current.travelTime + connection.time;
+                    transferred = false; // Reset transfer flag for each neighbour
                     if (IsLineChange(current, connection))
-                        tentativeGScore += 13; // Transfer penalty
-                    if (connection.line == "Walk" && NormalizeStationName(current.name) == NormalizeStationName(connection.station.name))
-                        tentativeGScore += 2; // discourage station re-entry unless needed
-                    neighbor.previousLines = new HashSet<string>( // Save all lines for current leg
-                        current.Connections
-                        .Where(c => c.station == neighbor)
-                        .Select(c => c.line));
-                    if (tentativeGScore < neighbor.gScore)
                     {
-                        neighbor.gScore = tentativeGScore;
-                        neighbor.previousStation = current;
-                        neighbor.previousLines = new HashSet<string> { connection.line };
-                        openSet.Enqueue(neighbor, tentativeGScore + Heuristic(neighbor, goal));
+                        newTime += 13; // Transfer penalty
+                        transferred = true; // Set transfer flag if a line change occurs
+                    }
+                    if (newTime < neighbour.travelTime)
+                    {
+                        neighbour.travelTime = newTime;
+                        neighbour.previousStation = current;
+                        if (transferred) // If a transfer occurred, reset previous lines to the current station's lines
+                        {
+                            neighbour.previousLines = new HashSet<string>(neighbour.Connections.Select(c => c.line));
+                        }
+                        else
+                        {
+                            neighbour.previousLines = new HashSet<string>(current.previousLines); // Copy previous lines from the current station
+                            neighbour.previousLines.IntersectWith(new HashSet<string>( // Intersect with current lines to keep only the lines that connect to the neighbour
+                                current.Connections
+                                .Where(c => c.station == neighbour)
+                                .Select(c => c.line)));
+                        }
+                        openSet.Enqueue(neighbour, newTime);
                     }
                 }
             }
@@ -108,11 +107,11 @@ namespace NEA
             Station current = end;
             int stopCount = 0;
             Station prev = current.previousStation;
-            HashSet<string> connectionLines = new HashSet<string>(current.getPrevConnectionLine());
+            HashSet<string> connectionLines = current.getPrevConnectionLine();
             while (prev != null)
             {
                 HashSet<string> currentLines = new HashSet<string>(connectionLines); //clone a new set to avoid modifying the original set
-                HashSet<string> prevConnectionLines = new HashSet<string>(current.getPrevConnectionLine());
+                HashSet<string> prevConnectionLines = current.getPrevConnectionLine();
                 connectionLines.IntersectWith(prevConnectionLines); // Remove lines that are not connecting from the previous station to the current station
                 if (connectionLines.Count == 0) // If no lines connecting from one station to current station , a transfer occurred
                 {
@@ -153,16 +152,16 @@ namespace NEA
             Dictionary<(Station, Station), DecomposedConnection> decomposedConnections = new Dictionary<(Station, Station), DecomposedConnection>(); // Store the connection in a dictionary for quick access
             foreach (Station station in targetStations)
             {
+                ResetStations(stations);
+                Dijkstra(station); // Run A* algorithm to find the shortest path from station to target
                 foreach (Station target in targetStations)
                 {
                     if (target == station) continue; // Skip the same station
-                    ResetStations(stations);
-                    AStar(station, target); // Run A* algorithm to find the shortest path from station to target
                     decomposedConnections.Add((station, target),
                         new DecomposedConnection(
                         station,
                         target,
-                        target.gScore,
+                        target.travelTime,
                         GetCost(target),
                         GetShortestPath(target))); 
                 }
@@ -340,7 +339,7 @@ namespace NEA
                 }
             }
         }
-        static int getOption(List<string> options)
+        static int GetOption(List<string> options)
         {
             Console.Clear();
             Console.WriteLine("Press Up/Down arrow or W/S key to choose an option. Press Enter to confirm.\n");
@@ -393,7 +392,7 @@ namespace NEA
             Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations, stations);       
             while (true)
             {
-                option = getOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
+                option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
                 switch (option)
                 {
                     case 1:
@@ -423,7 +422,7 @@ namespace NEA
             int option;
             while (true)
             {
-                option = getOption(new List<string> { "Find route", "Settings", "Exit" });
+                option = GetOption(new List<string> { "Find route", "Settings", "Exit" });
                 switch (option)
                 {
                     case 1:
