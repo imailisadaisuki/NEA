@@ -29,5 +29,4 @@ namespace NEA
         public bool IsEmpty() => items.Count == 0;
         public int Count() => items.Count;
     }
-
 }

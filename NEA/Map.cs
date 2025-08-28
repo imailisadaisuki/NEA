@@ -20,7 +20,8 @@ namespace NEA
         public string name { get; set; }
         public double zone { get; set; }
         public List<Connection> Connections = new List<Connection>();
-        public double travelTime = int.MaxValue; // for A* algorithm
+        // Variables for Dijkstra's algorithm
+        public double travelTime = int.MaxValue; 
         public Station previousStation = null;
         public bool visited = false;
         public HashSet<string> previousLines = new HashSet<string>();
@@ -32,8 +33,14 @@ namespace NEA
             .Where(c => c.station == this)
             .Select(c => c.line)
             .ToHashSet();
+        public void ResetStation()
+        {
+            travelTime = int.MaxValue;
+            previousStation = null;
+            visited = false;
+            previousLines.Clear();
+        }
     }
-
     public class DecomposedConnection
     {
         public Station startStation { get; set; }
