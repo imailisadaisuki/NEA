@@ -44,7 +44,9 @@ namespace NEA
     public class AlgorithmSettingsJSON
     {
         [JsonPropertyName("ExecutionTime")]
-        public int executionTime { get; set; }
+        public double executionTime { get; set; }
+        [JsonPropertyName("IPC")]
+        public double ipc { get; set; }
         [JsonPropertyName("Alpha")]
         public double alpha { get; set; }
         [JsonPropertyName("Beta")]

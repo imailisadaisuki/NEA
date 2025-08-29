@@ -156,6 +156,7 @@ namespace NEA
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
         https://www.youtube.com/watch?v=oXb2nC-e_EA ,
         https://medium.com/data-science/ant-colony-optimization-in-action-6d9106de60af,
+        https://www.sciencedirect.com/science/article/pii/S2667305324000863,
         https://www.youtube.com/watch?v=u7bQomllcJw&t=988s */
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -170,21 +171,17 @@ namespace NEA
             double bestLength = double.MaxValue;
             Dictionary<(Station, Station), double> pheromones = new Dictionary<(Station, Station), double>();
             Dictionary<(Station, Station), double> distance = new Dictionary<(Station, Station), double>();
+            foreach ((Station, Station) key in connections.Keys)
+                pheromones[key] = settings.algorithm.ipc; // Initialize pheromone concentration
             if (timeOrCost)
             {
                 foreach ((Station, Station) key in connections.Keys)
-                {
-                    pheromones[key] = 1; // Initialize pheromone levels
                     distance[key] = connections[key].estimatedTime; // Use estimated time as distance
-                }
             }
             else
             {
                 foreach ((Station, Station) key in connections.Keys)
-                {
-                    pheromones[key] = 1; // Initialize pheromone levels
                     distance[key] = connections[key].cost; // Use cost as distance
-                }
             }
             while (stopwatch.ElapsedMilliseconds < maxTime) // Run until the execution time is reached
             {
@@ -296,15 +293,21 @@ namespace NEA
         {
             while (true)
             {
-                try
-                {
-                    Console.Write("Enter station: ");
-                    return stations[AutoCompleteInput()];
-                }
-                catch (KeyNotFoundException)
-                {
-                    Console.WriteLine("Station not found. Please try again.");
-                }
+                Console.Write("Enter station name (Tab for auto-complete): ");
+                if (stations.TryGetValue(AutoCompleteInput(), out Station station))
+                    return station;
+                Console.WriteLine("Station not found. Please try again.");
+            }
+        }
+        static double GetDouble(string prompt, double min, double max)
+        {
+            double value;
+            while (true)
+            {
+                Console.Write(prompt);
+                if (double.TryParse(Console.ReadLine(), out value) && value >= min && value <= max)
+                    return value;
+                Console.WriteLine($"Invalid input. Please enter a number between {min} and {max}.");
             }
         }
         static int GetOption(List<string> options)
@@ -343,21 +346,30 @@ namespace NEA
                 else if (choice.Key == ConsoleKey.Enter)
                 {
                     Console.Clear();
-                    return option; // Return the selected option
+                    return option;
                 }     
             }
         }
         static void StationSearch()
         {
-            int option;
+            int option, numOfStations;
             List<Station> targetStations = new List<Station>();
-            Console.Write("Enter number of stations to find path (2-10): ");
-            int numOfStations = int.Parse(Console.ReadLine());
+            while (true)
+            {
+                Console.Write("Enter number of stations to find path (2-20): ");
+                if (int.TryParse(Console.ReadLine(), out option) && option >= 2 && option <= 20)
+                {
+                    numOfStations = option;
+                    break;
+                }
+                Console.WriteLine("Invalid input. Please enter a number between 2 and 20.");
+            }
             for (int i = 0; i < numOfStations; i++)
             {
                 targetStations.Add(GetStation()); // Get target stations from user input
             }
-            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations);       
+            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations); 
+            Console.Clear();
             while (true)
             {
                 option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
@@ -385,24 +397,76 @@ namespace NEA
                 }
             }
         }
+        static void GeneralSettings()
+        {
+            int option;
+            while (true)
+            {
+                option = GetOption(new List<string> { "Walking Speed", "Timetable (not implemented)", "Back to settings menu" });
+                switch (option)
+                {
+                    case 1:
+                        settings.general.transferPenalty = 10 + GetOption(new List<string> { "Very fast", "Fast", "Average", "Slow", "Very Slow" }); // Each option represents 1 minutes increment
+                        continue;
+                    case 2:
+                        Console.WriteLine("Timetable settings not implemented yet.");
+                        Console.ReadLine();
+                        continue;
+                    case 3:
+                        return;
+                }
+            }
+        }
+        static void AlgorithmSettings()
+        {
+            int option;
+            while (true)
+            {
+                option = GetOption(new List<string> { "Execution Time", "Initial pheromones concentration", "Influence of pheromone", "Influence of heuristic", "Pheromone evaporation rate", "Pheromone deposit factor", "Back to settings menu" });
+                switch (option)
+                {
+                    case 1:
+                        settings.algorithm.executionTime = GetDouble("Enter execution time in seconds (1-600): ", 1, 600);
+                        continue;
+                    case 2:
+                        settings.algorithm.ipc = GetDouble("Enter initial pheromones concentration (0.1-2): ", 0.1, 2);
+                        continue;
+                    case 3:
+                        settings.algorithm.alpha = GetDouble("Enter alpha (influence of pheromone) (1-5): ", 1, 5);
+                        continue;
+                    case 4:
+                        settings.algorithm.beta = GetDouble("Enter beta (influence of heuristic) (1-5): ", 1, 5);
+                        continue;
+                    case 5:
+                        settings.algorithm.rho = GetDouble("Enter rho (pheromone evaporation rate) (0.1-2): ", 0.1, 2);
+                        continue;
+                    case 6:
+                        settings.algorithm.q = GetDouble("Enter Q (pheromone deposit factor) (1-100): ", 1, 100);
+                        continue;
+                    case 7:
+                        return;
+                }
+            }
+        }
         static void Settings()
         {
             int option;
             while (true)
             {
-                option = GetOption(new List<string> { "General", "Algorithm settings", "Back to main menu" });
+                option = GetOption(new List<string> { "General settings", "Algorithm settings (Advanced)", "Save and return", "Return without saving" });
                 switch (option)
                 {
                     case 1:
-                        Console.WriteLine("Walking speed settings not implemented yet.");
-                        Console.ReadLine();
+                        GeneralSettings();
                         continue;
                     case 2:
-                        Console.WriteLine("Optimisation settings not implemented yet.");
-                        Console.ReadLine();
+                        AlgorithmSettings();
                         continue;
                     case 3:
                         DataEditor.SaveSettings(settingsFilePath, settings); // Save settings to JSON file
+                        return;
+                    case 4:
+                        DataEditor.LoadSettings(settingsFilePath); // Reload settings from JSON file to discard changes
                         return;
                 }
             }
@@ -416,11 +480,9 @@ namespace NEA
                 switch (option)
                 {
                     case 1:
-                        Console.Clear();
                         StationSearch(); // Start the station search process
                         continue;
                     case 2:
-                        Console.Clear();
                         Settings();
                         continue;
                     case 3:
@@ -432,12 +494,9 @@ namespace NEA
         }
         static void Main(string[] args)
         {
-            Stopwatch stopwatch = new Stopwatch();
             stations = DataEditor.LoadStation(stationFilePath); // Load stations from JSON file
             settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
             Menu();
-            Console.WriteLine($"Execution Time: {stopwatch.ElapsedMilliseconds} ms");
-            Console.ReadLine();
         }
     }
 }
