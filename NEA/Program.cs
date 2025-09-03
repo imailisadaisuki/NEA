@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace NEA
@@ -222,14 +219,14 @@ namespace NEA
                         totalLength += distance[(current, chosen)]; // Add the distance to the path length
                         current = chosen; // Move to the next station
                     }
-                    if (totalLength < bestLength) // Track best
+                    if (totalLength < bestLength) // Track best path
                     {
                         bestLength = totalLength;
                         bestPath = new List<Station>(path);
                     }
                     allAntsPaths.Add((path, totalLength));
                 }
-                foreach ((Station, Station) key in pheromones.Keys.ToList())
+                foreach ((Station, Station) key in connections.Keys)
                 {
                     pheromones[key] *= (1 - rho); // Evaporate pheromones
                 }
