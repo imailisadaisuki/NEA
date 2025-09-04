@@ -286,13 +286,20 @@ namespace NEA
                 Console.SetCursorPosition(cursorLeft + input.Length, cursorTop); // Reset cursor for next loop
             }
         }
-        static Station GetStation()
+        static void GetStations(List<Station> targetStations)
         {
             while (true)
             {
                 Console.Write("Enter station name (Tab for auto-complete): ");
                 if (stations.TryGetValue(AutoCompleteInput(), out Station station))
-                    return station;
+                {
+                    if (!targetStations.Contains(station))
+                    {
+                        targetStations.Add(station);
+                        return;
+                    }
+                    Console.WriteLine("Station already added. Please enter a different station.");
+                }
                 Console.WriteLine("Station not found. Please try again.");
             }
         }
@@ -363,7 +370,7 @@ namespace NEA
             }
             for (int i = 0; i < numOfStations; i++)
             {
-                targetStations.Add(GetStation()); // Get target stations from user input
+                GetStations(targetStations); // Get target stations from user input
             }
             Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations); 
             Console.Clear();
