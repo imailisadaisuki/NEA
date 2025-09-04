@@ -286,11 +286,11 @@ namespace NEA
                 Console.SetCursorPosition(cursorLeft + input.Length, cursorTop); // Reset cursor for next loop
             }
         }
-        static void GetStations(List<Station> targetStations)
+        static void GetStations(List<Station> targetStations, bool startStation)
         {
             while (true)
             {
-                Console.Write("Enter station name (Tab for auto-complete): ");
+                Console.Write(startStation ? "Enter name of starting station (Tab for auto-complete): " : "Enter station name (Tab for auto-complete): ");
                 if (stations.TryGetValue(AutoCompleteInput(), out Station station))
                 {
                     if (!targetStations.Contains(station))
@@ -368,9 +368,10 @@ namespace NEA
                 }
                 Console.WriteLine("Invalid input. Please enter a number between 2 and 20.");
             }
-            for (int i = 0; i < numOfStations; i++)
+            GetStations(targetStations, true); // Get first station from user input
+            for (int i = 0; i < numOfStations-1; i++)
             {
-                GetStations(targetStations); // Get target stations from user input
+                GetStations(targetStations, false); // Get target stations from user input
             }
             Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations); 
             Console.Clear();
