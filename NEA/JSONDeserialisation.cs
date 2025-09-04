@@ -40,8 +40,10 @@ namespace NEA
     {
         [JsonPropertyName("TransferPenalty")]
         public double transferPenalty { get; set; }
-        [JsonPropertyName("Timetable")]
-        public string timetable { get; set; }
+        [JsonPropertyName("TimetableFilePath")]
+        public string timetableFilepath { get; set; }
+        [JsonPropertyName("ZoneCostFilePath")]
+        public string zonecostFilepath { get; set; }
     }
     public class AlgorithmSettingsJSON
     {

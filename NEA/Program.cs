@@ -10,8 +10,6 @@ namespace NEA
     internal class Program
     {
         public static Random random = new Random();
-        public const string stationFilePath = "underground.json"; // Path to the JSON file containing station data
-        public const string zoneCostFilePath = "zonecost.json"; // Path to the JSON file containing zone cost data
         public const string settingsFilePath = "settings.json"; // Path to the JSON file containing user settings
         public static Dictionary<string, Station> stations;
         public static SettingsJSON settings;
@@ -98,7 +96,7 @@ namespace NEA
         }
         static double GetCost(Station End) // Calculate cost based on zone number
         {
-            double[][] zoneCost = DataEditor.LoadZoneCost(zoneCostFilePath);
+            double[][] zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath);
             double minZone = double.MaxValue;
             double maxZone = -1;
             for (Station current = End; current != null; current = current.previousStation)
@@ -394,6 +392,29 @@ namespace NEA
                 }
             }
         }
+        static void TimetableSettings()
+        {
+            int option;
+            while (true)
+            {
+                option = GetOption(new List<string> { "Weekdays Peak", "Weekdays Offpeak", "Weekends" });
+                switch (option)
+                {
+                    case 1:
+                        settings.general.timetableFilepath = "undergroundWDP.json";
+                        settings.general.zonecostFilepath = "zonecostP.json";
+                        break;
+                    case 2:
+                        settings.general.timetableFilepath = "undergroundWDOP.json";
+                        settings.general.zonecostFilepath = "zonecostOP.json";
+                        break;
+                    case 3:
+                        settings.general.timetableFilepath = "undergroundWE.json";
+                        settings.general.zonecostFilepath = "zonecostOP.json";
+                        break;
+                }
+            }
+        }
         static void GeneralSettings()
         {
             int option;
@@ -406,8 +427,7 @@ namespace NEA
                         settings.general.transferPenalty = 10 + GetOption(new List<string> { "Very fast", "Fast", "Average", "Slow", "Very Slow" }); // Each option represents 1 minutes increment
                         continue;
                     case 2:
-                        Console.WriteLine("Timetable settings not implemented yet.");
-                        Console.ReadLine();
+                        TimetableSettings();
                         continue;
                     case 3:
                         return;
@@ -463,16 +483,17 @@ namespace NEA
                         DataEditor.SaveSettings(settingsFilePath, settings); // Save settings to JSON file
                         return;
                     case 4:
-                        DataEditor.LoadSettings(settingsFilePath); // Reload settings from JSON file to discard changes
                         return;
                 }
             }
         }
-        static void Menu()
+        static void Main(string[] args)
         {
             int option;
             while (true)
             {
+                settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
+                stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
                 option = GetOption(new List<string> { "Find route", "Settings", "Exit" });
                 switch (option)
                 {
@@ -488,12 +509,6 @@ namespace NEA
 
                 }
             }
-        }
-        static void Main(string[] args)
-        {
-            stations = DataEditor.LoadStation(stationFilePath); // Load stations from JSON file
-            settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
-            Menu();
         }
     }
 }
