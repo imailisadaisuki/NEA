@@ -12,8 +12,8 @@ namespace NEA
         public Station station { get; set; }
         public double time { get; set; }
         public string line { get; set; }
-        public string platform { get; set; }
-        public Connection(Station station, double time, string line, string platform) 
+        public HashSet<string> platform { get; set; }
+        public Connection(Station station, double time, string line, HashSet<string> platform) 
             => (this.station, this.time, this.line, this.platform) = (station, time, line, platform);
     }
     public class Station
@@ -34,6 +34,14 @@ namespace NEA
             .Where(c => c.station == this)
             .Select(c => c.line)
             .ToHashSet();
+        public HashSet<string> getPlatformNumber(HashSet<string> lines)
+        {
+            HashSet<string> platforms = new HashSet<string>();
+            platforms.UnionWith(Connections
+                .Where(c => lines.Contains(c.line))
+                .SelectMany(c => c.platform));
+            return platforms;
+        }
         public void ResetStation()
         {
             travelTime = int.MaxValue;

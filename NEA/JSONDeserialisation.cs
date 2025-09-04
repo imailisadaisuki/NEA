@@ -27,7 +27,7 @@ namespace NEA
         [JsonPropertyName("Line")]
         public string line { get; set; }
         [JsonPropertyName("Platform")]
-        public string platform { get; set; }
+        public HashSet<string> platform { get; set; }
     }
     public class ZoneCostJSON
     {

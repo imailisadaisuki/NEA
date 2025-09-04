@@ -89,6 +89,8 @@ namespace NEA
         static void AddTransfer(List<string> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
         {
             path.Add($"\nRide {stopCount} stop(s) via:");
+            string platformInfo = $"Platform number(s): {string.Join(", ", stations[stationName].getPlatformNumber(lines))}";
+            path.Add(platformInfo);
             foreach (string line in lines)
                 path.Add(line);
             path.Add("Possible line(s):");
