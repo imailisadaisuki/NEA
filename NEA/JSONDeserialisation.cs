@@ -26,6 +26,8 @@ namespace NEA
         public double time { get; set; }
         [JsonPropertyName("Line")]
         public string line { get; set; }
+        [JsonPropertyName("Platform")]
+        public string platform { get; set; }
     }
     public class ZoneCostJSON
     {
@@ -76,7 +78,7 @@ namespace NEA
                 Station fromStation = stations[stationJson.name];
                 foreach (ConnectionJSON connection in stationJson.connections)
                 {
-                    fromStation.Connections.Add(new Connection(stations[connection.station], connection.time, connection.line));
+                    fromStation.Connections.Add(new Connection(stations[connection.station], connection.time, connection.line, connection.platform));
                 }
             }
             return stations;

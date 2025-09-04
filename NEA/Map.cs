@@ -12,8 +12,9 @@ namespace NEA
         public Station station { get; set; }
         public double time { get; set; }
         public string line { get; set; }
-        public Connection(Station station, double time, string line) 
-            => (this.station, this.time, this.line) = (station, time, line);
+        public string platform { get; set; }
+        public Connection(Station station, double time, string line, string platform) 
+            => (this.station, this.time, this.line, this.platform) = (station, time, line, platform);
     }
     public class Station
     {
