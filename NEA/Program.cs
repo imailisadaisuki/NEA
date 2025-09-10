@@ -11,8 +11,10 @@ namespace NEA
     {
         public static Random random = new Random();
         public const string settingsFilePath = "settings.json"; // Path to the JSON file containing user settings
+        public const string tubeColoursFilePath = "tubecolours.json"; // Path to the JSON file containing tube line colours
         public static Dictionary<string, Station> stations;
         public static SettingsJSON settings;
+        public static Dictionary<string, ConsoleColor> tubeColours;
         static bool IsLineChange(Station current, Connection connection)
             => !current.previousLines.Contains(connection.line);
         static void Dijkstra(Station start)
@@ -227,16 +229,12 @@ namespace NEA
                     allAntsPaths.Add((path, totalLength));
                 }
                 foreach ((Station, Station) key in connections.Keys)
-                {
                     pheromones[key] *= (1 - rho); // Evaporate pheromones
-                }
                 foreach ((List<Station> antPath, double length) in allAntsPaths)
                 {
                     double pheromoneDeposit = Q / length; // Deposit pheromones based on path length
                     for (int i = 0; i < antPath.Count - 1; i++)
-                    {
                         pheromones[(antPath[i], antPath[i + 1])] += pheromoneDeposit; // Update pheromones for each segment of the path
-                    }
                 }
             }
             return bestPath;
@@ -504,6 +502,7 @@ namespace NEA
             {
                 settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
                 stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
+                tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
                 option = GetOption(new List<string> { "Find route", "Settings", "Exit" });
                 switch (option)
                 {
