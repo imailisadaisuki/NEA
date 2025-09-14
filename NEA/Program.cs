@@ -14,6 +14,7 @@ namespace NEA
         public const string tubeColoursFilePath = "tubecolours.json"; // Path to the JSON file containing tube line colours
         public static Dictionary<string, Station> stations;
         public static SettingsJSON settings;
+        public static double[][] zoneCost;
         public static Dictionary<string, ConsoleColor> tubeColours;
         static bool IsLineChange(Station current, Connection connection)
             => !current.previousLines.Contains(connection.line);
@@ -61,9 +62,9 @@ namespace NEA
                 }
             }
         }
-        static List<string> GetShortestPath(Station end) // I avoided using stacks as paths need to be read repeatively, stack cannot achieve this function (when poped, the last element is removed)
+        static List<PathInstruction> GetShortestPath(Station end) // I avoided using stacks as paths need to be read repeatively, stack cannot achieve this function (when poped, the last element is removed)
         {
-            List<string> path = new List<string>();
+            List<PathInstruction> path = new List<PathInstruction>();
             Station current = end;
             int stopCount = 0;
             Station prev = current.previousStation;
@@ -79,7 +80,7 @@ namespace NEA
                     connectionLines = new HashSet<string>(prevConnectionLines);
                     stopCount = 0;
                 }
-                path.Add(current.name);
+                path.Add(new PathInstruction(current.name));
                 stopCount++;
                 current = prev;
                 prev = current.previousStation;
@@ -88,19 +89,18 @@ namespace NEA
             path.Reverse(); // Reverse the path to start from the beginning
             return path;
         }
-        static void AddTransfer(List<string> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
+        static void AddTransfer(List<PathInstruction> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
         {
-            path.Add($"\nRide {stopCount} stop(s) via:");
+            path.Add(new PathInstruction($"\nRide {stopCount} stop(s) via:"));
             string platformInfo = $"Platform number(s): {string.Join(", ", stations[stationName].getPlatformNumber(lines))}";
-            path.Add(platformInfo);
+            path.Add(new PathInstruction(platformInfo));
             foreach (string line in lines)
-                path.Add(line);
-            path.Add("Possible line(s):");
-            path.Add(startStation ? $"Start from {stationName}" : $"\nTransfer at {stationName}");
+                path.Add(new PathInstruction(line, true));
+            path.Add(new PathInstruction("Possible line(s):"));
+            path.Add(new PathInstruction(startStation ? $"Start from {stationName}" : $"\nTransfer at {stationName}"));
         }
         static double GetCost(Station End) // Calculate cost based on zone number
         {
-            double[][] zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath);
             double minZone = double.MaxValue;
             double maxZone = -1;
             for (Station current = End; current != null; current = current.previousStation)
@@ -136,6 +136,7 @@ namespace NEA
         {
             double totalTime = 0;
             double totalCost = 0;
+            Dictionary<string, ConsoleColor> lineColours = new Dictionary<string, ConsoleColor>(tubeColours);
             for (int i = 0; i < path.Count - 1; i++)
             {
                 DecomposedConnection connection = connections[(path[i], path[i + 1])]; // Get the connection between the current and next station
@@ -143,7 +144,8 @@ namespace NEA
                 totalCost += connection.cost;
                 Console.WriteLine(new string('-', Console.WindowWidth));
                 Console.WriteLine($"Route from {path[i].name} to {path[i + 1].name}:");
-                connection.path.ForEach(Console.WriteLine); // Print the path segments
+                foreach (PathInstruction segment in connection.path)
+                    segment.DisplaySegment(tubeColours); // Print the path segments
                 Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
                 Console.WriteLine(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}");
                 Console.WriteLine(new string('-', Console.WindowWidth));
@@ -503,6 +505,7 @@ namespace NEA
                 settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
                 stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
                 tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
+                zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
                 option = GetOption(new List<string> { "Find route", "Settings", "Exit" });
                 switch (option)
                 {

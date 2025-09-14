@@ -29,6 +29,13 @@ namespace NEA
         [JsonPropertyName("Platform")]
         public HashSet<string> platform { get; set; }
     }
+    public class ZoneCostJSON
+    {
+        // Row refers to end zone - start zone, column represents start zone - 1. e.g. cost from zone 2 to 3 is located in [1][1] Source: https://londondrum.com/transport/adult-train-fares.php
+        // Zone 10 represents stations that special fees are applied, e.g. Heathrow Airport T2&3, T4, T5 (Elizabeth Line) , Reading, Watford Junction
+        [JsonPropertyName("ZoneCost")]
+        public double[][] zoneCost { get; set; } // I used a jagged array here because it's easier to represent in JSON and reduce file size
+    }
     public class GeneralSettingsJSON
     {
         [JsonPropertyName("TransferPenalty")]
@@ -60,6 +67,11 @@ namespace NEA
         [JsonPropertyName("Algorithm")]
         public AlgorithmSettingsJSON algorithm { get; set; }
     }
+    public class TubeColourJSON
+    {
+        [JsonPropertyName("Colour")]
+        public Dictionary<string, string> colour { get; set; }
+    }
     public class DataEditor
     {
         public static Dictionary<string, Station> LoadStation(string filePath)
@@ -79,13 +91,10 @@ namespace NEA
             return stations;
         }
         public static double[][] LoadZoneCost(string filePath)
-        // Row refers to end zone - start zone, column represents start zone - 1. e.g. cost from zone 2 to 3 is located in [1][1] Source: https://londondrum.com/transport/adult-train-fares.php
-        // Zone 10 represents stations that special fees are applied, e.g. Heathrow Airport T2&3, T4, T5 (Elizabeth Line) , Reading, Watford Junction
-        // I used a jagged array here because it's easier to represent in JSON and reduce file size
         {
             string json = File.ReadAllText(filePath);
-            double[][] zoneCostData = JsonSerializer.Deserialize<double[][]>(json);
-            return zoneCostData;
+            ZoneCostJSON zoneCostData = JsonSerializer.Deserialize<ZoneCostJSON>(json);
+            return zoneCostData.zoneCost;
         }
         public static SettingsJSON LoadSettings(string filePath)
         {
@@ -101,8 +110,8 @@ namespace NEA
         public static Dictionary<string, ConsoleColor> LoadColours(string filePath)
         {
             string json = File.ReadAllText(filePath);
-            Dictionary<string, string> colourStrings = JsonSerializer.Deserialize<Dictionary<string, string>>(json); // Load as dictionary of string, string
-            return colourStrings.ToDictionary(
+            TubeColourJSON colourStrings = JsonSerializer.Deserialize<TubeColourJSON>(json);
+            return colourStrings.colour.ToDictionary(
                 kvp => kvp.Key,
                 kvp => (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value) // Convert to dictionary of string, ConsoleColor
             );

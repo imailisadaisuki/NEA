@@ -50,14 +50,38 @@ namespace NEA
             previousLines.Clear();
         }
     }
+    public class PathInstruction 
+    { 
+        public string instruction { get; set; }
+        public bool isLine { get; set; }
+        public PathInstruction(string instruction, bool isLine = false)
+            => (this.instruction, this.isLine) = (instruction, isLine);
+        private string NormalizeLineName(string line) =>
+            line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line"
+        public void DisplaySegment(Dictionary<string, ConsoleColor> lineColors)
+        {
+            string trimmed = NormalizeLineName(instruction);
+            if (isLine && lineColors.ContainsKey(trimmed))
+            {
+                Console.ForegroundColor = lineColors[trimmed];
+                Console.WriteLine(instruction);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine(instruction);
+            }
+        }
+
+    }
     public class DecomposedConnection
     {
         public Station startStation { get; set; }
         public Station endStation { get; set; }
         public double estimatedTime { get; set; }
         public double cost { get; set; }
-        public List<string> path = new List<string>();
-        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, List<string> path) 
+        public List<PathInstruction> path = new List<PathInstruction>();
+        public DecomposedConnection(Station startStation, Station endStation, double estimatedTime, double cost, List<PathInstruction> path) 
             => (this.startStation, this.endStation, this.estimatedTime, this.cost, this.path) 
             = (startStation, endStation, estimatedTime, cost, path);
     }
