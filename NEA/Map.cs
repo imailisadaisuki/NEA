@@ -58,19 +58,20 @@ namespace NEA
             => (this.instruction, this.isLine) = (instruction, isLine);
         private string NormalizeLineName(string line) =>
             line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line"
-        public void DisplaySegment(Dictionary<string, ConsoleColor> lineColors)
+        public void DisplaySegment(Dictionary<string, (ConsoleColor, ConsoleColor)> lineColors)
         {
             string trimmed = NormalizeLineName(instruction);
             if (isLine && lineColors.ContainsKey(trimmed))
             {
-                Console.ForegroundColor = lineColors[trimmed];
-                Console.WriteLine(instruction);
+                var (fg, bg) = lineColors[trimmed];
+                Console.ForegroundColor = fg;
+                Console.BackgroundColor = bg;
+                Console.Write(instruction);
                 Console.ResetColor();
+                Console.WriteLine();
             }
             else
-            {
                 Console.WriteLine(instruction);
-            }
         }
 
     }

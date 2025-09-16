@@ -15,7 +15,7 @@ namespace NEA
         public static Dictionary<string, Station> stations;
         public static SettingsJSON settings;
         public static double[][] zoneCost;
-        public static Dictionary<string, ConsoleColor> tubeColours;
+        public static Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours;
         static bool IsLineChange(Station current, Connection connection)
             => !current.previousLines.Contains(connection.line);
         static void Dijkstra(Station start)
@@ -136,7 +136,6 @@ namespace NEA
         {
             double totalTime = 0;
             double totalCost = 0;
-            Dictionary<string, ConsoleColor> lineColours = new Dictionary<string, ConsoleColor>(tubeColours);
             for (int i = 0; i < path.Count - 1; i++)
             {
                 DecomposedConnection connection = connections[(path[i], path[i + 1])]; // Get the connection between the current and next station

@@ -36,7 +36,7 @@ namespace NEA
         [JsonPropertyName("ZoneCost")]
         public double[][] zoneCost { get; set; } // I used a jagged array here because it's easier to represent in JSON and reduce file size
     }
-    public class GeneralSettingsJSON
+    public class GeneralSettings
     {
         [JsonPropertyName("TransferPenalty")]
         public double transferPenalty { get; set; }
@@ -45,7 +45,7 @@ namespace NEA
         [JsonPropertyName("ZoneCostFilePath")]
         public string zonecostFilepath { get; set; }
     }
-    public class AlgorithmSettingsJSON
+    public class AlgorithmSettings
     {
         [JsonPropertyName("ExecutionTime")]
         public double executionTime { get; set; }
@@ -63,14 +63,21 @@ namespace NEA
     public class SettingsJSON
     {
         [JsonPropertyName("General")]
-        public GeneralSettingsJSON general { get; set; }
+        public GeneralSettings general { get; set; }
         [JsonPropertyName("Algorithm")]
-        public AlgorithmSettingsJSON algorithm { get; set; }
+        public AlgorithmSettings algorithm { get; set; }
+    }
+    public class LineColour
+    {
+        [JsonPropertyName("Foreground")]
+        public string Foreground { get; set; }
+        [JsonPropertyName("Background")]
+        public string Background { get; set; }
     }
     public class TubeColourJSON
     {
         [JsonPropertyName("Colour")]
-        public Dictionary<string, string> colour { get; set; }
+        public Dictionary<string, LineColour> colour { get; set; }
     }
     public class DataEditor
     {
@@ -107,13 +114,14 @@ namespace NEA
             string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(filePath, json);
         }
-        public static Dictionary<string, ConsoleColor> LoadColours(string filePath)
+        public static Dictionary<string, (ConsoleColor, ConsoleColor)> LoadColours(string filePath)
         {
             string json = File.ReadAllText(filePath);
             TubeColourJSON colourStrings = JsonSerializer.Deserialize<TubeColourJSON>(json);
             return colourStrings.colour.ToDictionary(
                 kvp => kvp.Key,
-                kvp => (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value) // Convert to dictionary of string, ConsoleColor
+                kvp => ((ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Foreground),
+                        (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Background)) // Convert to dictionary of string, Linecolour
             );
         }
     }
