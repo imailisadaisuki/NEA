@@ -36,7 +36,11 @@ namespace NEA
                     Station neighbour = connection.station;
                     double newTime = current.travelTime + connection.time;
                     transferred = false; // Reset transfer flag for each neighbour
-                    if (IsLineChange(current, connection))
+                    if (current.previousLines.Contains("Walk")) // As transfer penality of "Walk" will be counted twice
+                    {
+                        transferred = true;
+                    }
+                    else if (IsLineChange(current, connection))
                     {
                         newTime += transferPenalty; // Transfer penalty
                         transferred = true; // Set transfer flag if a line change occurs
@@ -47,7 +51,9 @@ namespace NEA
                         neighbour.previousStation = current;
                         if (transferred) // If a transfer occurred, reset previous lines to the current station's lines
                         {
-                            neighbour.previousLines = new HashSet<string>(neighbour.Connections.Select(c => c.line));
+                            neighbour.previousLines = new HashSet<string>(current.Connections
+                                .Where(c => c.station == neighbour)
+                                .Select(c => c.line));
                         }
                         else
                         {

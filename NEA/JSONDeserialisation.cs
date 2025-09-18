@@ -91,9 +91,7 @@ namespace NEA
             {
                 Station fromStation = stations[stationJson.name];
                 foreach (ConnectionJSON connection in stationJson.connections)
-                {
                     fromStation.Connections.Add(new Connection(stations[connection.station], connection.time, connection.line, connection.platform));
-                }
             }
             return stations;
         }
