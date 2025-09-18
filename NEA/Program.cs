@@ -36,10 +36,8 @@ namespace NEA
                     Station neighbour = connection.station;
                     double newTime = current.travelTime + connection.time;
                     transferred = false; // Reset transfer flag for each neighbour
-                    if (current.previousLines.Contains("Walk")) // As transfer penality of "Walk" will be counted twice
-                    {
+                    if (connection.line == "Walk") // As transfer penality of "Walk" will be counted twice
                         transferred = true;
-                    }
                     else if (IsLineChange(current, connection))
                     {
                         newTime += transferPenalty; // Transfer penalty
@@ -142,21 +140,25 @@ namespace NEA
         {
             double totalTime = 0;
             double totalCost = 0;
+            List<PathInstruction> fullInstructions = new List<PathInstruction>();
             for (int i = 0; i < path.Count - 1; i++)
             {
                 DecomposedConnection connection = connections[(path[i], path[i + 1])]; // Get the connection between the current and next station
                 totalTime += connection.estimatedTime;
                 totalCost += connection.cost;
-                Console.WriteLine(new string('-', Console.WindowWidth));
-                Console.WriteLine($"Route from {path[i].name} to {path[i + 1].name}:");
+                fullInstructions.Add(new PathInstruction (new string('-', Console.WindowWidth)));
+                fullInstructions.Add(new PathInstruction($"Route from {path[i].name} to {path[i + 1].name}:"));
                 foreach (PathInstruction segment in connection.path)
-                    segment.DisplaySegment(tubeColours); // Print the path segments
-                Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
-                Console.WriteLine(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}");
-                Console.WriteLine(new string('-', Console.WindowWidth));
+                    fullInstructions.Add(segment);
+                fullInstructions.Add(new PathInstruction($"\nSubpath estimated time: {connection.estimatedTime} minutes"));
+                fullInstructions.Add(new PathInstruction(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}"));
+                fullInstructions.Add(new PathInstruction(new string('-', Console.WindowWidth)));
             }
-            Console.WriteLine($"Total estimated time: {totalTime} minutes");
-            Console.WriteLine($"Total cost: £{totalCost}");
+            fullInstructions.Add(new PathInstruction($"Total estimated time: {totalTime} minutes"));
+            fullInstructions.Add(new PathInstruction($"Total cost: £{totalCost}"));
+            foreach (PathInstruction segment in fullInstructions)
+                segment.DisplaySegment(tubeColours);
+            PDFExport.Export(fullInstructions);
         }
         static List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
@@ -271,12 +273,12 @@ namespace NEA
                 else if (key.KeyChar != '\0' && !char.IsControl(key.KeyChar))
                 {
                     input += key.KeyChar;
-                }  
+                }
                 match = stations.Keys.FirstOrDefault(name => name.StartsWith(input, StringComparison.OrdinalIgnoreCase)); // Get first match
                 Console.SetCursorPosition(cursorLeft, cursorTop); // Clear line
                 Console.Write(new string(' ', Console.WindowWidth));
                 Console.SetCursorPosition(cursorLeft, cursorTop);
-                if (match != null && match.Length > input.Length) // Reprint input + suggestion
+                if (match != null && input != "" && match.Length > input.Length) // Reprint input + suggestion
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(input);
@@ -435,7 +437,7 @@ namespace NEA
             int option;
             while (true)
             {
-                option = GetOption(new List<string> { "Walking Speed", "Timetable (not implemented)", "Back to settings menu" });
+                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Back to settings menu" });
                 switch (option)
                 {
                     case 1:
