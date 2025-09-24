@@ -1,8 +1,10 @@
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace NEA
@@ -136,7 +138,7 @@ namespace NEA
             }
             return decomposedConnections;
         }
-        static void DisplayFullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
+        static List<PathInstruction> FullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
         {
             double totalTime = 0;
             double totalCost = 0;
@@ -156,9 +158,8 @@ namespace NEA
             }
             fullInstructions.Add(new PathInstruction($"Total estimated time: {totalTime} minutes"));
             fullInstructions.Add(new PathInstruction($"Total cost: £{totalCost}"));
-            foreach (PathInstruction segment in fullInstructions)
-                segment.DisplaySegment(tubeColours);
-            PDFExport.Export(fullInstructions);
+            return fullInstructions;
+            
         }
         static List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
@@ -380,8 +381,9 @@ namespace NEA
             {
                 GetStations(targetStations, false); // Get target stations from user input
             }
-            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations); 
+            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations);
             Console.Clear();
+            List<PathInstruction> fullInstructions;
             while (true)
             {
                 option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
@@ -389,24 +391,27 @@ namespace NEA
                 {
                     case 1:
                         Console.WriteLine($"Manually ordered:");
-                        DisplayFullPath(targetStations, connections);
-                        Console.ReadLine();
                         continue;
                     case 2:
                         Console.WriteLine("Ant Colony Optimisation based on time:");
-                        List<Station> acoTimePath = AntColonyOptimisation(targetStations, connections, true);
-                        DisplayFullPath(acoTimePath, connections);
-                        Console.ReadLine();
+                        targetStations = AntColonyOptimisation(targetStations, connections, true);
                         continue;
                     case 3:
                         Console.WriteLine("Ant Colony Optimisation based on cost:");
-                        List<Station> acoCostPath = AntColonyOptimisation(targetStations, connections, false);
-                        DisplayFullPath(acoCostPath, connections);
-                        Console.ReadLine(); 
+                        targetStations = AntColonyOptimisation(targetStations, connections, false);
                         continue;
                     case 4:
                         return;
                 }
+                fullInstructions = FullPath (targetStations, connections);
+                foreach (PathInstruction segment in fullInstructions)
+                    segment.DisplaySegment(tubeColours);
+                Console.ReadKey();
+                Console.Clear();
+                Console.WriteLine("Export this Plan as PDF file?");
+                option = GetOption(new List<string> { "Yes", "No" });
+                if (option == 1)
+                    PDFExport.Export(fullInstructions, settings.general.exportFilepath);
             }
         }
         static void TimetableSettings()
@@ -432,12 +437,28 @@ namespace NEA
                 }
             }
         }
+        static void ExportSettings()
+        {
+            while (true)
+            {
+                Console.WriteLine("Enter file name: (exclude .pdf)");
+                string fileName = $"{Console.ReadLine()}.pdf";
+                if (!string.IsNullOrEmpty(fileName) &&
+              fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                {
+                    settings.general.exportFilepath = fileName;
+                    return;
+                }
+                else
+                    Console.WriteLine("File name not vaild.");
+            }
+        }
         static void GeneralSettings()
         {
             int option;
             while (true)
             {
-                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Back to settings menu" });
+                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Set name of export PDF", "Back to settings menu" });
                 switch (option)
                 {
                     case 1:
@@ -447,6 +468,9 @@ namespace NEA
                         TimetableSettings();
                         continue;
                     case 3:
+                        ExportSettings();
+                        continue;
+                    case 4:
                         return;
                 }
             }

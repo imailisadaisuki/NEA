@@ -44,6 +44,8 @@ namespace NEA
         public string timetableFilepath { get; set; }
         [JsonPropertyName("ZoneCostFilePath")]
         public string zonecostFilepath { get; set; }
+        [JsonPropertyName("ExportFilePath")]
+        public string exportFilepath { get; set; }
     }
     public class AlgorithmSettings
     {

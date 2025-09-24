@@ -13,7 +13,7 @@ namespace NEA
 {
     internal class PDFExport
     {
-        public static void Export(List<PathInstruction> instructions)
+        public static void Export(List<PathInstruction> instructions, string filePath)
         {
             QuestPDF.Settings.License = LicenseType.Community;
             Document.Create(container =>
@@ -53,7 +53,7 @@ namespace NEA
                         });
                 });
             })
-            .GeneratePdf("hello.pdf");
+            .GeneratePdf(filePath);
         }
     }
 }
