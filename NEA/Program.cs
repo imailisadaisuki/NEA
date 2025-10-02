@@ -522,21 +522,26 @@ namespace NEA
                         continue;
                     case 3:
                         DataEditor.SaveSettings(settingsFilePath, settings); // Save settings to JSON file
+                        Load();
                         return;
                     case 4:
                         return;
                 }
             }
         }
+        static void Load()
+        {
+            settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
+            stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
+            tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
+            zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
+        }
         static void Main(string[] args)
         {
+            Load();
             int option;
             while (true)
             {
-                settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
-                stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
-                tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
-                zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
                 option = GetOption(new List<string> { "Find route", "Settings", "Exit" });
                 switch (option)
                 {
