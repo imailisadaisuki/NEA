@@ -11,9 +11,9 @@ using QuestPDF.Infrastructure;
 
 namespace NEA
 {
-    internal class PDFExport
+    public class PDFExport
     {
-        public static void Export(List<PathInstruction> instructions, string filePath)
+        public static void Export(List<PathInstruction> instructions, string filePath, Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours)
         {
             QuestPDF.Settings.License = LicenseType.Community;
             Document.Create(container =>
@@ -36,10 +36,19 @@ namespace NEA
                             x.Spacing(20);
                             foreach (PathInstruction instruction in instructions)
                             {
-                                x.Item().Text(text =>
+                                if (instruction.isLine)
+                                {
+                                    var (fg, bg) = instruction.GetRGBColour(tubeColours);
+                                    x.Item().Text(text =>
                                 text.Span(instruction.instruction)
-                                .FontColor(000000)
-                                .BackgroundColor(000000));
+                                .FontColor(fg)
+                                .BackgroundColor(bg));
+                                }
+                                else
+                                {
+                                    x.Item().Text(text =>
+                                text.Span(instruction.instruction));
+                                }
                             }
 
                         });

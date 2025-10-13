@@ -391,15 +391,15 @@ namespace NEA
                 {
                     case 1:
                         Console.WriteLine($"Manually ordered:");
-                        continue;
+                        break;
                     case 2:
                         Console.WriteLine("Ant Colony Optimisation based on time:");
                         targetStations = AntColonyOptimisation(targetStations, connections, true);
-                        continue;
+                        break;
                     case 3:
                         Console.WriteLine("Ant Colony Optimisation based on cost:");
                         targetStations = AntColonyOptimisation(targetStations, connections, false);
-                        continue;
+                        break;
                     case 4:
                         return;
                 }
@@ -408,10 +408,9 @@ namespace NEA
                     segment.DisplaySegment(tubeColours);
                 Console.ReadKey();
                 Console.Clear();
-                Console.WriteLine("Export this Plan as PDF file?");
-                option = GetOption(new List<string> { "Yes", "No" });
+                option = GetOption(new List<string> { "Export file as PDF", "Return to optimisation choices" });
                 if (option == 1)
-                    PDFExport.Export(fullInstructions, settings.general.exportFilepath);
+                    PDFExport.Export(fullInstructions, settings.general.exportFilepath, tubeColours);
             }
         }
         static void TimetableSettings()

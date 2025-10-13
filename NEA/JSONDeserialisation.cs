@@ -76,7 +76,7 @@ namespace NEA
         [JsonPropertyName("Background")]
         public string Background { get; set; }
     }
-    public class TubeColourJSON
+    public class LineColourJSON
     {
         [JsonPropertyName("Colour")]
         public Dictionary<string, LineColour> colour { get; set; }
@@ -162,11 +162,11 @@ namespace NEA
                 try
                 {
                     string json = File.ReadAllText(filePath);
-                    TubeColourJSON colourStrings = JsonSerializer.Deserialize<TubeColourJSON>(json);
+                    LineColourJSON colourStrings = JsonSerializer.Deserialize<LineColourJSON>(json);
                     return colourStrings.colour.ToDictionary(
                         kvp => kvp.Key,
                         kvp => ((ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Foreground),
-                                (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Background)) // Convert to dictionary of string, Linecolour
+                                (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Background)) // Convert to dictionary of string, (foreground colour, background colour)
                     );
                 }
                 catch
