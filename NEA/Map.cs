@@ -28,8 +28,8 @@ namespace NEA
         public HashSet<string> previousLines = new HashSet<string>();
         public Station(string name, double zone) 
             => (this.name, this.zone) = (name, zone);
-        public HashSet<string> getPrevConnectionLine() =>
-            previousStation == null ? new HashSet<string>()
+        public HashSet<string> getPrevConnectionLine() 
+            => previousStation == null ? new HashSet<string>()
             : previousStation.Connections
             .Where(c => c.station == this)
             .Select(c => c.line)
@@ -56,8 +56,8 @@ namespace NEA
         public bool isLine { get; set; }
         public PathInstruction(string instruction, bool isLine = false)
             => (this.instruction, this.isLine) = (instruction, isLine);
-        private string NormalizeLineName(string line) =>
-            line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line"
+        private string NormalizeLineName(string line) 
+            => line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line"
         public void DisplaySegment(Dictionary<string, (ConsoleColor, ConsoleColor)> lineColors)
         {
             string trimmed = NormalizeLineName(instruction);
