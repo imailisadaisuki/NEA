@@ -1,8 +1,10 @@
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace NEA
@@ -36,7 +38,9 @@ namespace NEA
                     Station neighbour = connection.station;
                     double newTime = current.travelTime + connection.time;
                     transferred = false; // Reset transfer flag for each neighbour
-                    if (IsLineChange(current, connection))
+                    if (connection.line == "Walk") // As transfer penality of "Walk" will be counted twice
+                        transferred = true;
+                    else if (IsLineChange(current, connection))
                     {
                         newTime += transferPenalty; // Transfer penalty
                         transferred = true; // Set transfer flag if a line change occurs
@@ -47,7 +51,9 @@ namespace NEA
                         neighbour.previousStation = current;
                         if (transferred) // If a transfer occurred, reset previous lines to the current station's lines
                         {
-                            neighbour.previousLines = new HashSet<string>(neighbour.Connections.Select(c => c.line));
+                            neighbour.previousLines = new HashSet<string>(current.Connections
+                                .Where(c => c.station == neighbour)
+                                .Select(c => c.line));
                         }
                         else
                         {
@@ -132,25 +138,28 @@ namespace NEA
             }
             return decomposedConnections;
         }
-        static void DisplayFullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
+        static List<PathInstruction> FullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
         {
             double totalTime = 0;
             double totalCost = 0;
+            List<PathInstruction> fullInstructions = new List<PathInstruction>();
             for (int i = 0; i < path.Count - 1; i++)
             {
                 DecomposedConnection connection = connections[(path[i], path[i + 1])]; // Get the connection between the current and next station
                 totalTime += connection.estimatedTime;
                 totalCost += connection.cost;
-                Console.WriteLine(new string('-', Console.WindowWidth));
-                Console.WriteLine($"Route from {path[i].name} to {path[i + 1].name}:");
+                fullInstructions.Add(new PathInstruction (new string('-', Console.WindowWidth)));
+                fullInstructions.Add(new PathInstruction($"Route from {path[i].name} to {path[i + 1].name}:"));
                 foreach (PathInstruction segment in connection.path)
-                    segment.DisplaySegment(tubeColours); // Print the path segments
-                Console.WriteLine($"\nSubpath estimated time: {connection.estimatedTime} minutes");
-                Console.WriteLine(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}");
-                Console.WriteLine(new string('-', Console.WindowWidth));
+                    fullInstructions.Add(segment);
+                fullInstructions.Add(new PathInstruction($"\nSubpath estimated time: {connection.estimatedTime} minutes"));
+                fullInstructions.Add(new PathInstruction(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}"));
+                fullInstructions.Add(new PathInstruction(new string('-', Console.WindowWidth)));
             }
-            Console.WriteLine($"Total estimated time: {totalTime} minutes");
-            Console.WriteLine($"Total cost: £{totalCost}");
+            fullInstructions.Add(new PathInstruction($"Total estimated time: {totalTime} minutes"));
+            fullInstructions.Add(new PathInstruction($"Total cost: £{totalCost}"));
+            return fullInstructions;
+            
         }
         static List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
@@ -265,12 +274,12 @@ namespace NEA
                 else if (key.KeyChar != '\0' && !char.IsControl(key.KeyChar))
                 {
                     input += key.KeyChar;
-                }  
+                }
                 match = stations.Keys.FirstOrDefault(name => name.StartsWith(input, StringComparison.OrdinalIgnoreCase)); // Get first match
                 Console.SetCursorPosition(cursorLeft, cursorTop); // Clear line
                 Console.Write(new string(' ', Console.WindowWidth));
                 Console.SetCursorPosition(cursorLeft, cursorTop);
-                if (match != null && match.Length > input.Length) // Reprint input + suggestion
+                if (match != null && input != "" && match.Length > input.Length) // Reprint input + suggestion
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write(input);
@@ -372,8 +381,9 @@ namespace NEA
             {
                 GetStations(targetStations, false); // Get target stations from user input
             }
-            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations); 
+            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations);
             Console.Clear();
+            List<PathInstruction> fullInstructions;
             while (true)
             {
                 option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
@@ -381,24 +391,26 @@ namespace NEA
                 {
                     case 1:
                         Console.WriteLine($"Manually ordered:");
-                        DisplayFullPath(targetStations, connections);
-                        Console.ReadLine();
-                        continue;
+                        break;
                     case 2:
                         Console.WriteLine("Ant Colony Optimisation based on time:");
-                        List<Station> acoTimePath = AntColonyOptimisation(targetStations, connections, true);
-                        DisplayFullPath(acoTimePath, connections);
-                        Console.ReadLine();
-                        continue;
+                        targetStations = AntColonyOptimisation(targetStations, connections, true);
+                        break;
                     case 3:
                         Console.WriteLine("Ant Colony Optimisation based on cost:");
-                        List<Station> acoCostPath = AntColonyOptimisation(targetStations, connections, false);
-                        DisplayFullPath(acoCostPath, connections);
-                        Console.ReadLine(); 
-                        continue;
+                        targetStations = AntColonyOptimisation(targetStations, connections, false);
+                        break;
                     case 4:
                         return;
                 }
+                fullInstructions = FullPath (targetStations, connections);
+                foreach (PathInstruction segment in fullInstructions)
+                    segment.DisplaySegment(tubeColours);
+                Console.ReadKey();
+                Console.Clear();
+                option = GetOption(new List<string> { "Export file as PDF", "Return to optimisation choices" });
+                if (option == 1)
+                    PDFExport.Export(fullInstructions, settings.general.exportFilepath, tubeColours);
             }
         }
         static void TimetableSettings()
@@ -424,12 +436,28 @@ namespace NEA
                 }
             }
         }
+        static void ExportSettings()
+        {
+            while (true)
+            {
+                Console.WriteLine("Enter file name: (exclude .pdf)");
+                string fileName = $"{Console.ReadLine()}.pdf";
+                if (!string.IsNullOrEmpty(fileName) &&
+              fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                {
+                    settings.general.exportFilepath = fileName;
+                    return;
+                }
+                else
+                    Console.WriteLine("File name not vaild.");
+            }
+        }
         static void GeneralSettings()
         {
             int option;
             while (true)
             {
-                option = GetOption(new List<string> { "Walking Speed", "Timetable (not implemented)", "Back to settings menu" });
+                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Set name of export PDF", "Back to settings menu" });
                 switch (option)
                 {
                     case 1:
@@ -439,6 +467,9 @@ namespace NEA
                         TimetableSettings();
                         continue;
                     case 3:
+                        ExportSettings();
+                        continue;
+                    case 4:
                         return;
                 }
             }
@@ -490,21 +521,26 @@ namespace NEA
                         continue;
                     case 3:
                         DataEditor.SaveSettings(settingsFilePath, settings); // Save settings to JSON file
+                        Load();
                         return;
                     case 4:
                         return;
                 }
             }
         }
+        static void Load()
+        {
+            settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
+            stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
+            tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
+            zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
+        }
         static void Main(string[] args)
         {
+            Load();
             int option;
             while (true)
             {
-                settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
-                stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
-                tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
-                zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
                 option = GetOption(new List<string> { "Find route", "Settings", "Exit" });
                 switch (option)
                 {

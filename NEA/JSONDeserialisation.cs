@@ -44,6 +44,8 @@ namespace NEA
         public string timetableFilepath { get; set; }
         [JsonPropertyName("ZoneCostFilePath")]
         public string zonecostFilepath { get; set; }
+        [JsonPropertyName("ExportFilePath")]
+        public string exportFilepath { get; set; }
     }
     public class AlgorithmSettings
     {
@@ -74,7 +76,7 @@ namespace NEA
         [JsonPropertyName("Background")]
         public string Background { get; set; }
     }
-    public class TubeColourJSON
+    public class LineColourJSON
     {
         [JsonPropertyName("Colour")]
         public Dictionary<string, LineColour> colour { get; set; }
@@ -83,46 +85,99 @@ namespace NEA
     {
         public static Dictionary<string, Station> LoadStation(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            List<StationJSON> stationJsonList = JsonSerializer.Deserialize<List<StationJSON>>(json);
-            Dictionary<string, Station> stations = stationJsonList
-                .ToDictionary(s => s.name, s => new Station(s.name, s.zone)); // Create stations objects from the JSON data
-            foreach (StationJSON stationJson in stationJsonList) // Create connections between the stations
+            try
             {
-                Station fromStation = stations[stationJson.name];
-                foreach (ConnectionJSON connection in stationJson.connections)
+                string json = File.ReadAllText(filePath);
+                List<StationJSON> stationJsonList = JsonSerializer.Deserialize<List<StationJSON>>(json);
+                Dictionary<string, Station> stations = stationJsonList
+                    .ToDictionary(s => s.name, s => new Station(s.name, s.zone)); // Create stations objects from the JSON data
+                foreach (StationJSON stationJson in stationJsonList) // Create connections between the stations
                 {
-                    fromStation.Connections.Add(new Connection(stations[connection.station], connection.time, connection.line, connection.platform));
+                    Station fromStation = stations[stationJson.name];
+                    foreach (ConnectionJSON connection in stationJson.connections)
+                        fromStation.Connections.Add(new Connection(stations[connection.station], connection.time, connection.line, connection.platform));
                 }
+                return stations;
             }
-            return stations;
+            catch
+            {
+                Console.WriteLine("Station file not vaild.");
+                Console.ReadKey();
+                System.Environment.Exit(0);
+                return null;
+            }
         }
         public static double[][] LoadZoneCost(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            ZoneCostJSON zoneCostData = JsonSerializer.Deserialize<ZoneCostJSON>(json);
-            return zoneCostData.zoneCost;
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                ZoneCostJSON zoneCostData = JsonSerializer.Deserialize<ZoneCostJSON>(json);
+                return zoneCostData.zoneCost;
+            }
+            catch
+            {
+                Console.WriteLine("ZoneCost file not vaild.");
+                Console.ReadKey();
+                System.Environment.Exit(0);
+                return null;
+            }
+            
         }
         public static SettingsJSON LoadSettings(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            SettingsJSON settings = JsonSerializer.Deserialize<SettingsJSON>(json);
-            return settings;
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                SettingsJSON settings = JsonSerializer.Deserialize<SettingsJSON>(json);
+                return settings;
+            }
+            catch
+            {
+                Console.WriteLine("Settings file not vaild.");
+                Console.ReadKey();
+                System.Environment.Exit(0);
+                return null;
+            }
         }
         public static void SaveSettings(string filePath, SettingsJSON settings)
         {
-            string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(filePath, json);
+            try
+            {
+                string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(filePath, json);
+            }
+            catch
+            {
+                Console.WriteLine("Settings file not vaild.");
+                Console.ReadKey();
+                System.Environment.Exit(0);
+            }
+
         }
         public static Dictionary<string, (ConsoleColor, ConsoleColor)> LoadColours(string filePath)
         {
-            string json = File.ReadAllText(filePath);
-            TubeColourJSON colourStrings = JsonSerializer.Deserialize<TubeColourJSON>(json);
-            return colourStrings.colour.ToDictionary(
-                kvp => kvp.Key,
-                kvp => ((ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Foreground),
-                        (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Background)) // Convert to dictionary of string, Linecolour
-            );
+            while (true)
+            {
+                try
+                {
+                    string json = File.ReadAllText(filePath);
+                    LineColourJSON colourStrings = JsonSerializer.Deserialize<LineColourJSON>(json);
+                    return colourStrings.colour.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => ((ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Foreground),
+                                (ConsoleColor)Enum.Parse(typeof(ConsoleColor), kvp.Value.Background)) // Convert to dictionary of string, (foreground colour, background colour)
+                    );
+                }
+                catch
+                {
+                    Console.WriteLine("Colour file not valid.");
+                    Console.ReadKey();
+                    System.Environment.Exit(0);
+                    return null;
+                }
+            }
+
         }
     }
 }
