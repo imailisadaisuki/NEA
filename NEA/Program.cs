@@ -14,6 +14,7 @@ namespace NEA
         public static Random random = new Random();
         public const string settingsFilePath = "settings.json"; // Path to the JSON file containing user settings
         public const string tubeColoursFilePath = "tubecolours.json"; // Path to the JSON file containing tube line colours
+        public const string touristAttractionFilePath = "touristAttraction.json"; // Path to the JSON file containing tourist attractions
         public static Dictionary<string, Station> stations;
         public static SettingsJSON settings;
         public static double[][] zoneCost;
@@ -147,17 +148,24 @@ namespace NEA
             {
                 DecomposedConnection connection = connections[(path[i], path[i + 1])]; // Get the connection between the current and next station
                 totalTime += connection.estimatedTime;
-                totalCost += connection.cost;
                 fullInstructions.Add(new PathInstruction (new string('-', Console.WindowWidth)));
                 fullInstructions.Add(new PathInstruction($"Route from {path[i].name} to {path[i + 1].name}:"));
                 foreach (PathInstruction segment in connection.path)
                     fullInstructions.Add(segment);
                 fullInstructions.Add(new PathInstruction($"\nSubpath estimated time: {connection.estimatedTime} minutes"));
-                fullInstructions.Add(new PathInstruction(connection.cost == 0 ? "Special fares applied" : $"Cost of subpath: £{connection.cost}"));
+                if (connection.cost == 999)
+                {
+                    fullInstructions.Add(new PathInstruction("Special fares applied"));
+                }
+                else
+                {
+                    totalCost += connection.cost;
+                    fullInstructions.Add(new PathInstruction($"Cost of subpath: £{connection.cost}"));
+                }
                 fullInstructions.Add(new PathInstruction(new string('-', Console.WindowWidth)));
             }
             fullInstructions.Add(new PathInstruction($"Total estimated time: {totalTime} minutes"));
-            fullInstructions.Add(new PathInstruction($"Total cost: £{totalCost}"));
+            fullInstructions.Add(new PathInstruction($"Total cost excluding special fares: £{totalCost}"));
             return fullInstructions;
             
         }
@@ -457,7 +465,7 @@ namespace NEA
             int option;
             while (true)
             {
-                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Set name of export PDF", "Back to settings menu" });
+                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Applying tourist attraction", "Set name of export PDF", "Back to settings menu" });
                 switch (option)
                 {
                     case 1:
@@ -467,9 +475,12 @@ namespace NEA
                         TimetableSettings();
                         continue;
                     case 3:
-                        ExportSettings();
+                        settings.general.touristAttraction = GetOption(new List<string> { "Apply tourist attraction", "Do not apply tourist attraction" }) == 1 ? true : false;
                         continue;
                     case 4:
+                        ExportSettings();
+                        continue;
+                    case 5:
                         return;
                 }
             }
@@ -534,6 +545,13 @@ namespace NEA
             stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
             tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
             zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
+            if (settings.general.touristAttraction)
+            {
+                try
+                {
+                    stations = 
+                }
+            }
         }
         static void Main(string[] args)
         {
