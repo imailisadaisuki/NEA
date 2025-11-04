@@ -85,12 +85,18 @@ namespace NEA
     }
     public class DataEditor
     {
-        public static Dictionary<string, Station> LoadStation(string filePath)
+        public static Dictionary<string, Station> LoadStation(string filePath1, string filePath2, bool loadFile2)
         {
             try
             {
-                string json = File.ReadAllText(filePath);
+                string json = File.ReadAllText(filePath1);
                 List<StationJSON> stationJsonList = JsonSerializer.Deserialize<List<StationJSON>>(json);
+                if (loadFile2)
+                {
+                    string json2 = File.ReadAllText(filePath2);
+                    List<StationJSON> stationJSONList2 = JsonSerializer.Deserialize<List<StationJSON>>(json2);
+                    stationJsonList = stationJsonList.Union(stationJSONList2).ToList(); // Avoid duplicate stations
+                }
                 Dictionary<string, Station> stations = stationJsonList
                     .ToDictionary(s => s.name, s => new Station(s.name, s.zone)); // Create stations objects from the JSON data
                 foreach (StationJSON stationJson in stationJsonList) // Create connections between the stations
