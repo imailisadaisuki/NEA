@@ -39,7 +39,7 @@ namespace NEA
             HashSet<string> platforms = new HashSet<string>();
             platforms.UnionWith(Connections
                 .Where(c => lines.Contains(c.line))
-                .SelectMany(c => c.platform));
+                .SelectMany(c => c.platform)); // Remove repeated platforms
             return platforms;
         }
         public void ResetStation()
@@ -57,7 +57,7 @@ namespace NEA
         public PathInstruction(string instruction, bool isLine = false)
             => (this.instruction, this.isLine) = (instruction, isLine);
         private string NormalizeLineName(string line) =>
-            line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line
+            line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line"
         private string ConvertColourRGB(ConsoleColor colour)
         {
             switch (colour)
