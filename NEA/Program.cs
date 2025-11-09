@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace NEA
@@ -20,7 +19,7 @@ namespace NEA
         public static double[][] zoneCost;
         public static Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours;
         static bool IsLineChange(Station current, Connection connection)
-            => !current.previousLines.Contains(connection.line);
+            => !current.previousLines.Contains(connection.line) || connection.line == "Walk";
         static void Dijkstra(Station start)
         {
             PriorityQueue<Station> openSet = new PriorityQueue<Station>();
@@ -32,16 +31,14 @@ namespace NEA
             while (!openSet.IsEmpty())
             {
                 Station current = openSet.Dequeue();
-                if (current.visited) continue;
+                if (current.visited) continue; // Skip if already visited
                 current.visited = true;
                 foreach (Connection connection in current.Connections)
                 {
                     Station neighbour = connection.station;
                     double newTime = current.travelTime + connection.time;
-                    transferred = false; // Reset transfer flag for each neighbour
-                    if (connection.line == "Walk") // As transfer penality of "Walk" will be counted twice
-                        transferred = true;
-                    else if (IsLineChange(current, connection))
+                    transferred = false; // Reset transfer flag for each neighbour 
+                    if (IsLineChange(current, connection))
                     {
                         newTime += transferPenalty; // Transfer penalty
                         transferred = true; // Set transfer flag if a line change occurs
@@ -64,7 +61,7 @@ namespace NEA
                                 .Where(c => c.station == neighbour)
                                 .Select(c => c.line)));
                         }
-                        openSet.Enqueue(neighbour, newTime);
+                        openSet.Enqueue(neighbour, connection.line == "Walk" ? newTime - transferPenalty : newTime);// As transfer penality of "Walk" will be counted twice
                     }
                 }
             }
@@ -81,7 +78,7 @@ namespace NEA
                 HashSet<string> currentLines = new HashSet<string>(connectionLines); // Clone a new set to avoid modifying the original set
                 HashSet<string> prevConnectionLines = current.getPrevConnectionLine();
                 connectionLines.IntersectWith(prevConnectionLines); // Remove lines that are not connecting from the previous station to the current station
-                if (connectionLines.Count == 0) // If no lines connecting from one station to current station , a transfer occurred
+                if (connectionLines.Count == 0) // If no lines connecting from one station to current station, a transfer occurred
                 {
                     AddTransfer(path, current.name, currentLines, stopCount, false);
                     connectionLines = new HashSet<string>(prevConnectionLines);
@@ -198,7 +195,7 @@ namespace NEA
             else
             {
                 foreach ((Station, Station) key in connections.Keys)
-                    distance[key] = connections[key].cost; // Use cost as distance
+                    distance[key] = 0.9 * connections[key].cost + 0.1 * connections[key].estimatedTime; // Use cost as distance
             }
             while (stopwatch.ElapsedMilliseconds < maxTime) // Run until the execution time is reached
             {
@@ -247,7 +244,7 @@ namespace NEA
                     allAntsPaths.Add((path, totalLength));
                 }
                 foreach ((Station, Station) key in connections.Keys)
-                    pheromones[key] *= (1 - rho); // Evaporate pheromones
+                    pheromones[key] *= 1 - rho; // Evaporate pheromones
                 foreach ((List<Station> antPath, double length) in allAntsPaths)
                 {
                     double pheromoneDeposit = Q / length; // Deposit pheromones based on path length
@@ -444,22 +441,6 @@ namespace NEA
                 }
             }
         }
-        static void ExportSettings()
-        {
-            while (true)
-            {
-                Console.WriteLine("Enter file name: (exclude .pdf)");
-                string fileName = $"{Console.ReadLine()}.pdf";
-                if (!string.IsNullOrEmpty(fileName) &&
-              fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
-                {
-                    settings.general.exportFilepath = fileName;
-                    return;
-                }
-                else
-                    Console.WriteLine("File name not vaild.");
-            }
-        }
         static void GeneralSettings()
         {
             int option;
@@ -478,7 +459,7 @@ namespace NEA
                         settings.general.touristAttraction = GetOption(new List<string> { "Apply tourist attraction", "Do not apply tourist attraction" }) == 1 ? true : false;
                         continue;
                     case 4:
-                        ExportSettings();
+                        settings.general.exportFilepath = PDFExport.SetFileName();
                         continue;
                     case 5:
                         return;

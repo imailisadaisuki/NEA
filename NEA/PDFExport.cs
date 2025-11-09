@@ -13,6 +13,20 @@ namespace NEA
 {
     public class PDFExport
     {
+        public static string SetFileName()
+        {
+            while (true)
+            {
+                Console.WriteLine("Enter file name: (exclude .pdf)");
+                string fileName = $"{Console.ReadLine()}.pdf";
+                if (!string.IsNullOrEmpty(fileName) &&
+              fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
+                    return fileName;
+                else
+                    Console.WriteLine("File name not vaild.");
+            }
+        }
+
         public static void Export(List<PathInstruction> instructions, string filePath, Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours)
         {
             QuestPDF.Settings.License = LicenseType.Community;

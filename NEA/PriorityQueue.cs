@@ -24,13 +24,13 @@ namespace NEA
         }
         private void HeapifyDown(int index)
         {
-            int size = heap.Count;
+            int size = heap.Count - 1;
             while (true)
             {
                 int left = 2 * index + 1;
                 int right = 2 * index + 2;
                 int smallest = index;
-                if (left < size && heap[left].priority > heap[smallest].priority)
+                if (left < size && heap[left].priority < heap[smallest].priority)
                     smallest = left;
                 if (right < size && heap[right].priority < heap[smallest].priority)
                     smallest = right;
