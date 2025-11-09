@@ -8,7 +8,6 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-
 namespace NEA
 {
     public class PDFExport
@@ -26,7 +25,6 @@ namespace NEA
                     Console.WriteLine("File name not vaild.");
             }
         }
-
         public static void Export(List<PathInstruction> instructions, string filePath, Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours)
         {
             QuestPDF.Settings.License = LicenseType.Community;

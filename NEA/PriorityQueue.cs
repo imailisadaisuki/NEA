@@ -10,8 +10,8 @@ namespace NEA
     internal class PriorityQueue<T>
     // reference: https://youtu.be/XycnarZEBvQ?si=XrVtKtf5JrTj3sCE
     {
-        private List<(T item, double priority)> heap = new List<(T, double)>();
-        private void HeapifyUp(int index)
+        private List<(T item, double priority)> heap = new List<(T, double)>(); // Cannot use Dictionary because of duplicate keys
+        private void HeapifyUp(int index) // Moving up element to maintain heap property
         {
             while (index > 0)
             {
@@ -22,7 +22,7 @@ namespace NEA
                 index = parent;
             }
         }
-        private void HeapifyDown(int index)
+        private void HeapifyDown(int index) // Moving down element to maintain heap property
         {
             int size = heap.Count - 1;
             while (true)

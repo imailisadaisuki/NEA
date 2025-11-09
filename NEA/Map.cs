@@ -34,13 +34,13 @@ namespace NEA
             .Where(c => c.station == this)
             .Select(c => c.line)
             .ToHashSet();
-        public HashSet<string> getPlatformNumber(HashSet<string> lines)
+        public List<string> getPlatformNumber(HashSet<string> lines)
         {
             HashSet<string> platforms = new HashSet<string>();
             platforms.UnionWith(Connections
                 .Where(c => lines.Contains(c.line))
                 .SelectMany(c => c.platform)); // Remove repeated platforms
-            return platforms;
+            return platforms.OrderBy(p => p).ToList();
         }
         public void ResetStation()
         {

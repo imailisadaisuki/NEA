@@ -18,13 +18,14 @@ namespace NEA
         public static SettingsJSON settings;
         public static double[][] zoneCost;
         public static Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours;
+        // Logic
         static bool IsLineChange(Station current, Connection connection)
             => !current.previousLines.Contains(connection.line) || connection.line == "Walk";
         static void Dijkstra(Station start)
         {
             PriorityQueue<Station> openSet = new PriorityQueue<Station>();
             start.travelTime = 0;
-            start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line)); // Initialize previous lines for the start station
+            start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line)); // Initialise previous lines for the start station
             openSet.Enqueue(start, 0);
             double transferPenalty = settings.general.transferPenalty;
             bool transferred; // Flag to check if a transfer has occurred
@@ -110,7 +111,7 @@ namespace NEA
             for (Station current = End; current != null; current = current.previousStation)
             {
                 if (current.zone < minZone) minZone = current.zone; // There are some stations which are located between 2 zones, represented by a decimal number.
-                if (current.zone > maxZone) maxZone = current.zone; // e.g. 1.5 represents between station between zone 1 and 2
+                if (current.zone > maxZone) maxZone = current.zone; // e.g. 1.5 represents between stations between zone 1 and 2
             }
             return zoneCost[(int) Math.Ceiling(minZone) - 1][(int) Math.Floor(maxZone) - (int) Math.Ceiling(minZone)];
         }
@@ -136,7 +137,7 @@ namespace NEA
             }
             return decomposedConnections;
         }
-        static List<PathInstruction> FullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
+        static List<PathInstruction> GetFullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
         {
             double totalTime = 0;
             double totalCost = 0;
@@ -150,7 +151,7 @@ namespace NEA
                 foreach (PathInstruction segment in connection.path)
                     fullInstructions.Add(segment);
                 fullInstructions.Add(new PathInstruction($"\nSubpath estimated time: {connection.estimatedTime} minutes"));
-                if (connection.cost == 999)
+                if (connection.cost == 0)
                 {
                     fullInstructions.Add(new PathInstruction("Special fares applied"));
                 }
@@ -165,6 +166,56 @@ namespace NEA
             fullInstructions.Add(new PathInstruction($"Total cost excluding special fares: £{totalCost}"));
             return fullInstructions;
             
+        }
+        static void ConstructPath(Dictionary<(Station, Station), double> pheromones, Dictionary<(Station, Station), double> distance, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
+        {
+            foreach ((Station, Station) key in connections.Keys)
+                pheromones[key] = settings.algorithm.ipc; // Initialize pheromone concentration
+            if (timeOrCost)
+            {
+                foreach ((Station, Station) key in connections.Keys)
+                    distance[key] = connections[key].estimatedTime; // Use estimated time as distance
+            }
+            else
+            {
+                foreach ((Station, Station) key in connections.Keys)
+                    distance[key] = 0.8 * connections[key].cost + 0.2 * connections[key].estimatedTime; // Add a small weight to time to avoid route with 0 cost & choose a faster route when costs are the same
+            }
+        }
+        static Station GetNextStation(List<Station> unvisited, Dictionary<(Station, Station), double> pheromones, Station current, Dictionary<(Station, Station), double> distance, double alpha, double beta)
+        {
+            double sum = 0; // Sum of probabilities for normalisation
+            // Applying formula: P(i,j) = (tau(i,j)^alpha * eta(i,j)^beta) / sum(tau(i,k)^alpha * eta(i,k)^beta) for all k in unvisited
+            Dictionary<Station, double> probabilities = new Dictionary<Station, double>();
+            foreach (Station next in unvisited)
+            {
+                double tau = Math.Pow(pheromones[(current, next)], alpha);
+                double eta = Math.Pow(1 / distance[(current, next)], beta);
+                probabilities[next] = tau * eta;
+                sum += probabilities[next];
+            }
+            double rand = random.NextDouble() * sum; // Implicitly normalise probabilities (dividing sum(tau(i,k)^alpha * eta(i,k)^beta))
+            double cumulativeProbability = 0;
+            foreach (KeyValuePair<Station, double> kvp in probabilities)
+            {
+                cumulativeProbability += kvp.Value;
+                if (rand < cumulativeProbability)
+                {
+                    return kvp.Key;
+                }
+            }
+            return null;
+        }
+        static void UpdatePheromones(Dictionary<(Station, Station), DecomposedConnection> connections, List<(List<Station> path, double length)> allAntsPaths, Dictionary<(Station, Station), double> pheromones, double rho, double Q)
+        {
+            foreach ((Station, Station) key in connections.Keys)
+                pheromones[key] *= 1 - rho; // Evaporate pheromones
+            foreach ((List<Station> antPath, double length) in allAntsPaths)
+            {
+                double pheromoneDeposit = Q / length; // Deposit pheromones based on path length
+                for (int i = 0; i < antPath.Count - 1; i++)
+                    pheromones[(antPath[i], antPath[i + 1])] += pheromoneDeposit; // Update pheromones for each segment of the path
+            }
         }
         static List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
@@ -185,18 +236,7 @@ namespace NEA
             double bestLength = double.MaxValue;
             Dictionary<(Station, Station), double> pheromones = new Dictionary<(Station, Station), double>();
             Dictionary<(Station, Station), double> distance = new Dictionary<(Station, Station), double>();
-            foreach ((Station, Station) key in connections.Keys)
-                pheromones[key] = settings.algorithm.ipc; // Initialize pheromone concentration
-            if (timeOrCost)
-            {
-                foreach ((Station, Station) key in connections.Keys)
-                    distance[key] = connections[key].estimatedTime; // Use estimated time as distance
-            }
-            else
-            {
-                foreach ((Station, Station) key in connections.Keys)
-                    distance[key] = 0.9 * connections[key].cost + 0.1 * connections[key].estimatedTime; // Use cost as distance
-            }
+            ConstructPath(pheromones, distance, connections, timeOrCost);
             while (stopwatch.ElapsedMilliseconds < maxTime) // Run until the execution time is reached
             {
                 List<(List<Station> path, double length)> allAntsPaths = new List<(List<Station>, double)>();
@@ -209,28 +249,7 @@ namespace NEA
                     double totalLength = 0;
                     while (unvisited.Count > 0)
                     {
-                        double sum = 0; // Sum of probabilities for normalisation
-                        // Applying formula: P(i,j) = (tau(i,j)^alpha * eta(i,j)^beta) / sum(tau(i,k)^alpha * eta(i,k)^beta) for all k in unvisited
-                        Dictionary<Station, double> probabilities = new Dictionary<Station, double>();
-                        foreach (Station next in unvisited)
-                        {
-                            double tau = Math.Pow(pheromones[(current, next)], alpha);
-                            double eta = Math.Pow(1 / distance[(current, next)], beta);
-                            probabilities[next] = tau * eta;
-                            sum += probabilities[next];
-                        }
-                        double rand = random.NextDouble() * sum; // Implicitly normalise probabilities (dividing sum(tau(i,k)^alpha * eta(i,k)^beta))
-                        double cumulativeProbability = 0;
-                        Station chosen = null;
-                        foreach (KeyValuePair<Station, double> kvp in probabilities)
-                        {
-                            cumulativeProbability += kvp.Value;
-                            if (rand < cumulativeProbability)
-                            {
-                                chosen = kvp.Key;
-                                break;
-                            }
-                        }
+                        Station chosen = GetNextStation(unvisited, pheromones, current, distance, alpha, beta);
                         path.Add(chosen);
                         unvisited.Remove(chosen);
                         totalLength += distance[(current, chosen)]; // Add the distance to the path length
@@ -243,17 +262,11 @@ namespace NEA
                     }
                     allAntsPaths.Add((path, totalLength));
                 }
-                foreach ((Station, Station) key in connections.Keys)
-                    pheromones[key] *= 1 - rho; // Evaporate pheromones
-                foreach ((List<Station> antPath, double length) in allAntsPaths)
-                {
-                    double pheromoneDeposit = Q / length; // Deposit pheromones based on path length
-                    for (int i = 0; i < antPath.Count - 1; i++)
-                        pheromones[(antPath[i], antPath[i + 1])] += pheromoneDeposit; // Update pheromones for each segment of the path
-                }
+                UpdatePheromones(connections, allAntsPaths, pheromones, rho, Q);
             }
             return bestPath;
         }
+        // UI
         static string AutoCompleteInput()
         {
             string input = "";
@@ -303,7 +316,7 @@ namespace NEA
         {
             while (true)
             {
-                Console.Write(startStation ? "Enter name of starting station (Tab for auto-complete): " : "Enter station name (Tab for auto-complete): ");
+                Console.Write(startStation ? "Enter name of starting location (Tab for auto-complete): " : "Enter location name (Tab for auto-complete): ");
                 if (stations.TryGetValue(AutoCompleteInput(), out Station station))
                 {
                     if (!targetStations.Contains(station))
@@ -311,9 +324,9 @@ namespace NEA
                         targetStations.Add(station);
                         return;
                     }
-                    Console.WriteLine("Station already added. Please enter a different station.");
+                    Console.WriteLine("Location already added. Please enter a different location.");
                 }
-                Console.WriteLine("Station not found. Please try again.");
+                Console.WriteLine("Location not found. Please try again.");
             }
         }
         static double GetDouble(string prompt, double min, double max)
@@ -367,31 +380,12 @@ namespace NEA
                 }     
             }
         }
-        static void StationSearch()
+        static void DisplayInstructions(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections)
         {
-            int option, numOfStations;
-            List<Station> targetStations = new List<Station>();
-            while (true)
-            {
-                Console.Write("Enter number of stations to find path (2-20): ");
-                if (int.TryParse(Console.ReadLine(), out option) && option >= 2 && option <= 20)
-                {
-                    numOfStations = option;
-                    break;
-                }
-                Console.WriteLine("Invalid input. Please enter a number between 2 and 20.");
-            }
-            GetStations(targetStations, true); // Get first station from user input
-            for (int i = 0; i < numOfStations-1; i++)
-            {
-                GetStations(targetStations, false); // Get target stations from user input
-            }
-            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations);
-            Console.Clear();
             List<PathInstruction> fullInstructions;
             while (true)
             {
-                option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
+                int option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
                 switch (option)
                 {
                     case 1:
@@ -408,7 +402,7 @@ namespace NEA
                     case 4:
                         return;
                 }
-                fullInstructions = FullPath (targetStations, connections);
+                fullInstructions = GetFullPath(targetStations, connections);
                 foreach (PathInstruction segment in fullInstructions)
                     segment.DisplaySegment(tubeColours);
                 Console.ReadKey();
@@ -417,6 +411,30 @@ namespace NEA
                 if (option == 1)
                     PDFExport.Export(fullInstructions, settings.general.exportFilepath, tubeColours);
             }
+
+        }
+        static void StationSearch()
+        {
+            int numOfStations;
+            List<Station> targetStations = new List<Station>();
+            while (true)
+            {
+                Console.Write("Enter number of stations to find path (2-20): ");
+                if (int.TryParse(Console.ReadLine(), out int option) && option >= 2 && option <= 20)
+                {
+                    numOfStations = option;
+                    break;
+                }
+                Console.WriteLine("Invalid input. Please enter a number between 2 and 20.");
+            }
+            GetStations(targetStations, true); // Get first station from user input
+            for (int i = 0; i < numOfStations-1; i++)
+            {
+                GetStations(targetStations, false); // Get target stations from user input
+            }
+            Dictionary<(Station, Station), DecomposedConnection> connections = DecomposedPath(targetStations);
+            Console.Clear();
+            DisplayInstructions(targetStations, connections);
         }
         static void TimetableSettings()
         {
