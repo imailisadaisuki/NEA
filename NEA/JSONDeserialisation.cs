@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace NEA
 {
-    public class StationJSON // StationJSON class to match the JSON structure
+    internal class StationJSON // StationJSON class to match the JSON structure
     {
         [JsonPropertyName("Station")]
         public string name { get; set; }
@@ -18,7 +16,7 @@ namespace NEA
         [JsonPropertyName("Connections")]
         public List<ConnectionJSON> connections { get; set; }
     }
-    public class ConnectionJSON // ConnectionJSON class to match the JSON structure
+    internal class ConnectionJSON // ConnectionJSON class to match the JSON structure
     {
         [JsonPropertyName("Station")]
         public string station { get; set; }
@@ -29,14 +27,14 @@ namespace NEA
         [JsonPropertyName("Platform")]
         public List<string> platform { get; set; }
     }
-    public class ZoneCostJSON
+    internal class ZoneCostJSON
     {
         // Row refers to end zone - start zone, column represents start zone - 1. e.g. cost from zone 2 to 3 is located in [1][1] Source: https://londondrum.com/transport/adult-train-fares.php
         // Zone 10 represents stations that special fees are applied, e.g. Heathrow Airport T2&3, T4, T5 (Elizabeth Line) , Reading, Watford Junction
         [JsonPropertyName("ZoneCost")]
         public double[][] zoneCost { get; set; } // I used a jagged array here because it's easier to represent in JSON and reduce file size
     }
-    public class GeneralSettings
+    internal class GeneralSettings
     {
         [JsonPropertyName("TransferPenalty")]
         public double transferPenalty { get; set; }
@@ -49,7 +47,7 @@ namespace NEA
         [JsonPropertyName("ExportFilePath")]
         public string exportFilepath { get; set; }
     }
-    public class AlgorithmSettings
+    internal class AlgorithmSettings
     {
         [JsonPropertyName("ExecutionTime")]
         public double executionTime { get; set; }
@@ -64,26 +62,26 @@ namespace NEA
         [JsonPropertyName("Q")]
         public double q { get; set; }
     }
-    public class SettingsJSON
+    internal class SettingsJSON
     {
         [JsonPropertyName("General")]
         public GeneralSettings general { get; set; }
         [JsonPropertyName("Algorithm")]
         public AlgorithmSettings algorithm { get; set; }
     }
-    public class LineColour
+    internal class LineColour
     {
         [JsonPropertyName("Foreground")]
         public string Foreground { get; set; }
         [JsonPropertyName("Background")]
         public string Background { get; set; }
     }
-    public class LineColourJSON
+    internal class LineColourJSON
     {
         [JsonPropertyName("Colour")]
         public Dictionary<string, LineColour> colour { get; set; }
     }
-    public class DataEditor
+    internal class DataEditor
     {
         public static Dictionary<string, Station> LoadStation(string filePath1, string filePath2, bool loadFile2)
         {

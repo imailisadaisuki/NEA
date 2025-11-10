@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -10,7 +8,7 @@ using QuestPDF.Infrastructure;
 
 namespace NEA
 {
-    public class PDFExport
+    internal class PDFExport
     {
         public static string SetFileName()
         {

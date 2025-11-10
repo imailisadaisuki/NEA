@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Configuration;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NEA
 {
-    public class Connection
+    internal class Connection
     {
         public Station station { get; set; }
         public double time { get; set; }
@@ -16,7 +13,7 @@ namespace NEA
         public Connection(Station station, double time, string line, List<string> platform) 
             => (this.station, this.time, this.line, this.platform) = (station, time, line, platform);
     }
-    public class Station
+    internal class Station
     {
         public string name { get; set; }
         public double zone { get; set; }
@@ -50,7 +47,7 @@ namespace NEA
             previousLines.Clear();
         }
     }
-    public class PathInstruction 
+    internal class PathInstruction 
     { 
         public string instruction { get; set; }
         public bool isLine { get; set; }
@@ -119,7 +116,7 @@ namespace NEA
         }
 
     }
-    public class DecomposedConnection
+    internal class DecomposedConnection
     {
         public Station startStation { get; set; }
         public Station endStation { get; set; }
