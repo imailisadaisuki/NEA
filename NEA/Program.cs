@@ -20,7 +20,9 @@ namespace NEA
         private static void Load()
         {
             settings = DataEditor.LoadSettings(settingsFilePath); // Load settings from JSON file
-            stations = DataEditor.LoadStation(settings.general.timetableFilepath, touristAttractionFilePath, settings.general.touristAttraction); // Load stations (and tourist attraction) from JSON file
+            stations = DataEditor.LoadStation(settings.general.timetableFilepath); // Load stations from JSON file
+            if (settings.general.touristAttraction)
+                DataEditor.AddTouristAttractions(touristAttractionFilePath, stations); // Add tourist attractions to stations if enabled in settings
             tubeColours = DataEditor.LoadColours(tubeColoursFilePath); // Load tube line colours from JSON file
             zoneCost = DataEditor.LoadZoneCost(settings.general.zonecostFilepath); // Load zone cost from JSON file
         }

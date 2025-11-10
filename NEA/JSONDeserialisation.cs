@@ -83,18 +83,12 @@ namespace NEA
     }
     internal class DataEditor
     {
-        public static Dictionary<string, Station> LoadStation(string filePath1, string filePath2, bool loadFile2)
+        public static Dictionary<string, Station> LoadStation(string filePath)
         {
             try
             {
-                string json = File.ReadAllText(filePath1);
+                string json = File.ReadAllText(filePath);
                 List<StationJSON> stationJsonList = JsonSerializer.Deserialize<List<StationJSON>>(json);
-                if (loadFile2)
-                {
-                    string json2 = File.ReadAllText(filePath2);
-                    List<StationJSON> stationJSONList2 = JsonSerializer.Deserialize<List<StationJSON>>(json2);
-                    stationJsonList = stationJsonList.Union(stationJSONList2).ToList(); // Avoid duplicate stations
-                }
                 Dictionary<string, Station> stations = stationJsonList
                     .ToDictionary(s => s.name, s => new Station(s.name, s.zone)); // Create stations objects from the JSON data
                 foreach (StationJSON stationJson in stationJsonList) // Create connections between the stations
@@ -111,6 +105,31 @@ namespace NEA
                 Console.ReadKey();
                 System.Environment.Exit(0);
                 return null;
+            }
+        }
+        public static void AddTouristAttractions(string filePath, Dictionary<string, Station> stations)
+        {
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                List<StationJSON> stationJsonList = JsonSerializer.Deserialize<List<StationJSON>>(json);
+                foreach (StationJSON stationJson in stationJsonList)
+                {
+                    Station fromStation = new Station(stationJson.name, stationJson.zone);
+                    stations.Add(stationJson.name, fromStation);
+                    foreach (ConnectionJSON connection in stationJson.connections)
+                    {
+                        Station toStation = stations[connection.station];
+                        fromStation.Connections.Add(new Connection(toStation, connection.time, connection.line, connection.platform)); // Add foward connection
+                        toStation.Connections.Add(new Connection(fromStation, connection.time, connection.line, connection.platform)); // Add reverse connection
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Tourist attraction file not valid.");
+                Console.ReadKey();
+                System.Environment.Exit(0);
             }
         }
         public static double[][] LoadZoneCost(string filePath)
