@@ -326,16 +326,16 @@ namespace NEA
                     }
                     Console.WriteLine("Location already added. Please enter a different location.");
                 }
-                Console.WriteLine("Location not found. Please try again.");
+                else
+                    Console.WriteLine("Location not found. Please try again.");
             }
         }
         static double GetDouble(string prompt, double min, double max)
         {
-            double value;
             while (true)
             {
                 Console.Write(prompt);
-                if (double.TryParse(Console.ReadLine(), out value) && value >= min && value <= max)
+                if (double.TryParse(Console.ReadLine(), out double value) && value >= min && value <= max)
                     return value;
                 Console.WriteLine($"Invalid input. Please enter a number between {min} and {max}.");
             }
@@ -405,8 +405,8 @@ namespace NEA
                 fullInstructions = GetFullPath(targetStations, connections);
                 foreach (PathInstruction segment in fullInstructions)
                     segment.DisplaySegment(tubeColours);
+                Console.WriteLine("Press any key to continue.");
                 Console.ReadKey();
-                Console.Clear();
                 option = GetOption(new List<string> { "Export file as PDF", "Return to optimisation choices" });
                 if (option == 1)
                     PDFExport.Export(fullInstructions, settings.general.exportFilepath, tubeColours);
