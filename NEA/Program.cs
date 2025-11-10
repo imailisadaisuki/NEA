@@ -23,15 +23,15 @@ namespace NEA
             => !current.previousLines.Contains(connection.line) || connection.line == "Walk";
         static void Dijkstra(Station start)
         {
-            PriorityQueue<Station> openSet = new PriorityQueue<Station>();
+            PriorityQueue<Station> pq = new PriorityQueue<Station>();
             start.travelTime = 0;
             start.previousLines = new HashSet<string>(start.Connections.Select(c => c.line)); // Initialise previous lines for the start station
-            openSet.Enqueue(start, 0);
+            pq.Enqueue(start, 0);
             double transferPenalty = settings.general.transferPenalty;
             bool transferred; // Flag to check if a transfer has occurred
-            while (!openSet.IsEmpty())
+            while (!pq.IsEmpty())
             {
-                Station current = openSet.Dequeue();
+                Station current = pq.Dequeue();
                 if (current.visited) continue; // Skip if already visited
                 current.visited = true;
                 foreach (Connection connection in current.Connections)
@@ -62,7 +62,7 @@ namespace NEA
                                 .Where(c => c.station == neighbour)
                                 .Select(c => c.line)));
                         }
-                        openSet.Enqueue(neighbour, connection.line == "Walk" ? newTime - transferPenalty : newTime);// As transfer penality of "Walk" will be counted twice
+                        pq.Enqueue(neighbour, connection.line == "Walk" ? newTime - transferPenalty : newTime);// As transfer penality of "Walk" will be counted twice
                     }
                 }
             }
