@@ -25,12 +25,14 @@ namespace NEA
         public HashSet<string> previousLines = new HashSet<string>();
         public Station(string name, double zone) 
             => (this.name, this.zone) = (name, zone);
+
         public HashSet<string> getPrevConnectionLine() 
             => previousStation == null ? new HashSet<string>()
             : previousStation.Connections
             .Where(c => c.station == this)
             .Select(c => c.line)
             .ToHashSet();
+
         public List<string> getPlatformNumber(HashSet<string> lines)
         {
             HashSet<string> platforms = new HashSet<string>();
@@ -39,6 +41,7 @@ namespace NEA
                 .SelectMany(c => c.platform)); // Remove repeated platforms
             return platforms.OrderBy(p => p).ToList();
         }
+
         public void ResetStation()
         {
             travelTime = int.MaxValue;

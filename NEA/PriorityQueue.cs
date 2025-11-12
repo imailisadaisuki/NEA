@@ -18,6 +18,7 @@ namespace NEA
                 index = parent;
             }
         }
+
         private void HeapifyDown(int index) // Moving down element to maintain heap property
         {
             int size = heap.Count - 1;
@@ -36,11 +37,13 @@ namespace NEA
                 index = smallest;
             }
         }
+
         public void Enqueue(T item, double priority)
         {
             heap.Add((item, priority));
             HeapifyUp(heap.Count - 1);
         }
+
         public T Dequeue()
         {
             if (IsEmpty())
@@ -52,7 +55,9 @@ namespace NEA
                 HeapifyDown(0);
             return item;
         }
+
         public bool IsEmpty() => heap.Count == 0;
+
         public int Count() => heap.Count;
     }
 }

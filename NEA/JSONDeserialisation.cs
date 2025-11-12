@@ -107,6 +107,7 @@ namespace NEA
                 return null;
             }
         }
+
         public static void AddTouristAttractions(string filePath, Dictionary<string, Station> stations)
         {
             try
@@ -132,6 +133,7 @@ namespace NEA
                 System.Environment.Exit(0);
             }
         }
+
         public static double[][] LoadZoneCost(string filePath)
         {
             try
@@ -149,6 +151,7 @@ namespace NEA
             }
             
         }
+
         public static SettingsJSON LoadSettings(string filePath)
         {
             try
@@ -165,6 +168,7 @@ namespace NEA
                 return null;
             }
         }
+
         public static void SaveSettings(string filePath, SettingsJSON settings)
         {
             try
@@ -180,6 +184,7 @@ namespace NEA
             }
 
         }
+
         public static Dictionary<string, (ConsoleColor, ConsoleColor)> LoadColours(string filePath)
         {
             while (true)

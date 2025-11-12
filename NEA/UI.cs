@@ -12,8 +12,10 @@ namespace NEA
         public bool isLine { get; set; }
         public PathInstruction(string instruction, bool isLine = false)
             => (this.instruction, this.isLine) = (instruction, isLine);
+
         private string NormalizeLineName(string line) =>
             line.Split('(')[0].Trim(); // e.g. "Central Line (Epping)" -> "Central Line"
+
         private string ConvertColourRGB(ConsoleColor colour)
         {
             switch (colour)
@@ -52,12 +54,14 @@ namespace NEA
                     return "FFFFFF";
             }
         }
+
         public (string, string) GetRGBColour(Dictionary<string, (ConsoleColor, ConsoleColor)> lineColors)
         {
             string trimmed = NormalizeLineName(instruction);
             var (fg, bg) = lineColors[trimmed];
             return (ConvertColourRGB(fg), ConvertColourRGB(bg));
         }
+
         public void DisplaySegment(Dictionary<string, (ConsoleColor, ConsoleColor)> lineColors)
         {
             string trimmed = NormalizeLineName(instruction);
@@ -82,6 +86,7 @@ namespace NEA
         private readonly Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours;
         public UI(AntColonyOptimiser optimiser, Dictionary<string, Station> stations, SettingsJSON settings, Dictionary<string, (ConsoleColor, ConsoleColor)> tubeColours)
             => (this.optimiser, this.stations, this.settings, this.tubeColours) = (optimiser, stations, settings, tubeColours);
+
         private string AutoCompleteInput()
         {
             string input = "";
@@ -127,6 +132,7 @@ namespace NEA
                 Console.SetCursorPosition(cursorLeft + input.Length, cursorTop); // Reset cursor for next loop
             }
         }
+
         private void GetStations(List<Station> targetStations, bool startStation)
         {
             while (true)
@@ -145,6 +151,7 @@ namespace NEA
                     Console.WriteLine("Location not found. Please try again.");
             }
         }
+
         private double GetDouble(string prompt, double min, double max)
         {
             while (true)
@@ -155,6 +162,7 @@ namespace NEA
                 Console.WriteLine($"Invalid input. Please enter a number between {min} and {max}.");
             }
         }
+
         private int GetOption(List<string> options)
         {
             Console.Clear();
@@ -195,6 +203,7 @@ namespace NEA
                 }
             }
         }
+
         private void DisplayInstructions(List<Station> targetStations)
         {
             Dictionary<(Station, Station), DecomposedConnection> connections = optimiser.DecomposedPath(targetStations);
@@ -230,6 +239,7 @@ namespace NEA
             }
 
         }
+
         private void StationSearch()
         {
             int numOfStations;
@@ -251,6 +261,7 @@ namespace NEA
             }
             DisplayInstructions(targetStations);
         }
+
         private void TimetableSettings()
         {
             int option;
@@ -274,6 +285,7 @@ namespace NEA
                 }
             }
         }
+
         private void GeneralSettings()
         {
             int option;
@@ -299,6 +311,7 @@ namespace NEA
                 }
             }
         }
+
         private void AlgorithmSettings()
         {
             int option;
@@ -330,6 +343,7 @@ namespace NEA
                 }
             }
         }
+
         private void Settings()
         {
             int option;
@@ -352,6 +366,7 @@ namespace NEA
                 }
             }
         }
+
         public void Run()
         {
             int option;

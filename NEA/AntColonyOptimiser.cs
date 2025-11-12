@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,8 +14,10 @@ namespace NEA
         private readonly SettingsJSON settings;
         private readonly double[][] zoneCost;
         public AntColonyOptimiser(Dictionary<string, Station> stations, SettingsJSON settings, double[][] zoneCost) => (this.stations, this.settings, this.zoneCost) = (stations, settings, zoneCost);
+
         private bool IsLineChange(Station current, Connection connection)
             => !current.previousLines.Contains(connection.line) || connection.line == "Walk";
+
         private void Dijkstra(Station start)
         {
             PriorityQueue<Station> pq = new PriorityQueue<Station>();
@@ -61,6 +64,7 @@ namespace NEA
                 }
             }
         }
+
         private List<PathInstruction> GetShortestPath(Station end) // I avoided using stacks as paths need to be read repeatively, stack cannot achieve this function (when poped, the last element is removed)
         {
             List<PathInstruction> path = new List<PathInstruction>();
@@ -88,6 +92,7 @@ namespace NEA
             path.Reverse(); // Reverse the path to start from the beginning
             return path;
         }
+
         private void AddTransfer(List<PathInstruction> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
         {
             path.Add(new PathInstruction($"\nRide {stopCount} stop(s) via:"));
@@ -98,6 +103,7 @@ namespace NEA
             path.Add(new PathInstruction("Possible line(s):"));
             path.Add(new PathInstruction(startStation ? $"Start from {stationName}" : $"\nTransfer at {stationName}"));
         }
+
         private double GetCost(Station End) // Calculate cost based on zone number
         {
             double minZone = double.MaxValue;
@@ -109,6 +115,7 @@ namespace NEA
             }
             return zoneCost[(int)Math.Ceiling(minZone) - 1][(int)Math.Floor(maxZone) - (int)Math.Ceiling(minZone)];
         }
+
         public Dictionary<(Station, Station), DecomposedConnection> DecomposedPath(List<Station> targetStations) // Decompose the full graph into K(n)
         {
             Dictionary<(Station, Station), DecomposedConnection> decomposedConnections = new Dictionary<(Station, Station), DecomposedConnection>(); // Store the connection in a dictionary for quick access
@@ -131,6 +138,7 @@ namespace NEA
             }
             return decomposedConnections;
         }
+
         public List<PathInstruction> GetFullPath(List<Station> path, Dictionary<(Station, Station), DecomposedConnection> connections)
         {
             double totalTime = 0;
@@ -161,6 +169,7 @@ namespace NEA
             return fullInstructions;
 
         }
+
         private void ConstructPath(Dictionary<(Station, Station), double> pheromones, Dictionary<(Station, Station), double> distance, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
         {
             foreach ((Station, Station) key in connections.Keys)
@@ -176,6 +185,7 @@ namespace NEA
                     distance[key] = 0.8 * connections[key].cost + 0.2 * connections[key].estimatedTime; // Add a small weight to time to avoid route with 0 cost & choose a faster route when costs are the same
             }
         }
+
         private Station GetNextStation(List<Station> unvisited, Dictionary<(Station, Station), double> pheromones, Station current, Dictionary<(Station, Station), double> distance, double alpha, double beta)
         {
             double sum = 0; // Sum of probabilities for normalisation
@@ -200,6 +210,7 @@ namespace NEA
             }
             return null;
         }
+
         private void UpdatePheromones(Dictionary<(Station, Station), DecomposedConnection> connections, List<(List<Station> path, double length)> allAntsPaths, Dictionary<(Station, Station), double> pheromones, double rho, double Q)
         {
             foreach ((Station, Station) key in connections.Keys)
@@ -211,6 +222,7 @@ namespace NEA
                     pheromones[(antPath[i], antPath[i + 1])] += pheromoneDeposit; // Update pheromones for each segment of the path
             }
         }
+
         public List<Station> AntColonyOptimisation(List<Station> targetStations, Dictionary<(Station, Station), DecomposedConnection> connections, bool timeOrCost)
         /* Reference: https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/february/test-run-ant-colony-optimization ,
         https://www.youtube.com/watch?v=oXb2nC-e_EA ,
