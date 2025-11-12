@@ -73,7 +73,6 @@ namespace NEA
             else
                 Console.WriteLine(instruction);
         }
-
     }
     internal class UI
     {

@@ -101,7 +101,7 @@ namespace NEA
             }
             catch
             {
-                Console.WriteLine("Station file not vaild.");
+                Console.WriteLine($"Station file: {filePath}.json not vaild.");
                 Console.ReadKey();
                 System.Environment.Exit(0);
                 return null;
@@ -127,7 +127,7 @@ namespace NEA
             }
             catch
             {
-                Console.WriteLine("Tourist attraction file not valid.");
+                Console.WriteLine($"Tourist attraction file: {filePath}.json not valid.");
                 Console.ReadKey();
                 System.Environment.Exit(0);
             }
@@ -142,7 +142,7 @@ namespace NEA
             }
             catch
             {
-                Console.WriteLine("ZoneCost file not vaild.");
+                Console.WriteLine($"ZoneCost file: {filePath}.json not vaild.");
                 Console.ReadKey();
                 System.Environment.Exit(0);
                 return null;
@@ -159,7 +159,7 @@ namespace NEA
             }
             catch
             {
-                Console.WriteLine("Settings file not vaild.");
+                Console.WriteLine($"Settings file: {filePath}.json not vaild.");
                 Console.ReadKey();
                 System.Environment.Exit(0);
                 return null;
@@ -174,7 +174,7 @@ namespace NEA
             }
             catch
             {
-                Console.WriteLine("Settings file not vaild.");
+                Console.WriteLine($"Settings file : {filePath}.json not vaild.");
                 Console.ReadKey();
                 System.Environment.Exit(0);
             }
@@ -196,7 +196,7 @@ namespace NEA
                 }
                 catch
                 {
-                    Console.WriteLine("Colour file not valid.");
+                    Console.WriteLine($"Colour file: {filePath}.json not valid.");
                     Console.ReadKey();
                     System.Environment.Exit(0);
                     return null;

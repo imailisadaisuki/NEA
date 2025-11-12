@@ -144,7 +144,7 @@ namespace NEA
                 fullInstructions.Add(new PathInstruction($"Route from {path[i].name} to {path[i + 1].name}:"));
                 foreach (PathInstruction segment in connection.path)
                     fullInstructions.Add(segment);
-                fullInstructions.Add(new PathInstruction($"\nSubpath estimated time: {connection.estimatedTime} minutes"));
+                fullInstructions.Add(new PathInstruction($"\nSubpath estimated time: {Math.Round(connection.estimatedTime)} minutes"));
                 if (connection.cost == 0)
                 {
                     fullInstructions.Add(new PathInstruction("Special fares applied"));
@@ -152,12 +152,12 @@ namespace NEA
                 else
                 {
                     totalCost += connection.cost;
-                    fullInstructions.Add(new PathInstruction($"Cost of subpath: £{connection.cost}"));
+                    fullInstructions.Add(new PathInstruction($"Cost of subpath: {connection.cost:C2}"));
                 }
                 fullInstructions.Add(new PathInstruction(new string('-', Console.WindowWidth)));
             }
-            fullInstructions.Add(new PathInstruction($"Total estimated time: {totalTime} minutes"));
-            fullInstructions.Add(new PathInstruction($"Total cost excluding special fares: £{totalCost}"));
+            fullInstructions.Add(new PathInstruction($"Total estimated time: {Math.Round(totalTime)} minutes"));
+            fullInstructions.Add(new PathInstruction($"Total cost excluding special fares: {totalCost:C2}"));
             return fullInstructions;
 
         }
