@@ -249,7 +249,7 @@ namespace NEA
             List<Station> targetStations = new List<Station>();
             while (true)
             {
-                Console.Write("Enter number of stations to find path (2-20): ");
+                Console.Write("Enter number of locations to find path (2-20): ");
                 if (int.TryParse(Console.ReadLine(), out int option) && option >= 2 && option <= 20)
                 {
                     numOfStations = option;
@@ -294,7 +294,7 @@ namespace NEA
             int option;
             while (true)
             {
-                option = GetOption(new List<string> { "Walking Speed", "Timetable", "Applying tourist attraction", "Set name of export PDF", "Back to settings menu" });
+                option = GetOption(new List<string> { "Set walking speed", "Set timetable", "Applying tourist attraction", "Return to start location", "Set name of export PDF", "Back to settings menu" });
                 switch (option)
                 {
                     case 1:
