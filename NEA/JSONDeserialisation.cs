@@ -44,6 +44,8 @@ namespace NEA
         public string zonecostFilepath { get; set; }
         [JsonPropertyName("TouristAttraction")]
         public bool touristAttraction {  get; set; }
+        [JsonPropertyName("ReturnStart")]
+        public bool returnStart {  get; set; }
         [JsonPropertyName("ExportFilePath")]
         public string exportFilepath { get; set; }
     }

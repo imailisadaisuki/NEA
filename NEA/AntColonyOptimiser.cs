@@ -238,6 +238,7 @@ namespace NEA
             double beta = settings.algorithm.beta;   // influence of heuristic
             double rho = settings.algorithm.rho;  // pheromone evaporation rate
             double Q = settings.algorithm.q;    // pheromone deposit factor
+            bool returnStart = settings.general.returnStart;
             List<Station> bestPath = null;
             double bestLength = double.MaxValue;
             Dictionary<(Station, Station), double> pheromones = new Dictionary<(Station, Station), double>();
@@ -260,6 +261,11 @@ namespace NEA
                         unvisited.Remove(chosen);
                         totalLength += distance[(current, chosen)]; // Add the distance to the path length
                         current = chosen; // Move to the next station
+                    }
+                    if (returnStart)
+                    {
+                        path.Add(targetStations[0]);
+                        totalLength += distance[(current, targetStations[0])];
                     }
                     if (totalLength < bestLength) // Track best path
                     {

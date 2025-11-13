@@ -209,6 +209,7 @@ namespace NEA
             Dictionary<(Station, Station), DecomposedConnection> connections = optimiser.DecomposedPath(targetStations);
             Console.Clear();
             List<PathInstruction> fullInstructions;
+            List<Station> orderedStation = new List<Station>();
             while (true)
             {
                 int option = GetOption(new List<string> { "Manually ordered", "Auto optimisation based on time", "Auto optimisation based on cost", "Exit" });
@@ -216,19 +217,21 @@ namespace NEA
                 {
                     case 1:
                         Console.WriteLine($"Manually ordered:");
+                        orderedStation = new List<Station>(targetStations);
+                        if (settings.general.returnStart) orderedStation.Add(targetStations[0]);
                         break;
                     case 2:
                         Console.WriteLine("Ant Colony Optimisation based on time:");
-                        targetStations = optimiser.AntColonyOptimisation(targetStations, connections, true);
+                        orderedStation = optimiser.AntColonyOptimisation(targetStations, connections, true);
                         break;
                     case 3:
                         Console.WriteLine("Ant Colony Optimisation based on cost:");
-                        targetStations = optimiser.AntColonyOptimisation(targetStations, connections, false);
+                        orderedStation = optimiser.AntColonyOptimisation(targetStations, connections, false);
                         break;
                     case 4:
                         return;
                 }
-                fullInstructions = optimiser.GetFullPath(targetStations, connections);
+                fullInstructions = optimiser.GetFullPath(orderedStation, connections);
                 foreach (PathInstruction segment in fullInstructions)
                     segment.DisplaySegment(tubeColours);
                 Console.WriteLine("Press any key to continue.");
@@ -304,9 +307,12 @@ namespace NEA
                         settings.general.touristAttraction = GetOption(new List<string> { "Apply tourist attraction", "Do not apply tourist attraction" }) == 1 ? true : false;
                         continue;
                     case 4:
-                        settings.general.exportFilepath = PDFExport.SetFileName();
+                        settings.general.returnStart = GetOption(new List<string> { "Return to start station", "Do not return to start station" }) == 1 ? true : false;
                         continue;
                     case 5:
+                        settings.general.exportFilepath = PDFExport.SetFileName();
+                        continue;
+                    case 6:
                         return;
                 }
             }
