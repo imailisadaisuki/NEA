@@ -15,10 +15,10 @@ namespace NEA
             while (true)
             {
                 Console.WriteLine("Enter file name: (exclude .pdf)");
-                string fileName = $"{Console.ReadLine()}.pdf";
+                string fileName = Console.ReadLine();
                 if (!string.IsNullOrEmpty(fileName) &&
               fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)
-                    return fileName;
+                    return $"{fileName}.pdf";
                 else
                     Console.WriteLine("File name not vaild.");
             }
