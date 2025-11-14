@@ -276,15 +276,15 @@ namespace NEA
                     case 1:
                         settings.general.timetableFilepath = "undergroundWDP.json";
                         settings.general.zonecostFilepath = "zonecostP.json";
-                        break;
+                        return;
                     case 2:
                         settings.general.timetableFilepath = "undergroundWDOP.json";
                         settings.general.zonecostFilepath = "zonecostOP.json";
-                        break;
+                        return;
                     case 3:
                         settings.general.timetableFilepath = "undergroundWE.json";
                         settings.general.zonecostFilepath = "zonecostOP.json";
-                        break;
+                        return;
                 }
             }
         }
