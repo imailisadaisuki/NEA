@@ -28,6 +28,7 @@ namespace NEA
             bool transferred; // Flag to check if a transfer has occurred
             while (!pq.IsEmpty())
             {
+                
                 Station current = pq.Dequeue();
                 if (current.visited) continue; // Skip if already visited
                 current.visited = true;
@@ -43,6 +44,7 @@ namespace NEA
                     }
                     if (newTime < neighbour.travelTime)
                     {
+                        if (connection.line == "Walk") newTime -= transferPenalty; // As transfer penality of "Walk" will be counted twice
                         neighbour.travelTime = newTime;
                         neighbour.previousStation = current;
                         if (transferred) // If a transfer occurred, reset previous lines to the current station's lines
@@ -59,7 +61,7 @@ namespace NEA
                                 .Where(c => c.station == neighbour)
                                 .Select(c => c.line)));
                         }
-                        pq.Enqueue(neighbour, connection.line == "Walk" ? newTime - transferPenalty : newTime);// As transfer penality of "Walk" will be counted twice
+                        pq.Enqueue(neighbour, newTime);
                     }
                 }
             }
