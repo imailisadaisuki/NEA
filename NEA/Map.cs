@@ -36,6 +36,7 @@ namespace NEA
         public List<string> getPlatformNumber(HashSet<string> lines)
         {
             HashSet<string> platforms = new HashSet<string>();
+            
             platforms.UnionWith(Connections
                 .Where(c => lines.Contains(c.line))
                 .SelectMany(c => c.platform)); // Remove repeated platforms
