@@ -81,7 +81,7 @@ namespace NEA
                 connectionLines.IntersectWith(prevConnectionLines); // Remove lines that are not connecting from the previous station to the current station
                 if (connectionLines.Count == 0) // If no lines connecting from one station to current station, a transfer occurred
                 {
-                    AddTransfer(path, current.name, currentLines, stopCount, false);
+                    AddTransfer(path, current.name, currentLines, stopCount);
                     connectionLines = new HashSet<string>(prevConnectionLines);
                     stopCount = 0;
                 }
@@ -95,7 +95,7 @@ namespace NEA
             return path;
         }
 
-        private void AddTransfer(List<PathInstruction> path, string stationName, HashSet<string> lines, int stopCount, bool startStation)
+        private void AddTransfer(List<PathInstruction> path, string stationName, HashSet<string> lines, int stopCount, bool startStation = false)
         {
             path.Add(new PathInstruction($"\nRide {stopCount} stop(s) via:"));
             string platformInfo = $"Platform number(s): {string.Join(", ", stations[stationName].getPlatformNumber(lines))}";
@@ -129,13 +129,14 @@ namespace NEA
                 foreach (Station target in targetStations)
                 {
                     if (target == station) continue; // Skip the same station
+                    List<PathInstruction> pathInstructions = GetShortestPath(target);
                     decomposedConnections.Add((station, target),
                         new DecomposedConnection(
                         station,
                         target,
                         target.travelTime,
-                        GetCost(target),
-                        GetShortestPath(target)));
+                        pathInstructions.Count < 7 ? 0 : GetCost(target),
+                        pathInstructions));
                 }
             }
             return decomposedConnections;
@@ -267,7 +268,7 @@ namespace NEA
                     if (returnStart)
                     {
                         path.Add(targetStations[0]);
-                        totalLength += distance[(current, targetStations[0])];
+                        totalLength += distance[(current, targetStations[0])]; // Add start station to complete the tour
                     }
                     if (totalLength < bestLength) // Track best path
                     {
