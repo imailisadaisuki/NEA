@@ -350,7 +350,7 @@ namespace NEA
             }
         }
 
-        private void Settings()
+        private bool Settings()
         {
             int option;
             while (true)
@@ -366,9 +366,9 @@ namespace NEA
                         continue;
                     case 3:
                         Program.ApplySettings();
-                        return;
+                        return true; // Need to modify settings
                     case 4:
-                        return;
+                        return false;
                 }
             }
         }
@@ -385,12 +385,12 @@ namespace NEA
                         StationSearch(); // Start the station search process
                         continue;
                     case 2:
-                        Settings();
+                        if (Settings())
+                            return; // Exit to apply settings
                         continue;
                     case 3:
                         System.Environment.Exit(0); // Exit the program
                         return;
-
                 }
             }
         }

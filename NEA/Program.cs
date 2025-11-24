@@ -15,7 +15,6 @@ namespace NEA
         public static void ApplySettings()
         {
             DataEditor.SaveSettings(settingsFilePath, settings); // Save settings to JSON file
-            Load();
         }
 
         private static void Load()
@@ -30,10 +29,13 @@ namespace NEA
 
         static void Main(string[] args)
         {
-            Load();
-            AntColonyOptimiser optimiser = new AntColonyOptimiser(stations, settings, zoneCost);
-            UI ui = new UI(optimiser, stations, settings, tubeColours);
-            ui.Run();
+            while (true)
+            {
+                Load();
+                AntColonyOptimiser optimiser = new AntColonyOptimiser(stations, settings, zoneCost);
+                UI ui = new UI(optimiser, stations, settings, tubeColours);
+                ui.Run();
+            }
         }
     }
 }
