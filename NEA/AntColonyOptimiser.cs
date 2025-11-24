@@ -185,7 +185,7 @@ namespace NEA
             else
             {
                 foreach ((Station, Station) key in connections.Keys)
-                    distance[key] = 0.8 * connections[key].cost + 0.2 * connections[key].estimatedTime; // Add a small weight to time to avoid route with 0 cost & choose a faster route when costs are the same
+                    distance[key] = connections[key].cost + 0.1 * connections[key].estimatedTime; // Add a small weight to time to avoid route with 0 cost & choose a faster route when costs are the same
             }
         }
 
