@@ -105,7 +105,7 @@ namespace NEA
                     Console.WriteLine();
                     return input;
                 }
-                else if (key.Key == ConsoleKey.Tab && match != null)
+                else if (key.Key == ConsoleKey.Tab && match != null && input != "")
                 {
                     input = match;
                 }

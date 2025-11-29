@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -135,7 +136,7 @@ namespace NEA
                         station,
                         target,
                         target.travelTime,
-                        pathInstructions.Count < 7 ? 0 : GetCost(target),
+                        pathInstructions.Count < 7 && pathInstructions.Any(pi => pi.instruction == "Walk") ? 0 : GetCost(target),
                         pathInstructions));
                 }
             }
@@ -150,7 +151,7 @@ namespace NEA
             for (int i = 0; i < path.Count - 1; i++)
             {
                 DecomposedConnection connection = connections[(path[i], path[i + 1])]; // Get the connection between the current and next station
-                totalTime += connection.estimatedTime;
+                totalTime += Math.Round(connection.estimatedTime);
                 fullInstructions.Add(new PathInstruction(new string('-', Console.WindowWidth)));
                 fullInstructions.Add(new PathInstruction($"Route from {path[i].name} to {path[i + 1].name}:"));
                 foreach (PathInstruction segment in connection.path)
@@ -163,12 +164,12 @@ namespace NEA
                 else
                 {
                     totalCost += connection.cost;
-                    fullInstructions.Add(new PathInstruction($"Cost of subpath: {connection.cost:C2}"));
+                    fullInstructions.Add(new PathInstruction($"Cost of subpath: {connection.cost.ToString("C", new CultureInfo("en-GB"))}"));
                 }
                 fullInstructions.Add(new PathInstruction(new string('-', Console.WindowWidth)));
             }
             fullInstructions.Add(new PathInstruction($"Total estimated time: {Math.Round(totalTime)} minutes"));
-            fullInstructions.Add(new PathInstruction($"Total cost excluding special fares: {totalCost:C2}"));
+            fullInstructions.Add(new PathInstruction($"Total cost excluding special fares: {totalCost.ToString("C", new CultureInfo("en-GB"))}"));
             return fullInstructions;
 
         }
