@@ -83,7 +83,7 @@ namespace NEA
         [JsonPropertyName("Colour")]
         public Dictionary<string, LineColour> colour { get; set; }
     }
-    internal class DataEditor
+    internal static class DataEditor
     {
         public static Dictionary<string, Station> LoadStation(string filePath)
         {
