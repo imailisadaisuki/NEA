@@ -8,7 +8,7 @@ using QuestPDF.Infrastructure;
 
 namespace NEA
 {
-    internal class PDFExport
+    internal static class PDFExport
     {
         public static string SetFileName()
         {
